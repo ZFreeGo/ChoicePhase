@@ -1,0 +1,10 @@
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.IntelligentControlPlatform.ControlCenter.exe
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.IntelligentControlPlatform.ControlCenter.pdb
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.ChoicePhase.ControlCenter.csprojResolveAssemblyReference.cache
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\MainWindow.baml
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\MainWindow.g.cs
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\App.g.cs
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.ChoicePhase.ControlCenter_MarkupCompile.cache
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.ChoicePhase.ControlCenter.g.resources
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.ChoicePhase.ControlCenter.Properties.Resources.resources
+G:\MyCode\Dotnet\ZFreeGo.ChoisePhase\ZFreeGo.IntelligentControlPlatform.ControlCenter\obj\Release\ZFreeGo.ChoicePhase.ControlCenter.csproj.GenerateResource.Cache
