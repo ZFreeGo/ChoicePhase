@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Windows;
 using ZFreeGo.ChoicePhase.ControlPlatform.ViewModel;
 
@@ -22,58 +23,43 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
 
             //注册MVVMLight消息
             Messenger.Default.Register<string>(this, "ShowUserView", ShowUserView);
+            Messenger.Default.Register<Exception>(this, "ExceptionMessage", ExceptionMessage);
+           
         }
+
+        /// <summary>
+        /// 异常信息
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ExceptionMessage(Exception obj)
+        {
+            MessageBox.Show(obj.Message, obj.Source);
+        }
+
+   
 
         private void ShowUserView(string obj)
         {
-            if (obj != null)
+            try
             {
-
-                switch (obj)
+                if (obj != null)
                 {
-                    case "Telesignalisation":
-                        {
 
-                            break;
-                        }
-                    case "Telemetering":
-                        {
+                    switch (obj)
+                    {
+                        case "SerialPortConfig":
+                            {
 
-                            break;
-                        }
-                    case "Telecontrol":
-                        {
-
-                            break;
-                        }
-                    case "SOELog":
-                        {
-
-                            break;
-                        }
-                    case "ProtectSetPoint":
-                        {
-
-                            break;
-                        }
-                    case "SystemParameter":
-                        {
-
-                            break;
-                        }
-                    case "SystemCalibration":
-                        {
-
-                            break;
-                        }
-                    case "Communication":
-                        {
-
-                            break;
-                        }
+                              
+                                break;
+                            }
+                    }
 
                 }
-
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ShowUserView");
             }
         }
 
@@ -83,5 +69,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
            
            
         }
+
+      
     }
 }

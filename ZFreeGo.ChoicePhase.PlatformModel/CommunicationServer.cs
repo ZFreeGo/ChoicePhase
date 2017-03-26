@@ -60,7 +60,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         public CommunicationServer()
         {
             _commonServer = new SerialPortServer();
-            _commonServer.Open();
+          
             SerialPortParameter = new SerialPortParameterItem();
         }
     }

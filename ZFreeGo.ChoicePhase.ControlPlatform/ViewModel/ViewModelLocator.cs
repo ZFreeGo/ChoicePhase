@@ -12,7 +12,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using ZFreeGo.ChoicePhase.ControlPlatform.Model;
+
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -29,17 +29,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            if (ViewModelBase.IsInDesignModeStatic)
-            {
-                SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
-            }
-            else
-            {
-                SimpleIoc.Default.Register<IDataService, DataService>();
-            }
-
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<CommunicationViewModel>();
+            SimpleIoc.Default.Register<SetpointViewModel>();
         }
 
         /// <summary>
@@ -73,8 +65,19 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return communication;
             }
         }
-
-
+        public static SetpointViewModel setpoint;
+        public static SetpointViewModel Setpoint
+        {
+            get
+            {
+                if (setpoint == null)
+                {
+                    setpoint = ServiceLocator.Current.GetInstance<SetpointViewModel>();
+                }
+                return setpoint;
+            }
+        }
+       
         /// <summary>
         /// Cleans up all the resources.
         /// </summary>

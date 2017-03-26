@@ -1,9 +1,0 @@
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Debug\ZFreeGo.ChoicePhase.PlatformModel.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Debug\ZFreeGo.ChoicePhase.PlatformModel.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Debug\GalaSoft.MvvmLight.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Debug\System.Data.SQLite.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Debug\GalaSoft.MvvmLight.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Debug\GalaSoft.MvvmLight.xml
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\obj\Debug\ZFreeGo.ChoicePhase.PlatformModel.csprojResolveAssemblyReference.cache
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\obj\Debug\ZFreeGo.ChoicePhase.PlatformModel.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\obj\Debug\ZFreeGo.ChoicePhase.PlatformModel.pdb

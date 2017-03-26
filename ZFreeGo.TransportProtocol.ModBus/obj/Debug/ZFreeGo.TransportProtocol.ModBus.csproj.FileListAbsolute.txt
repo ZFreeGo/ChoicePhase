@@ -1,5 +1,0 @@
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.TransportProtocol.ModBus\bin\Debug\ZFreeGo.ChoicePhase.Modbus.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.TransportProtocol.ModBus\bin\Debug\ZFreeGo.ChoicePhase.Modbus.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.TransportProtocol.ModBus\obj\Debug\ZFreeGo.TransportProtocol.ModBus.csprojResolveAssemblyReference.cache
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.TransportProtocol.ModBus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.TransportProtocol.ModBus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.pdb

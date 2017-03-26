@@ -27,8 +27,3 @@ F:\MyCode\Dotnet\ZFreeGo.ChoicePhase16030615\ZFreeGo.ChoicePhase\ZFreeGo.ChoiceP
 F:\MyCode\Dotnet\ZFreeGo.ChoicePhase16030615\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.csprojResolveAssemblyReference.cache
 F:\MyCode\Dotnet\ZFreeGo.ChoicePhase16030615\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.dll
 F:\MyCode\Dotnet\ZFreeGo.ChoicePhase16030615\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\bin\Debug\ZFreeGo.ChoicePhase.Modbus.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\bin\Debug\ZFreeGo.ChoicePhase.Modbus.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.Modbus\obj\Debug\ZFreeGo.ChoicePhase.Modbus.csprojResolveAssemblyReference.cache
