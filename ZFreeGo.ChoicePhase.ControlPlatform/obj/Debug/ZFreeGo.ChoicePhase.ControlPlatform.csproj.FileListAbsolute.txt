@@ -27,3 +27,8 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Deb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.csproj.GenerateResource.Cache
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.exe
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\ZFreeGo.ChoicePhase.PlatformModel.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\System.Data.SQLite.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\ZFreeGo.ChoicePhase.PlatformModel.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\CommunicationView.baml
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\CommunicationView.g.cs

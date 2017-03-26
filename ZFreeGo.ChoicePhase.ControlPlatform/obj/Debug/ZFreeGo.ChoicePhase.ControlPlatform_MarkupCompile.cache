@@ -10,11 +10,11 @@ none
 false
 CODE_ANALYSIS;DEBUG;TRACE
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\App.xaml
-2-1356017796
+3-1385149359
 
-111841344722
-16-397974645
-MainWindow.xaml;Skins\MainSkin.xaml;
+13-1694228242
+17-1349438184
+MainWindow.xaml;Skins\MainSkin.xaml;View\CommunicationView.xaml;
 
 False
 

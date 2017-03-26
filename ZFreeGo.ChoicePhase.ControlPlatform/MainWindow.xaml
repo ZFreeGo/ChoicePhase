@@ -49,7 +49,7 @@
             </StackPanel>
         </Grid>
 
-        <Frame Grid.Column="1" Grid.Row="1" Name="frame" >
+        <Frame Grid.Column="1" Grid.Row="1" Name="frame"  >
 
         </Frame>
 

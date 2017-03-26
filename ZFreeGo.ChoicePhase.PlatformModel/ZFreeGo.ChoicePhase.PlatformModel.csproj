@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommunicationServer.cs" />
     <Compile Include="PlatformModelServer.cs" />
     <Compile Include="DataItemSet\AttributeItem.cs" />
     <Compile Include="DataItemSet\SerialPortParamer.cs" />
@@ -53,10 +54,12 @@
     <Compile Include="GetViewData\SQLliteDatabase.cs" />
     <Compile Include="Helper\CommonPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CommunicationServer\SerialPortServer.cs" />
-    <Compile Include="CommunicationServer\SerialDataEvent.cs" />
+    <Compile Include="Communication\SerialPortServer.cs" />
+    <Compile Include="Communication\SerialDataEvent.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="ReadMe.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -48,6 +48,37 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             
         }
 
+        private static PlatformModelServer _modelServer; 
+
+
+        /// <summary>
+        /// 获取Model服务
+        /// </summary>
+        /// <returns>Model Server</returns>
+        public static PlatformModelServer GetServer()
+        {
+            return GetServer(false);
+        }
+
+
+        /// <summary>
+        /// 获取Model服务
+        /// </summary>
+        /// <param name="flag">ture-重新新建， false--采用默认</param>
+        /// <returns>Model Server</returns>
+        public static PlatformModelServer GetServer(bool flag)
+        {
+            if((_modelServer == null) || flag)
+            {
+                return new PlatformModelServer();
+            }
+            else
+            {
+                return _modelServer;
+            }
+
+        }
+
 
 
 

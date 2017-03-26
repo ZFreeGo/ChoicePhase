@@ -9,6 +9,7 @@ using System.Threading;
 using System.Net;
 using ZFreeGo.Monitor.DASModel.GetViewData;
 using ZFreeGo.ChoicePhase.PlatformModel;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -16,34 +17,30 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
    
     public class CommunicationViewModel : ViewModelBase
     {
+        private PlatformModelServer modelServer;
 
-        /// <summary>
-        /// 总启动标志
-        /// </summary>
-        private bool allFlag = false;
+        private CommunicationServer commServer;
+
+
+
         /// <summary>
         /// Initializes a new instance of the DataGridPageViewModel class.
         /// </summary>
         public CommunicationViewModel()
         {
-           
+
+            modelServer = PlatformModelServer.GetServer();
+
             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
-            StartTcpLink = new RelayCommand<string>(ExecuteStartTcpLink);
-            StopTcpLink = new RelayCommand<string>(ExecuteStopTcpLink);
 
-
-            Messenger.Default.Register<PlatformModelServer>(this, "DASModelServer", ExecuteDASModelServer);
-
-            StartTransmission = new RelayCommand<string>(ExecuteStartTransmission);
-            StopTransmission = new RelayCommand<string>(ExecuteStopTransmission);
-            CallAll = new RelayCommand<string>(ExecuteCallAll);
-            StartAllLink = new RelayCommand<string>(ExecuteStartAllLink);
-            StopAllLink = new RelayCommand<string>(ExecuteStopAllLink);
+            
+         
             ClearText = new RelayCommand<string>(ExecuteClearText);
             ToEnd = new RelayCommand<string>(ExecuteToEnd);
 
             SerialCommand = new RelayCommand<string>(ExecuteSerialCommand);
             serialPortParameter = new SerialPortParameterItem();
+            commServer = new CommunicationServer();
             RaisePropertyChanged("Baud");
             RaisePropertyChanged("DataBit");
             RaisePropertyChanged("ParityBit");
@@ -59,34 +56,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             if (obj != null)
             {
+                modelServer = obj;
+                serialPortParameter = obj.CommServer.SerialPortParameter;
+                commServer = obj.CommServer;
+                commServer.PropertyChanged += ServerInformation_PropertyChanged;
 
-                serialPortParameter = obj.Communication.SerialPortParameter;
+           
                 RaisePropertyChanged("Baud");
                 RaisePropertyChanged("DataBit");
                 RaisePropertyChanged("ParityBit");
                 RaisePropertyChanged("StopBit");
                 RaisePropertyChanged("CommonPort");
 
-            }
+            }         
         }
 
-      
-        void ControlServer_ServerFaultEvent(object sender, TransmissionControlFaultEventArgs e)
-        {
-            switch(e.Result)
-            {
-                case TransmissionControlResult.OverTime:
-                case TransmissionControlResult.SendFault:
-                case TransmissionControlResult.Fault:
-                    {
-                        if (allFlag)
-                        {
-                            ExecuteStopTcpLink("");//随后断开TCP连接
-                        }
-                        break;
-                    }
-            }
-        }
         /// <summary>
         /// 服务信息到来
         /// </summary>
@@ -97,54 +81,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             RaisePropertyChanged(e.PropertyName);
         }
 
+
        
-
-        void ControlServer_ServerEvent(object sender, TransmissionControlEventArgs e)
-        {
-            switch(e.ControlFunction)
-            {
-                case TransmissionControlFunction.AcknowledgementStartDataTransmission:
-                    {
-                        if (allFlag)
-                        {
-                            ExecuteCallAll("");//随后启动总召唤
-                        }
-                        break;
-                    }
-                case TransmissionControlFunction.AcknowledgementStopDataTransmission:
-                    {
-                        if (allFlag)
-                        {
-                            ExecuteStopTcpLink("");//随后断开TCP连接
-                        }
-                        break;
-                    }
-            }
-        }
-
-      
-
-        void NetServer_LinkingEventMsg(object sender, Net.Element.NetLinkMessagEvent e)
-        {
-            
-            switch(e.State)
-            {
-                case Net.Element.NetState.Stop:
-                    {
-                        break;
-                    }
-                case Net.Element.NetState.EstablishLink:
-                    {
-                        if (allFlag)
-                        {
-                            ExecuteStartTransmission(""); //建立连接后，随后启动数据传输
-                        }
-                        break;
-                    }
-
-            }
-            
-        }
 
         #region 串口数据处理
 
@@ -317,7 +255,28 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #endregion
 
+        /// <summary>
+        /// 连接信息
+        /// </summary>
+        public string LinkMessage
+        {
+            get
+            {
+                InitserverData();
+                return commServer.LinkMessage;
+            }
+            set
+            {
+                commServer.LinkMessage = value;
+                RaisePropertyChanged("LinkMessage");
 
+            }
+        }
+
+        private void InitserverData()
+        {
+            
+        }
 
         #region 加载数据命令：LoadDataCommand
         /// <summary>
@@ -334,197 +293,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         #endregion
 
 
-        #region 通讯属性与服务
-        private NetParameter serverData;
-
-        //public NetParameter ServerInformation
-        //{
-        //   get
-        //    {
-        //        if (serverData == null)
-        //        {
-        //            serverData = new NetParameter();
-        //        }
-        //        return serverData;
-        //    }
-        //    set
-        //    {
-        //        serverData = value;
-        //        RaisePropertyChanged("ServerInformation");
-        //    }
-        //}
-        private void InitserverData()
-        {
-             if (serverData == null)
-             {
-                 serverData = new NetParameter();
-             }
-        }
-        /// <summary>
-        /// 获取或设置IP地址
-        /// </summary>
-        public string IpAddress
-        {
-            get
-            {
-                InitserverData(); 
-                return serverData.IpAddress; 
-            }
-            set
-            {
-                IPAddress iptry;
-                if (IPAddress.TryParse(value, out  iptry))
-                {
-                    serverData.IP = iptry;
-                    RaisePropertyChanged("IpAddress");
-
-                }
-
-
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置端口号
-        /// </summary>
-        public int Port
-        {
-            get
-            {
-                InitserverData();
-                return serverData.Port;
-            }
-            set
-            {
-                serverData.Port = value;
-                RaisePropertyChanged("Port");
-
-            }
-        }
-
-       
-
-        /// <summary>
-        /// 连接信息
-        /// </summary>
-        public string LinkMessage
-        {
-            get
-            {
-                InitserverData(); 
-                return serverData.LinkMessage;
-            }
-            set
-            {
-                serverData.LinkMessage = value;
-                RaisePropertyChanged("LinkMessage");
-
-            }
-        }
-
-        /// <summary>
-        /// 通讯服务
-        /// </summary>
-        private CommunicationServer netServer;
-        /// <summary>
-        /// 启动TCP连接
-        /// </summary>
-        public RelayCommand<string> StartTcpLink { get; private set; }
-
-        
-        void ExecuteStartTcpLink(string name)
-        {
-            try
-            {
-                netServer.NetClient.StartServer(serverData.IP, serverData.Port);
-                
-            }
-            catch(Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-
-        /// <summary>
-        /// 停止Tcp连接
-        /// </summary>
-        public RelayCommand<string> StopTcpLink { get; private set; }
-
-
-        void ExecuteStopTcpLink(string name)
-        {
-            try
-            {
-                netServer.NetClient.Stop();
-
-            }
-            catch (Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-        #endregion
-
-        #region 传输控制功能
-        /// <summary>
-        /// 启动传输控制功能
-        /// </summary>
-        public RelayCommand<string> StartTransmission { get; private set; }
-
-
-        void ExecuteStartTransmission(string str)
-        {
-            try
-            {
-                protocolServer.ControlServer.StartServer(TransmissionControlFunction.StartDataTransmission);
-            }
-            catch (Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-
-        /// <summary>
-        /// 停止传输控制功能
-        /// </summary>
-        public RelayCommand<string> StopTransmission { get; private set; }
-
-
-        void ExecuteStopTransmission(string str)
-        {
-            try
-            {
-                protocolServer.ControlServer.StartServer(TransmissionControlFunction.StopDataTransmission);
-                protocolServer.ResetServer();
-
-            }
-            catch (Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-        #endregion
-
-        #region 总召唤
-        /// <summary>
-        /// 总召唤
-        /// </summary>
-        public RelayCommand<string> CallAll { get; private set; }
-
-
-        void ExecuteCallAll(string str)
-        {
-            try
-            {
-                protocolServer.CallServer.StartServer(CauseOfTransmissionList.Activation, QualifyOfInterrogationList.GeneralInterrogation);
-            }
-            catch (Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-        #endregion
-
         #region ClearText
         public RelayCommand<string> ClearText { get; private set; }
 
@@ -540,7 +308,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
         #endregion
-        #region ClearText
+        
+        #region ToEnd
         public RelayCommand<string> ToEnd { get; private set; }
 
         void ExecuteToEnd(string name)
@@ -555,54 +324,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
         #endregion
-        /// <summary>
-        /// 启动所有连接
-        /// </summary>
-        public RelayCommand<string> StartAllLink { get; private set; }
-
-
-        void ExecuteStartAllLink(string name)
-        {
-            try
-            {
-                allFlag = true;
-                ExecuteStartTcpLink("");
-
-            }
-            catch (Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-        /// <summary>
-        /// 停止所有连接
-        /// </summary>
-        public RelayCommand<string> StopAllLink { get; private set; }
-
-
-        void ExecuteStopAllLink(string name)
-        {
-            try
-            {
-                allFlag = true;
-                if (netServer.NetClient.IsRun)
-                {
-                    ExecuteStopTransmission("");
-                }
-                else
-                {
-                    protocolServer.ResetServer();
-                }
-               
-
-                
-                
-
-            }
-            catch (Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
+       
+       
     }
 }

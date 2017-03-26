@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using ZFreeGo.Monitor.DASModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel
 {
-    public class CommunicationServer
+    public class CommunicationServer : ObservableObject
     {
         /// <summary>
         /// 通讯服务
@@ -32,6 +33,25 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             private set;
             get;
+        }
+
+        private string linkMessage;
+
+        /// <summary>
+        /// 连接信息
+        /// </summary>
+        public string LinkMessage
+        {
+            get
+            {
+                return linkMessage;
+            }
+            set
+            {
+                linkMessage = value;
+                RaisePropertyChanged("LinkMessage");
+
+            }
         }
 
         /// <summary>
