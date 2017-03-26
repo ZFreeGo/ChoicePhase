@@ -25,8 +25,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             
             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
-           
-            SetPoint = new RelayCommand<string>(ExecuteSetPreotectPoint);
+
+            SetpointOperate = new RelayCommand<string>(ExecuteSetpointOperate);
             DataGridMenumSelected = new RelayCommand<string>(ExecuteDataGridMenumSelected);
         }
 
@@ -56,8 +56,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         void ExecuteLoadDataCommand()
         {
             modelServer = PlatformModelServer.GetServer();
-           
-            LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
+            UserData = modelServer.MonitorData.ReadYongciAttribute(false);
+            
         }
         #endregion
 
@@ -65,22 +65,22 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <summary>
         /// 定值功能
         /// </summary>
-        public RelayCommand<string> SetPoint { get; private set; }
+        public RelayCommand<string> SetpointOperate { get; private set; }
 
 
-        void ExecuteSetPreotectPoint(string str)
+        void ExecuteSetpointOperate(string str)
         {
             try
             {
                 
                 switch(str)
                 {
-                    case "Slected":
+                    case "Read":
                         {
                         
                             break;
                         }
-                    case "Download":
+                    case "Update":
                         {
                             
                             break;
@@ -165,20 +165,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 case "Reload":
                     {
 
-                       // UserData = viewData.ReadEletricPulse(true);
+                        UserData =   modelServer.MonitorData.ReadYongciAttribute(true);
                         break;
                     }
                 case "Save":
                     {
-                       // viewData.InsertEletricPulse();
+                        modelServer.MonitorData.InsertYongciAttribute();
                         break;
                     }
                 case "AddUp":
                     {
                         if (SelectedIndex > -1)
                         {
-                           // var item = new ElectricPulse(0, "", 0, "", "", "");
-                            //UserData.Insert(SelectedIndex, item);
+                            var item = new AttributeItem(0, "ABC", 1, 1, 1.0, "A");
+                            UserData.Insert(SelectedIndex, item);
                         }
                         break;
                     }
@@ -186,15 +186,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     {
                         if (SelectedIndex > -1)
                         {
-                            //var item = new ElectricPulse(0, "", 0, "", "", "");
+                            var item = new AttributeItem(0, "ABC", 1, 1, 1.0, "A");
                             if (SelectedIndex < UserData.Count - 1)
                             {
 
-                                //UserData.Insert(SelectedIndex + 1, item);
+                                UserData.Insert(SelectedIndex + 1, item);
                             }
                             else
                             {
-                                //UserData.Add(item);
+                                UserData.Add(item);
                             }
                         }
                         break;

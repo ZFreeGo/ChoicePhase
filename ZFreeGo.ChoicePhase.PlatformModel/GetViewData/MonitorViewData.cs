@@ -11,9 +11,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
     public class MonitorViewData
     {
         /// <summary>
-        /// 属性列表
+        /// 设定值 属性列表
         /// </summary>
         private ObservableCollection<AttributeItem> _yongciAttribute;
+
+        /// <summary>
+        /// 监控量 属性列表
+        /// </summary>
+        private ObservableCollection<AttributeItem> _yongciMonitorAttribute;
         /// <summary>
         /// 数据库操作
         /// </summary>
@@ -25,7 +30,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
-        #region 属性列表操作--单个永磁控制器
+        #region 属性列表操作--单个永磁控制器 设定量
 
         /// <summary>
         /// 创建YongciAttribute
@@ -33,7 +38,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         public void CrateYongciAttributeTable()
         {
             string sql =
-                "CREATE TABLE YongciAttribute( ConfigID int, Name text,rawValue rawValue,  dataType int, value double, comment text)";
+                "CREATE TABLE YongciAttribute( ConfigID int, Name text,RawValue int,  dataType int, value double, comment text)";
             dataBase.CreateTale(sql);
             
         }
@@ -79,16 +84,84 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 return _yongciAttribute;
             }
         }
+
+        
+
+
         private bool GetYongciAttribute(System.Data.SQLite.SQLiteDataReader reader)
         {
 
-            _yongciAttribute.Add(new AttributeItem(reader.GetInt32(0), reader.GetString(1), reader.GetDouble(2),
+            _yongciAttribute.Add(new AttributeItem(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2),
                 reader.GetInt32(3), reader.GetDouble(4), reader.GetString(5)));
-
+         
             return true;
         }
 
 
+        #endregion
+
+        #region 属性列表操作--单个永磁控制器 监控量
+
+        /// <summary>
+        /// 创建YongciAttribute
+        /// </summary>
+        public void CrateYongciMonitorAttributeTable()
+        {
+            string sql =
+                "CREATE TABLE YongciMonitorAttribute( ConfigID int, Name text,RawValue int,  dataType int, value double, comment text)";
+            dataBase.CreateTale(sql);
+
+        }
+
+
+
+        /// <summary>
+        /// 清空历史数据，将数据插入表格
+        /// </summary>       
+        public void InsertYongciMonitorAttribute()
+        {
+            var collect = _yongciMonitorAttribute;
+            var listStr = new List<String>();
+            foreach (var m in collect)
+            {
+                string sql = string.Format("INSERT INTO  YongciMonitorAttribute VALUES({0},\'{1}\',{2},{3},{4},\'{5}\')",
+                   m.ConfigID, m.Name, m.RawValue, m.DataType, m.Value, m.Comment);
+                listStr.Add(sql);
+            }
+            if (listStr.Count > 0)
+            {
+                string sqlClear = "delete from  YongciMonitorAttribute";
+                dataBase.InsertTable(listStr, sqlClear);
+            }
+        }
+
+        /// <summary>
+        /// 读取永磁属性数据表格
+        /// </summary>
+        /// <param name="flag">true--重新更新, false--若当前已存在则直接使用</param>
+        /// <returns>永磁属性合集</returns>       
+        public ObservableCollection<AttributeItem> ReadYongciMonitorAttribute(bool flag)
+        {
+            if (_yongciMonitorAttribute == null || flag)
+            {
+                _yongciMonitorAttribute = new ObservableCollection<AttributeItem>();
+                string sql = "SELECT * from YongciMonitorAttribute";
+                dataBase.ReadTable(sql, GetYongciMonitorAttribute);
+                return _yongciMonitorAttribute;
+            }
+            else
+            {
+                return _yongciMonitorAttribute;
+            }
+        }
+        private bool GetYongciMonitorAttribute(System.Data.SQLite.SQLiteDataReader reader)
+        {
+
+            _yongciMonitorAttribute.Add(new AttributeItem(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2),
+                reader.GetInt32(3), reader.GetDouble(4), reader.GetString(5)));
+
+            return true;
+        }
         #endregion
     }
 }

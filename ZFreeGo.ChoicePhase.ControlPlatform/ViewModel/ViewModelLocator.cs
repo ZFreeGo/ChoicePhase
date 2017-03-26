@@ -32,6 +32,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<CommunicationViewModel>();
             SimpleIoc.Default.Register<SetpointViewModel>();
+            SimpleIoc.Default.Register<MonitorViewModel >();
         }
 
         /// <summary>
@@ -77,7 +78,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return setpoint;
             }
         }
-       
+        public static MonitorViewModel monitor;
+        public static MonitorViewModel Monitor
+        {
+            get
+            {
+                if (monitor == null)
+                {
+                    monitor = ServiceLocator.Current.GetInstance<MonitorViewModel>();
+                }
+                return monitor;
+            }
+        }
         /// <summary>
         /// Cleans up all the resources.
         /// </summary>

@@ -38,8 +38,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         void ExecuteLoadDataCommand()
         {
             modelServer = PlatformModelServer.GetServer();
-           
-           
+
+            
            
         }
         #endregion
@@ -92,6 +92,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         case "SetpointParameter":
                             {
                                 ShowUri = "view/SetpointView.xaml";
+                                break;
+                            }
+                        case "MonitorParameter":
+                            {
+                                ShowUri = "view/MonitorView.xaml";
                                 break;
                             }
                         default:

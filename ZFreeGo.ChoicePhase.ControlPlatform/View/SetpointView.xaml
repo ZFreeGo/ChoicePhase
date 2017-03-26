@@ -21,11 +21,9 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Margin="3" Orientation="Horizontal" >
-                <Button Margin="3" Padding="3" Name="btnCallSetpoint">召唤定值-待实现</Button>
-
-                <Button Margin="30,3,3,3" Padding="3" Name="DownloadProtectSetSelect" Command="{Binding SetProtectPoint}" CommandParameter="Slected">选择</Button>
-                <Button Margin="3,3,30,3" Padding="3" Name="DownloadProtectSet" Command="{Binding SetProtectPoint}" CommandParameter="Download">下载</Button>
-                
+                <Button Margin="3" Padding="3" Command="{Binding SetpointOperate}" CommandParameter="Read">读取定值</Button>
+                <Button Margin="30,3,3,3" Padding="3"  Command="{Binding SetpointOperate}" CommandParameter="Update">更新定值</Button>
+                                
             </StackPanel>
         </Grid>
         <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False"  Name="gridProtectSetPoint" IsReadOnly="{Binding  ReadOnly}" 
@@ -44,15 +42,13 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="内部ID"  Width="50" Binding="{Binding  InternalID}"></DataGridTextColumn>
-                <DataGridTextColumn Header="所属类别"    MinWidth="50" Binding="{Binding Type}"></DataGridTextColumn>
-                <DataGridTextColumn Header="终端点号"   MinWidth="50" Binding="{Binding EndPoint, StringFormat={}{0:X2}}"></DataGridTextColumn>
-                <DataGridTextColumn Header="名称"    MinWidth="50" Binding="{Binding ProtectSetName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="参数值"    MinWidth="50" Binding="{Binding ParameterValue, StringFormat={}{0:F4}}"></DataGridTextColumn>
-                <DataGridTextColumn Header="校准系数"    MinWidth="50" Binding="{Binding CalibrationCoefficient, StringFormat={}{0:F4}}"></DataGridTextColumn>
-                <DataGridTextColumn Header="单位"    MinWidth="50" Binding="{Binding Unit}"></DataGridTextColumn>
-                <DataGridTextColumn Header="范围"    MinWidth="50" Binding="{Binding Comment}"></DataGridTextColumn>
-                <DataGridTextColumn Header="备注"    MinWidth="250" Binding="{Binding Comment}"></DataGridTextColumn>
+                <DataGridTextColumn Header="配置号"  Width="50" Binding="{Binding  ConfigID, StringFormat={}{0:X2}}"></DataGridTextColumn>
+                <DataGridTextColumn Header="名称"    MinWidth="50" Binding="{Binding Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="原始值"   MinWidth="50" Binding="{Binding RawValue}"></DataGridTextColumn>
+                <DataGridTextColumn Header="数据类型"    MinWidth="50" Binding="{Binding DataType}"></DataGridTextColumn>
+                <DataGridTextColumn Header="属性值"    MinWidth="50" Binding="{Binding Value, StringFormat={}{0:F3}}"></DataGridTextColumn>
+                <DataGridTextColumn Header="注释"    MinWidth="50" Binding="{Binding Comment}"></DataGridTextColumn>
+
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="2">

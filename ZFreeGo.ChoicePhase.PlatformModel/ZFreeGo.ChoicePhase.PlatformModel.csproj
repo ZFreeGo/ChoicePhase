@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunicationServer.cs" />
+    <Compile Include="DataItemSet\CommandDdentifyItem.cs" />
+    <Compile Include="LogicData\CommandIdentify.cs" />
     <Compile Include="PlatformModelServer.cs" />
     <Compile Include="DataItemSet\AttributeItem.cs" />
     <Compile Include="DataItemSet\SerialPortParamer.cs" />

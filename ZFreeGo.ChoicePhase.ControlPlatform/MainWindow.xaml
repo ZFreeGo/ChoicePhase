@@ -34,31 +34,32 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>       
         <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" >
-            <StackPanel >
-                <TreeView FontFamily="雅黑" FontSize="16" Name="treeView"  >
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectedItemChanged">
-                            <i:InvokeCommandAction Command="{Binding TreeSelectedItemCommand}"  CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <TreeViewItem Header="通讯设置"  IsExpanded="True" Margin="3">
-                        <TreeViewItem Header="串口配置" Margin="3" Name="SerialPortConfig">
-                        </TreeViewItem>
-                    </TreeViewItem>
-                    <TreeViewItem Header="参数列表" IsExpanded="True" Margin="3">
-                        <TreeViewItem Header="定值参数" Margin="3" Name="SetpointParameter">
-                        </TreeViewItem>
-                        <TreeViewItem Header="监控参数" Margin="3">
-                        </TreeViewItem>                       
-                    </TreeViewItem>
-                    <TreeViewItem Header="遥控设置" Margin="3">
 
+            <TreeView FontFamily="雅黑" FontSize="16" Name="treeView"  >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction Command="{Binding TreeSelectedItemCommand}"  CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <TreeViewItem Header="通讯设置"  IsExpanded="True" Margin="3">
+                    <TreeViewItem Header="串口配置" Margin="3" Name="SerialPortConfig">
                     </TreeViewItem>
-                    <TreeViewItem Header="同步设置" Margin="3">
+                </TreeViewItem>
+                <TreeViewItem Header="参数列表" IsExpanded="True" Margin="3">
+                    <TreeViewItem Header="定值参数" Margin="3" Name="SetpointParameter">
+                    </TreeViewItem>
+                    <TreeViewItem Header="监控数据" Margin="3" Name="MonitorParameter">
+                    </TreeViewItem>
+                   
+                </TreeViewItem>
+                <TreeViewItem Header="遥控设置" Margin="3">
 
-                    </TreeViewItem>
-                </TreeView>
-            </StackPanel>
+                </TreeViewItem>
+                <TreeViewItem Header="同步设置" Margin="3">
+
+                </TreeViewItem>
+            </TreeView>
+
         </Grid>
 
         <Frame Grid.Column="1" Grid.Row="1" Name="frame" Source="{Binding ShowUri}">

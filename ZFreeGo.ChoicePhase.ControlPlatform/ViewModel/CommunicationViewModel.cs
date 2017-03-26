@@ -29,7 +29,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         public CommunicationViewModel()
         {
 
-            modelServer = PlatformModelServer.GetServer();
+           
 
             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
 
@@ -39,37 +39,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             ToEnd = new RelayCommand<string>(ExecuteToEnd);
 
             SerialCommand = new RelayCommand<string>(ExecuteSerialCommand);
-            serialPortParameter = new SerialPortParameterItem();
-            commServer = new CommunicationServer();
-            RaisePropertyChanged("Baud");
-            RaisePropertyChanged("DataBit");
-            RaisePropertyChanged("ParityBit");
-            RaisePropertyChanged("StopBit");
-            RaisePropertyChanged("CommonPort");
+
         }
 
-        /// <summary>
-        /// 服务数据
-        /// </summary>
-        /// <param name="obj"></param>
-        private void ExecuteDASModelServer(PlatformModelServer obj)
-        {
-            if (obj != null)
-            {
-                modelServer = obj;
-                serialPortParameter = obj.CommServer.SerialPortParameter;
-                commServer = obj.CommServer;
-                commServer.PropertyChanged += ServerInformation_PropertyChanged;
 
-           
-                RaisePropertyChanged("Baud");
-                RaisePropertyChanged("DataBit");
-                RaisePropertyChanged("ParityBit");
-                RaisePropertyChanged("StopBit");
-                RaisePropertyChanged("CommonPort");
-
-            }         
-        }
 
         /// <summary>
         /// 服务信息到来
@@ -80,7 +53,32 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             RaisePropertyChanged(e.PropertyName);
         }
+        #region 加载数据命令：LoadDataCommand
+        /// <summary>
+        /// 加载数据
+        /// </summary>
+        public RelayCommand LoadDataCommand { get; private set; }
 
+        //加载用户数据
+        void ExecuteLoadDataCommand()
+        {
+            if (modelServer == null) //防止重复初始化
+            {
+                modelServer = PlatformModelServer.GetServer();
+                serialPortParameter = modelServer.CommServer.SerialPortParameter;
+                commServer = modelServer.CommServer;
+                commServer.PropertyChanged += ServerInformation_PropertyChanged;
+                SelectedIndexDataBit = 3;
+
+                RaisePropertyChanged("Baud");
+                RaisePropertyChanged("DataBit");
+                RaisePropertyChanged("ParityBit");
+                RaisePropertyChanged("StopBit");
+                RaisePropertyChanged("CommonPort");
+            }
+
+        }
+        #endregion
 
        
 
@@ -115,7 +113,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-        private int selectedIndexDataBit =3;
+        private int selectedIndexDataBit;
 
         public int SelectedIndexDataBit
         {
@@ -278,19 +276,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             
         }
 
-        #region 加载数据命令：LoadDataCommand
-        /// <summary>
-        /// 加载数据
-        /// </summary>
-        public RelayCommand LoadDataCommand { get; private set; }
 
-        //加载用户数据
-        void ExecuteLoadDataCommand()
-        {
-           // var get = new GetViewData();
-            
-        }
-        #endregion
 
 
         #region ClearText

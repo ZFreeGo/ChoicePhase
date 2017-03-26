@@ -49,11 +49,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("Name");
             }
         }
-        private double _rawValue;
+        private int _rawValue;
         /// <summary>
         /// 原始值
         /// </summary>
-        public double RawValue
+        public int RawValue
         {
             get
             {
@@ -68,7 +68,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         private  int _dataType;
 
         /// <summary>
-        /// 配置号
+        /// 数据类型
         /// </summary>
         public int DataType
         {
@@ -123,7 +123,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         /// <summary>
         /// 属性值
         /// </summary>
-        public AttributeItem(int configID, string name, double rawValue, int dataType, double value, string comment)
+        public AttributeItem(int configID, string name, int rawValue, int dataType, double value, string comment)
         {
             _configID = configID;
             _name = name;
