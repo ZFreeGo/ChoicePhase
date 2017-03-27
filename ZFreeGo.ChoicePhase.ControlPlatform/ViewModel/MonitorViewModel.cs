@@ -46,6 +46,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 RaisePropertyChanged("UserData");
             }
         }
+
         #region 加载数据命令：LoadDataCommand
         /// <summary>
         /// 加载数据

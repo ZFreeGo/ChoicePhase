@@ -71,12 +71,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModel\CommunicationViewModel.cs" />
+    <Compile Include="ViewModel\ControlViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MonitorViewModel.cs" />
     <Compile Include="ViewModel\SetpointViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\CommunicationView.xaml.cs">
       <DependentUpon>CommunicationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ControlView.xaml.cs">
+      <DependentUpon>ControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MonitorView.xaml.cs">
       <DependentUpon>MonitorView.xaml</DependentUpon>
@@ -103,6 +107,10 @@
     <Page Include="View\CommunicationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ControlView.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MonitorView.xaml">
       <Generator>MSBuild:Compile</Generator>

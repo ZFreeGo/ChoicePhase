@@ -20,9 +20,13 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Deb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\MainWindow.baml
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\Skins\MainSkin.baml
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\CommunicationView.baml
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\ControlView.baml
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\MonitorView.baml
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\SetpointView.baml
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\MainWindow.g.cs
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\CommunicationView.g.cs
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\ControlView.g.cs
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\MonitorView.g.cs
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\SetpointView.g.cs
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\App.g.cs
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\GeneratedInternalTypeHelper.g.cs
@@ -34,5 +38,3 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Deb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.csproj.GenerateResource.Cache
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.exe
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\MonitorView.baml
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\MonitorView.g.cs

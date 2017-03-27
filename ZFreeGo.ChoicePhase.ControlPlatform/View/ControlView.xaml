@@ -1,0 +1,107 @@
+﻿<Window x:Class="ZFreeGo.ChoicePhase.ControlPlatform.View.ControlView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.galasoft.ch/ignore"
+        mc:Ignorable="d ignore"
+        DataContext="{Binding Control, Source={StaticResource Locator}}">
+    <ScrollViewer>
+        <Grid ScrollViewer.VerticalScrollBarVisibility="Visible">   
+        
+        <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>            
+        </Grid.RowDefinitions>
+            <GroupBox Header="开关控制" Grid.Row="0" Margin="3">
+                <TabControl Margin="3">
+                    <TabItem Header="遥控操作" >
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="3">动作选择:</Label>
+                            <ComboBox MinWidth="60" Margin="3"></ComboBox>                           
+                            <Label Margin="3">三相选择:</Label>
+                            <StackPanel Orientation="Horizontal" Margin="3">
+                                <CheckBox VerticalAlignment="Center">A相</CheckBox>
+                                <CheckBox VerticalAlignment="Center">B相</CheckBox>
+                                <CheckBox VerticalAlignment="Center">C相</CheckBox>
+                            </StackPanel>
+                            <Label Margin="3">回路选择:</Label>
+                            <CheckBox VerticalAlignment="Center">I路</CheckBox>
+                            <CheckBox VerticalAlignment="Center">II路</CheckBox>
+                            <CheckBox VerticalAlignment="Center">III路</CheckBox>
+                            <Label Margin="3">动作时间:</Label>
+                            <TextBox MinWidth="60" Margin="3"></TextBox>
+                            <Button Margin="30,3,3,3">预制</Button>
+                            <Button Margin="30,3,3,3">执行</Button>
+                        </StackPanel>
+                    </TabItem>
+                   
+                    <TabItem Header="同步合闸预制" >
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="3">回路选择:</Label>
+                            <TextBox MinWidth="60" Margin="3"></TextBox>
+                            <Label Margin="3">偏移时间:</Label>
+                            <TextBox MinWidth="60" Margin="3"></TextBox>
+                            <Button Margin="30,3,3,3">合闸预制</Button>                           
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+            </GroupBox>
+            
+        <GroupBox Header="同步控制" Grid.Row="1" Margin="3" >
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="3">
+                    <TextBlock Margin="3" VerticalAlignment="Center">A相合闸相角：</TextBlock>
+                    <TextBox MinWidth="40" Margin="3"  Name="setHezhaPhase" VerticalAlignment="Center">0</TextBox>
+                    <RadioButton VerticalAlignment="Center"  Name="jiaoDuRadio"  IsChecked="True">角度</RadioButton>
+                    <RadioButton VerticalAlignment="Center" Name="huduRadio" >弧度</RadioButton>
+                    <Button Margin="30,3,3,3" Height="30" Foreground="Red" >合闸控制</Button>
+                </StackPanel>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Canvas Grid.Column="0" Height="180" Width="240"  Name="cavas" Background="Black" SnapsToDevicePixels="True" Margin="3">
+
+                        <Polyline Name="sinWave" Stroke="White"  StrokeThickness="1"></Polyline>
+                        <Path Stroke="White" >
+                            <Path.Data>
+                                <GeometryGroup>
+                                    <LineGeometry StartPoint="60,0" EndPoint="60,180"></LineGeometry>
+                                    <LineGeometry StartPoint="0,90" EndPoint="240,90"></LineGeometry>
+                                </GeometryGroup>
+                            </Path.Data>
+                        </Path>
+                        <Line Stroke="Red" StrokeThickness="2" X1="60" Y1="150" X2="60" Y2="30" Name="lineCursor"></Line>
+                    </Canvas>
+                    <Canvas Grid.Column="1" Height="180" Width="240"  Name="cavasRight" Background="Black"  Margin="3">
+                        <!--<Ellipse  Width="100" Height="100" Stroke="White"></Ellipse>-->
+                        <Path Stroke="White" >
+                            <Path.Data>
+                                <GeometryGroup>
+                                    <EllipseGeometry RadiusX="50" RadiusY="50" Center="120,90" ></EllipseGeometry>
+                                    <LineGeometry StartPoint="120,0" EndPoint="120,180"></LineGeometry>
+                                    <LineGeometry StartPoint="0,90" EndPoint="240,90"></LineGeometry>
+                                </GeometryGroup>
+
+
+                            </Path.Data>
+                        </Path>
+                        <Line Stroke="Red" StrokeThickness="2" X1="120" Y1="90" X2="220" Y2="90" Name="roundCursor"></Line>
+                    </Canvas>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Margin="3">
+                    <TextBlock Margin="3" VerticalAlignment="Center">实时合闸时间(us)：</TextBlock>
+                    <TextBox MinWidth="40" Margin="3"  Name="realHezhaTime" VerticalAlignment="Center">0</TextBox>
+                    <Button Margin="30,3,3,3" Height="30" Foreground="Red">设置合闸时间</Button>
+                </StackPanel>
+            </StackPanel>
+
+
+        </GroupBox>
+       
+            
+    </Grid>
+    </ScrollViewer>
+</Window>
