@@ -47,11 +47,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorCodeEnum.cs" />
-    <Compile Include="FunEnum.cs" />
     <Compile Include="GenCRC.cs" />
     <Compile Include="ReciveRtuFrame.cs" />
+    <Compile Include="ReciveRtuServer.cs" />
     <Compile Include="RTUFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RtuFrameArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZFreeGo.Common.LogTrace\ZFreeGo.Common.LogTrace.csproj">
+      <Project>{b89398a0-0f99-4fb9-bf91-3e4d030b427d}</Project>
+      <Name>ZFreeGo.Common.LogTrace</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

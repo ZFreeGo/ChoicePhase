@@ -151,6 +151,10 @@
       <Project>{c6d3acac-470c-4dc7-a924-57f40cfedb95}</Project>
       <Name>ZFreeGo.ChoicePhase.PlatformModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ZFreeGo.Common.LogTrace\ZFreeGo.Common.LogTrace.csproj">
+      <Project>{b89398a0-0f99-4fb9-bf91-3e4d030b427d}</Project>
+      <Name>ZFreeGo.Common.LogTrace</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ReadMe.txt" />

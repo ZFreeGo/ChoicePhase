@@ -32,6 +32,28 @@ namespace ZFreeGo.ChoicePhase.Modbus
             return (ushort)((ushort)uchCRCHi << 8 | uchCRCLo);
         }
 
+        /// <summary>
+        /// 按信息的字节数计算CRC
+        /// </summary>
+        /// <param name="puchMsg">信息字节数组</param>
+        /// <param name="start">起始索引</param>
+        /// <param name="usDataLen">信息长度</param>
+        /// <returns></returns>
+        public static ushort CRC16(byte[] puchMsg,int start,  ushort usDataLen)
+        {
+            byte uchCRCHi = 0xFF; /* 初始化高字节*/
+            byte uchCRCLo = 0xFF; /* 初始化低字节*/
+            byte uIndex = 0; /*CRC表*/
+            byte i = 0;
+            while (usDataLen != 0) /*通过数据缓冲器*/
+            {
+                usDataLen = (ushort)(usDataLen - 1);
+                uIndex = (byte)(uchCRCHi ^ puchMsg[start + i++]); /*计算CRC*/
+                uchCRCHi = (byte)(uchCRCLo ^ auchCRCHi[uIndex]);
+                uchCRCLo = auchCRCLo[uIndex];
+            }
+            return (ushort)((ushort)uchCRCHi << 8 | uchCRCLo);
+        }
         //高字节位
         /// <summary>
         /// Table of CRC values for high–order byte 

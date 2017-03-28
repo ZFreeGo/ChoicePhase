@@ -62,6 +62,12 @@
   <ItemGroup>
     <Content Include="ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj">
+      <Project>{201f117c-a205-4b77-92b3-08780a6aa754}</Project>
+      <Name>ZFreeGo.TransportProtocol.ModBus</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

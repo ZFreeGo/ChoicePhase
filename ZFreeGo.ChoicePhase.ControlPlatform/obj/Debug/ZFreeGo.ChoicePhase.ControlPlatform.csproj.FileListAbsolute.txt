@@ -38,3 +38,7 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Deb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.csproj.GenerateResource.Cache
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.exe
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\ZFreeGo.ChoicePhase.ControlPlatform.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\ZFreeGo.Common.LogTrace.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\ZFreeGo.Common.LogTrace.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\ZFreeGo.ChoicePhase.Modbus.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\bin\Debug\ZFreeGo.ChoicePhase.Modbus.pdb

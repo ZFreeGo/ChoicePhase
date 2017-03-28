@@ -18,7 +18,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <summary>
         /// 通讯服务
         /// </summary>
-        private SerialPortServer CommonServer
+        public SerialPortServer CommonServer
         {
             get
             {
@@ -53,7 +53,42 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
             }
         }
+        private string rawReciveMessage;
 
+        /// <summary>
+        /// 原始接收
+        /// </summary>
+        public string RawReciveMessage
+        {
+            get
+            {
+                return rawReciveMessage;
+            }
+            set
+            {
+                rawReciveMessage = value;
+                RaisePropertyChanged("RawReciveMessage");
+
+            }
+        }
+        private string rawSendMessage;
+
+        /// <summary>
+        /// 原始发送信息
+        /// </summary>
+        public string RawSendMessage
+        {
+            get
+            {
+                return rawSendMessage;
+            }
+            set
+            {
+                rawSendMessage = value;
+                RaisePropertyChanged("RawSendMessage");
+
+            }
+        }
         /// <summary>
         /// 初始化通讯服务
         /// </summary>

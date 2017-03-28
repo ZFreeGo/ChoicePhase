@@ -99,6 +99,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ShowUri = "view/MonitorView.xaml";
                                 break;
                             }
+                        case "RemoteControl":
+                            {
+                                ShowUri = "view/ControlView.xaml";
+                                break;
+                            }
                         default:
                             {
                                 break;

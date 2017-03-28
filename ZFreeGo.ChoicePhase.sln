@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.Platfor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.TransportProtocol.ModBus", "ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj", "{201F117C-A205-4B77-92B3-08780A6AA754}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{1A29A49B-81B2-46D9-ACF0-1A3667007CF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.Common.LogTrace", "ZFreeGo.Common.LogTrace\ZFreeGo.Common.LogTrace.csproj", "{B89398A0-0F99-4FB9-BF91-3E4D030B427D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{201F117C-A205-4B77-92B3-08780A6AA754}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{201F117C-A205-4B77-92B3-08780A6AA754}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{201F117C-A205-4B77-92B3-08780A6AA754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A29A49B-81B2-46D9-ACF0-1A3667007CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A29A49B-81B2-46D9-ACF0-1A3667007CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A29A49B-81B2-46D9-ACF0-1A3667007CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A29A49B-81B2-46D9-ACF0-1A3667007CF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B89398A0-0F99-4FB9-BF91-3E4D030B427D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B89398A0-0F99-4FB9-BF91-3E4D030B427D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B89398A0-0F99-4FB9-BF91-3E4D030B427D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B89398A0-0F99-4FB9-BF91-3E4D030B427D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

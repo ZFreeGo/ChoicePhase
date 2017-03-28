@@ -123,21 +123,7 @@
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
-                <TabItem Header="网口设置">
-                    <StackPanel  >
-
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">IP地址：</TextBlock>
-                            <TextBox MinWidth="100" Margin="3" Name="txtIp" Text="{Binding IpAddress}"></TextBox>
-
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3" >端口名称：</TextBlock>
-                            <TextBox MinWidth="100" Margin="3" Name="txtPort" Text="{Binding Port}"></TextBox>
-                        </StackPanel>
-
-                    </StackPanel>
-                </TabItem>
+                
             </TabControl>
            
           
@@ -156,33 +142,9 @@
             </TextBox>
         </Grid>
         <Grid Grid.Row="1" >
-            <StackPanel Grid.Column="1" Grid.Row="0">
-                <StackPanel Margin="3"  Orientation="Horizontal">
-                    <Button Margin="3" Padding="3"  Command="{Binding StartAllLink}"  >启动连接</Button>
-                    <Button Margin="3" Padding="3"   Command="{Binding StopAllLink}" >断开连接</Button>
-                </StackPanel>
-                <StackPanel >
-                    <StackPanel Margin="3"  Orientation="Horizontal" Visibility="Collapsed">
-                   
-                    <Button Margin="3" Padding="3" Name="btnStartServer" Command="{Binding StartTcpLink}"  >启动Tcp</Button>
-                    <Button Margin="3" Padding="3" Name="btnStopServer"  Command="{Binding StopTcpLink}" >停止Tcp</Button>
-                </StackPanel>
-                    <StackPanel Margin="3"  Orientation="Horizontal" Visibility="Collapsed">
-                   
-                    <Button Margin="3" Padding="3" Name="btnStartDataTransmission"  Command="{Binding StartTransmission}" >启动数据传输</Button>
-                    <Button Margin="3" Padding="3" Name="btnStopDataTransmission"  Command="{Binding StopTransmission}">停止数据传输</Button>
-                </StackPanel>
-                <StackPanel Margin="3"  Orientation="Horizontal">
-                   
-                    <Button Margin="3" Padding="3" Name="btnManualCall"  Command="{Binding CallAll}">总召唤</Button>
-                    <Button Margin="3" Padding="3" Name="btnTimeSynA" >时间同步</Button>
-                </StackPanel>
-               
-            </StackPanel >
+            <StackPanel Grid.Column="1" Grid.Row="0">             
             
-            </StackPanel>
-            
-
+            </StackPanel>           
         </Grid>
 
     </Grid>

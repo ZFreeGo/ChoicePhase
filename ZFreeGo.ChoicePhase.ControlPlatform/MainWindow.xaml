@@ -52,12 +52,10 @@
                     </TreeViewItem>
                    
                 </TreeViewItem>
-                <TreeViewItem Header="遥控设置" Margin="3">
+                <TreeViewItem Header="控制同步" Margin="3" Name="RemoteControl">
 
                 </TreeViewItem>
-                <TreeViewItem Header="同步设置" Margin="3">
-
-                </TreeViewItem>
+             
             </TreeView>
 
         </Grid>
