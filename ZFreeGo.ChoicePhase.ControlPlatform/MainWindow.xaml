@@ -9,12 +9,16 @@
         Height="600"
         Width="800"
         Title="选相控制平台"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
+        DataContext="{Binding Main, Source={StaticResource Locator}}"  >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosingCommand}" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
+ 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,10 +34,11 @@
             <ColumnDefinition  Width="3*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="5"></RowDefinition>
+            <RowDefinition Height="70"></RowDefinition>
         </Grid.RowDefinitions>       
-        <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" >
+        <Grid Grid.Column="0" Grid.Row="0"  >
 
             <TreeView FontFamily="雅黑" FontSize="16" Name="treeView"  >
                 <i:Interaction.Triggers>
@@ -60,9 +65,24 @@
 
         </Grid>
 
-        <Frame Grid.Column="1" Grid.Row="1" Name="frame" Source="{Binding ShowUri}">
+        <Frame Grid.Column="1" Grid.Row="0" Name="frame" Source="{Binding ShowUri}">
 
         </Frame>
+        <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="LightBlue" Height="5"  HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center" ></GridSplitter>
+        <Grid Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2">
+            <TextBox Margin="5" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"   Name="txtLinkMessage" 
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding LinkMessage}">
+                <TextBox.ContextMenu>
+                    <ContextMenu StaysOpen="True"  IsEnabled="True">
+                        <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="Send" />
+                        <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->
+
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+                
+            </TextBox>
+        </Grid>
 
     </Grid>
 </Window>

@@ -10,6 +10,9 @@ using System.Net;
 using ZFreeGo.Monitor.DASModel.GetViewData;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
+using System.Text;
+using System.Collections.Generic;
+using ZFreeGo.ChoicePhase.Modbus;
 
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -19,7 +22,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     {
         private PlatformModelServer modelServer;
 
-        private CommunicationServer commServer;
 
 
 
@@ -39,7 +41,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             ToEnd = new RelayCommand<string>(ExecuteToEnd);
 
             SerialCommand = new RelayCommand<string>(ExecuteSerialCommand);
-
+            SendFrameCommand = new RelayCommand(ExecuteSendFrameCommand);
         }
 
 
@@ -66,8 +68,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 modelServer = PlatformModelServer.GetServer();
                 serialPortParameter = modelServer.CommServer.SerialPortParameter;
-                commServer = modelServer.CommServer;
-                commServer.PropertyChanged += ServerInformation_PropertyChanged;
+ 
+                modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
                 SelectedIndexDataBit = 3;
 
                 RaisePropertyChanged("Baud");
@@ -213,7 +215,37 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return serialPortParameter.CommonPort;
             }
         }
+        
+        public bool OpenEnable
+        {
+            get
+            {
+                if ( modelServer.CommServer != null)
+                {
+                    return !modelServer.CommServer.CommonServer.CommState;
+                }
+                else
+                {
+                    return true;
+                }
+                
+            }            
+        }
+        public bool CloseEnable
+        {
+            get
+            {
+                if (modelServer.CommServer != null)
+                {
+                    return modelServer.CommServer.CommonServer.CommState;
+                }
+                else
+                {
+                    return false;
+                }
 
+            }
+        }
         public RelayCommand<string> SerialCommand { get; private set; }
 
         public void ExecuteSerialCommand(string arg)
@@ -224,20 +256,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     case "OpeanSerial":
                         {
+                            modelServer.CommServer.CommonServer.Open(CommonPort[SelectedIndexCommonPort].Paramer, Baud[SelectedIndexBaud].Paramer, DataBit[SelectedIndexDataBit].Paramer,
+                                ParityBit[SelectedIndexParity].Paramer, StopBit[SelectedIndexStopBit].Paramer);
+                            RaisePropertyChanged("OpenEnable");
+                            RaisePropertyChanged("CloseEnable");
                             break;
                         }
                     case "CloseSerial":
                         {
+                            modelServer.CommServer.CommonServer.Close();
+                            RaisePropertyChanged("OpenEnable");
+                            RaisePropertyChanged("CloseEnable");
                             break;
                         }
-                    case "Command1":
-                        {
-                            break;
-                        }
-                    case "Command2":
-                        {
-                            break;
-                        }
+              
                     default:
                         {
                             break;
@@ -253,23 +285,173 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #endregion
 
+
+        #region 发送帧命令
+        
+        private byte sendAddr;
+        public string SendAddr
+        {
+            get
+            {
+                return sendAddr.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null,out sendAddr);
+              
+                RaisePropertyChanged("SendAddr");
+            }
+        }
+
+        private byte sendFunction = 0x10;
+        public string SendFunction
+        {
+            get
+            {
+                return sendFunction.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out sendFunction);                
+
+                RaisePropertyChanged("SendFunction");
+            }
+        }
+
+        private byte sendDataLen = 0; //发送数据长度
+        public string SendDataLen
+        {
+            get
+            {
+                return sendDataLen.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out sendDataLen);   
+                RaisePropertyChanged("SendDataLen");
+            }
+        }
+
+        private byte[] sendData = new byte[3]{0 , 1, 2};
+
+        public string SendDataString
+        {
+            get
+            {
+                StringBuilder strBuilder = new StringBuilder(30);
+                foreach (var m in sendData)
+                {
+                    strBuilder.AppendFormat("{0:X2} ", m);
+                }
+                return strBuilder.ToString();
+            }
+            set
+            {
+               sendData  = GetByteData(value);
+               RaisePropertyChanged("SendDataString");
+            }
+        }
+
+
+
+       
+        
+        /// <summary>
+        /// 由字符串数组提取数据
+        /// </summary>
+        /// <param name="str">待提取的字符</param>
+        /// <returns>提取的字节数组</returns>
+        private byte[] GetByteData(string str)
+        {
+            str = str.Trim();
+            var strSplite = str.Split(' ');
+            byte[] array = new byte[strSplite.Length];
+            int i = 0;
+            foreach (var m in strSplite)
+            {
+                try
+                {
+                    var data = Convert.ToByte(m, 16);
+                    array[i++] = data;
+                }
+                catch (ArgumentException ex)
+                {
+
+                }
+                catch (FormatException ex)
+                {
+
+                }
+                catch (OverflowException ex)
+                {
+
+                }
+
+            }
+            byte[] result = new byte[i];
+            Array.Copy(array, 0, result, 0, i);
+            return result;
+        }
+
+          public RelayCommand SendFrameCommand { get; private set; }
+
+        //加载用户数据
+          private void ExecuteSendFrameCommand()
+          {
+              try
+              {
+                  if (sendData.Length < sendDataLen)
+                  {
+                      throw new ArgumentException("数据长度小于设定的发送长度");
+                  }
+                  var frame = new RTUFrame(sendAddr, sendFunction, sendData, sendDataLen);
+                  modelServer.RtuServer.SendFrame(frame);
+
+
+              }
+              catch(Exception ex)
+              {
+                  Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+              }
+          }
+    
+
+
+        #endregion
+
+
         /// <summary>
         /// 连接信息
         /// </summary>
-        public string LinkMessage
+        public string RawSendMessage
         {
             get
             {
                 InitserverData();
-                return commServer.LinkMessage;
+                return modelServer.CommServer.RawSendMessage;
             }
             set
             {
-                commServer.LinkMessage = value;
-                RaisePropertyChanged("LinkMessage");
+                modelServer.CommServer.RawSendMessage = value;
+                RaisePropertyChanged("RawSendMessage");
 
             }
         }
+        public string RawReciveMessage
+        {
+            get
+            {
+                InitserverData();
+                return modelServer.CommServer.RawReciveMessage;
+            }
+            set
+            {
+                modelServer.CommServer.RawReciveMessage = value;
+                RaisePropertyChanged("RawReciveMessage");
+
+            }
+        }
+
 
         private void InitserverData()
         {
@@ -286,7 +468,19 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                LinkMessage = "";
+                switch(name)
+                {
+                    case "Send":
+                        {
+                            RawSendMessage = "";
+                            break;
+                        }
+                    case "Receive":
+                        {
+                            RawReciveMessage = "";
+                            break;
+                        }
+                }
             }
             catch (Exception ex)
             {

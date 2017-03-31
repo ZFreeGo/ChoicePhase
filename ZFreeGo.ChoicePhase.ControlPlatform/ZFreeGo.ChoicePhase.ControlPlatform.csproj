@@ -139,6 +139,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -154,6 +155,10 @@
     <ProjectReference Include="..\ZFreeGo.Common.LogTrace\ZFreeGo.Common.LogTrace.csproj">
       <Project>{b89398a0-0f99-4fb9-bf91-3e4d030b427d}</Project>
       <Name>ZFreeGo.Common.LogTrace</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj">
+      <Project>{201f117c-a205-4b77-92b3-08780a6aa754}</Project>
+      <Name>ZFreeGo.TransportProtocol.ModBus</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

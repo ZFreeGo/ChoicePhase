@@ -1,6 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.ObjectModel;
+using ZFreeGo.ChoicePhase.Modbus;
+using ZFreeGo.ChoicePhase.PlatformModel;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -12,6 +16,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     /// </summary>
     public class ControlViewModel : ViewModelBase
     {
+        private const byte _downAddress = 0xA1;
+        private const byte _triansFunction = 1;
+
+        private PlatformModelServer modelServer;
         /// <summary>
         /// Initializes a new instance of the ControlViewModel class.
         /// </summary>
@@ -22,8 +30,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _actionSelect.Add("分闸");
 
              ActionCommand = new RelayCommand<string>(ExecuteReadyCommand);
+             ActionCommandsynchronization = new RelayCommand<string>(ExecuteSynReadyCommand);
+             modelServer = PlatformModelServer.GetServer();
 
+             _loopSelect = new ObservableCollection<string>();
+             _loopSelect.Add("未选择");
+             _loopSelect.Add("回路I");
+             _loopSelect.Add("回路II");
+             _loopSelect.Add("回路III");
         }
+
+    
 
         #region 合分闸控制，同步预制
 
@@ -34,46 +51,81 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         void ExecuteReadyCommand(string str)
         {
-            switch (str)
+            try
             {
-                case "ReadyAction":
-                    {
-                        byte id = 0;
-                        if (SelectActionIndex == 0)//合闸预制
+                switch (str)
+                {
+                    case "ReadyAction":
                         {
-                            id = 1;
-                        }
-                        else if (SelectActionIndex == 1)//分闸预制
-                        {
-                            id = 3;
-                        }
-                        var command = new byte[] { id, _circleSelectByte, (byte)_actionTime };
-                        //此处发送控制命令
-                       
+                            byte id = 0;
+                            if (SelectActionIndex == 0)//合闸预制
+                            {
+                                id = 1;
+                            }
+                            else if (SelectActionIndex == 1)//分闸预制
+                            {
+                                id = 3;
+                            }
+                            var command = new byte[] {_macAddress, 0,  id, _circleByte, (byte)_actionTime };
+                            //此处发送控制命令
+                            var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
+                            modelServer.RtuServer.SendFrame(frame);
 
-                        break;
-                    }
-                case "ExecuteAction":
-                    {
-                        byte id = 0;
-                        if (SelectActionIndex == 0)//合闸执行
-                        {
-                            id = 2;
+                            break;
                         }
-                        else if (SelectActionIndex == 1)//分闸执行
+                    case "ExecuteAction":
                         {
-                            id = 4;
+                            byte id = 0;
+                            if (SelectActionIndex == 0)//合闸执行
+                            {
+                                id = 2;
+                            }
+                            else if (SelectActionIndex == 1)//分闸执行
+                            {
+                                id = 4;
+                            }
+                            var command = new byte[] { _macAddress, 0, id, _circleByte, (byte)_actionTime };
+                            //此处发送控制命令
+                            var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
+
+                            modelServer.RtuServer.SendFrame(frame);
+                            break;
                         }
-                        var command = new byte[] { id, _circleSelectByte, (byte)_actionTime };
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
-            
+                    case "Synchronization":
+                        {
+                            ExecuteSynReadyCommand("Synchronization");
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+
+                }
+            }
+            catch(Exception ex)
+            {
+                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
         }
+
+
+        private byte _macAddress = 0x10;
+
+        public string MacAddress
+        {
+            get
+            {
+                return _macAddress.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out  _macAddress);              
+                RaisePropertyChanged("MacAddress");
+            }
+        }
+
+
         private int selectActionIndex = 0;
 
         public int SelectActionIndex
@@ -166,28 +218,27 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return state;
             }
         }
-
         /// <summary>
-        /// 回路选择字
+        /// 合闸分闸控制选择的回路
         /// </summary>
-        private byte _circleSelectByte = 0;
+        private byte _circleByte = 0;
         public bool CircleI
         {
             set
             {
                 if (value)
                 {
-                    _circleSelectByte |= 0x01;
+                    _circleByte |= 0x01;
                 }
                 else
                 {
-                    _circleSelectByte &= 0xFE;
+                    _circleByte &= 0xFE;
                 }
                 RaisePropertyChanged("CircleI");
             }
             get
             {
-                var state = ((_circleSelectByte & 0x01) == 0x01) ? (true) : (false);
+                var state = ((_circleByte & 0x01) == 0x01) ? (true) : (false);
                 return state;
             }
         }
@@ -198,17 +249,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 if (value)
                 {
-                    _circleSelectByte |= 0x02;
+                    _circleByte |= 0x02;
                 }
                 else
                 {
-                    _circleSelectByte &= 0xFC;
+                    _circleByte &= 0xFC;
                 }
                 RaisePropertyChanged("CircleII");
             }
             get
             {
-                var state = ((_circleSelectByte & 0x02) == 0x02) ? (true) : (false);
+                var state = ((_circleByte & 0x02) == 0x02) ? (true) : (false);
                 return state;
             }
         }
@@ -219,18 +270,77 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 if (value)
                 {
-                    _circleSelectByte |= 0x04;
+                    _circleByte |= 0x04;
                 }
                 else
                 {
-                    _circleSelectByte &= 0xFB;
+                    _circleByte &= 0xFB;
                 }
                 RaisePropertyChanged("CircleIII");
             }
             get
             {
-                var state = ((_circleSelectByte & 0x04) == 0x04) ? (true) : (false);
+                var state = ((_circleByte & 0x04) == 0x04) ? (true) : (false);
                 return state;
+            }
+        }
+        /// <summary>
+        /// 回路选择字
+        /// </summary>
+        private byte _circleSelectByte = 0;
+
+        private ObservableCollection<string> _loopSelect;
+
+        public ObservableCollection<string> LoopSelect
+        {
+            get
+            {
+                return _loopSelect;
+            }
+        }
+
+
+
+        private int _loopIndexI = 0;
+
+        public int LoopIndexI
+        {
+            get
+            {
+                return _loopIndexI;
+            }
+            set
+            {
+                _loopIndexI = value;
+                RaisePropertyChanged("LoopIndexI");
+            }
+        }
+        private int _loopIndexII = 0;
+
+        public int LoopIndexII
+        {
+            get
+            {
+                return _loopIndexII;
+            }
+            set
+            {
+                _loopIndexII = value;
+                RaisePropertyChanged("LoopIndexII");
+            }
+        }
+        private int _loopIndexIII = 0;
+
+        public int LoopIndexIII
+        {
+            get
+            {
+                return _loopIndexIII;
+            }
+            set
+            {
+                _loopIndexIII = value;
+                RaisePropertyChanged("LoopIndexIII");
             }
         }
         /// <summary>
@@ -258,32 +368,135 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
         /// <summary>
-        /// 偏移时间
+        /// 偏移时间 I
         /// </summary>
-        private int _offsetTime;
+        private int _offsetTimeI = 0;
 
-        public string OffsetTime
+        public string OffsetTimeI
         {
             set
             {
                 int time;
                 if (int.TryParse(value, out time))
                 {
-                    if ((time >= 10) && (time <= 65535))
+                    if ((time >= 0) && (time <= 65535))
                     {
-                        _offsetTime = time;
+                        _offsetTimeI = time;
                     }
                 }
-                RaisePropertyChanged("OffsetTime");
+                RaisePropertyChanged("OffsetTimeI");
             }
             get
             {
-                return _offsetTime.ToString();
+                return _offsetTimeI.ToString();
+            }
+        }
+        /// <summary>
+        /// 偏移时间 II
+        /// </summary>
+        private int _offsetTimeII = 0;
+        public string OffsetTimeII
+        {
+            set
+            {
+                int time;
+                if (int.TryParse(value, out time))
+                {
+                    if ((time >= 0) && (time <= 65535))
+                    {
+                        _offsetTimeII = time;
+                    }
+                }
+                RaisePropertyChanged("OffsetTimeII");
+            }
+            get
+            {
+                return _offsetTimeII.ToString();
+            }
+        }
+        /// <summary>
+        /// 偏移时间 III
+        /// </summary>
+        private int _offsetTimeIII = 0;
+       
+        public string OffsetTimeIII
+        {
+            set
+            {
+                int time;
+                if (int.TryParse(value, out time))
+                {
+                    if ((time >= 0) && (time <= 65535))
+                    {
+                        _offsetTimeIII = time;
+                    }
+                }
+                RaisePropertyChanged("OffsetTimeIII");
+            }
+            get
+            {
+                return _offsetTimeIII.ToString();
             }
         }
 
 
 
+        /// <summary>
+        /// 同步合闸预制命令
+        /// </summary>
+        public RelayCommand<string> ActionCommandsynchronization;
+
+
+         void ExecuteSynReadyCommand(string obj)
+        {
+            try
+            {
+
+                var data = new int[3];
+                int i = 0;
+                _circleSelectByte = (byte)(LoopIndexI-1);
+                if (LoopIndexI == 0)
+                {
+                    throw new ArgumentNullException("你没有选择任何回路!");
+                }
+
+               
+                if (LoopIndexII != 0)
+                {
+                    data[i++] = _offsetTimeI;
+                    _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexII - 1) << 2));
+
+                    if (LoopIndexIII != 0)
+                    {
+                        data[i++] = _offsetTimeII;
+                        _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexIII - 1) << 4));
+                    }                   
+                }
+                var byteArray = new byte[i  * 2];
+                for(int k = 0; k < i; k++)
+                {
+                    byteArray[2 * k] = (byte)(data[k] & 0x00FF);
+                    byteArray[2 * k + 1] = (byte)(data[k] >> 8);
+                }              
+ 
+                var command = new byte[2 + 2 + 6];
+                command[0] = _macAddress;
+                command[1] = 0;
+                command[2] = 5;
+                command[3] = _circleSelectByte;
+                Array.Copy(byteArray, 0, command, 4, 2 * i);
+                //此处发送控制命令
+                var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)(4 + 2 * i));
+
+                modelServer.RtuServer.SendFrame(frame);
+
+
+            }
+            catch(Exception ex)
+            {
+                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+            }
+        }
 
         #endregion
     }

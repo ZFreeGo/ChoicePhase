@@ -13,10 +13,12 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>            
         </Grid.RowDefinitions>
-            <GroupBox Header="开关控制" Grid.Row="0" Margin="3">
+            <GroupBox Header="开关控制" Grid.Row="0" Margin="3">                
                 <TabControl Margin="3">
                     <TabItem Header="遥控操作" >
                         <StackPanel Orientation="Horizontal">
+                            <Label Margin="3">MAC:</Label>
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding MacAddress}"></TextBox>
                             <Label Margin="3">动作选择:</Label>
                             <ComboBox MinWidth="60" Margin="3" ItemsSource="{Binding ActionSelect}" SelectedIndex="{Binding SelectActionIndex}"></ComboBox>                           
                             <!--<Label Margin="3">三相选择:</Label>
@@ -38,13 +40,17 @@
                    
                     <TabItem Header="同步合闸预制" >
                         <StackPanel Orientation="Horizontal">
+                            <Label Margin="3">MAC:</Label>
+                            <TextBox MinWidth="30" Margin="3" Text="{Binding MacAddress}"></TextBox>
                             <Label Margin="3">回路选择:</Label>
-                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding CircleI}">I路</CheckBox>
-                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding CircleII}">II路</CheckBox>
-                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding CircleIII}">III路</CheckBox>
+                            <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexI}"></ComboBox>
+                            <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexII}"></ComboBox>
+                            <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexIII}"></ComboBox>
                             <Label Margin="3">偏移时间(us):</Label>
-                            <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTime}"></TextBox>
-                            <Button Margin="30,3,3,3">合闸预制</Button>                           
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeI}"></TextBox>
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeII}"></TextBox>
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeIII}" Visibility="Collapsed"></TextBox>
+                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="Synchronization">合闸预制</Button>                           
                         </StackPanel>
                     </TabItem>
                 </TabControl>

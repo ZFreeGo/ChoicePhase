@@ -25,6 +25,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             showUri = "view/CommunicationView.xaml";
             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
             TreeSelectedItemCommand = new RelayCommand<object>(ExecuteTreeSelectedItemCommand);
+            ClosingCommand = new RelayCommand(ExecuteClosingCommand);
+            ClearText = new RelayCommand<string>(ExecuteClearText);
         }
 
 
@@ -38,13 +40,30 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         void ExecuteLoadDataCommand()
         {
             modelServer = PlatformModelServer.GetServer();
-
+            modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
             
            
         }
+
+        private void ServerInformation_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
+        }
         #endregion
 
+        #region 退出处理
+        /// <summary>
+        /// 加载数据
+        /// </summary>
+        public RelayCommand ClosingCommand { get; private set; }
 
+        //加载用户数据
+        void ExecuteClosingCommand()
+        {
+            modelServer.Close();            
+           
+        }
+        #endregion
         private string showUri;
 
         /// <summary>
@@ -121,7 +140,36 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         }
 
+        public string LinkMessage
+        {
+            get
+            {
 
+                return modelServer.CommServer.LinkMessage;
+            }
+            set
+            {
+                modelServer.CommServer.LinkMessage = value;
+                RaisePropertyChanged("LinkMessage");
+
+            }
+        }
+
+        #region ClearText
+        public RelayCommand<string> ClearText { get; private set; }
+
+        void ExecuteClearText(string name)
+        {
+            try
+            {
+                LinkMessage = "";
+            }
+            catch (Exception ex)
+            {
+                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+            }
+        }
+        #endregion
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed
