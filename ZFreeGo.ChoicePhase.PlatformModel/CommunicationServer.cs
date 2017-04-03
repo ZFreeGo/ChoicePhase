@@ -35,7 +35,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             get;
         }
 
-        private string linkMessage;
+        private string linkMessage = "";
 
         /// <summary>
         /// 连接信息
@@ -53,7 +53,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
             }
         }
-        private string rawReciveMessage;
+        private string rawReciveMessage = "";
 
         /// <summary>
         /// 原始接收
@@ -71,7 +71,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
             }
         }
-        private string rawSendMessage;
+        private string rawSendMessage = "";
 
         /// <summary>
         /// 原始发送信息
@@ -95,7 +95,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         public CommunicationServer()
         {
             _commonServer = new SerialPortServer();
-          
+            
             SerialPortParameter = new SerialPortParameterItem();
         }
     }

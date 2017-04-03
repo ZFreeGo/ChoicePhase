@@ -76,17 +76,38 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
         {
             try
             {
-                serialPort.Open();
+                if (!portState)
+                {
+                    serialPort.Open();
 
 
-                readThread = new Thread(ThreadSerialRead);
-                readThread.Priority = ThreadPriority.AboveNormal;
-                readThread.Start();
-                portState = true;
-                
+                    readThread = new Thread(ThreadSerialRead);
+                    readThread.Priority = ThreadPriority.AboveNormal;
+                    readThread.Start();
+                    portState = true;
+
+                   
+                }
                 return true;
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Open(string port, int baud, int dataBit,  System.IO.Ports.Parity parity, StopBits stopBit)
+        {
+            try
+            {
+                serialPort.PortName = port;
+                serialPort.BaudRate = baud;
+                serialPort.DataBits = dataBit;
+                serialPort.Parity = parity;
+                serialPort.StopBits = stopBit;
+                Open();
+                return true;
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }

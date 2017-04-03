@@ -52,7 +52,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// </summary>
         public PlatformModelServer()
         {
-            _localAddr = 0xA1;
+            _localAddr = 0x1A;
             _monitorViewData = new MonitorViewData();
             CommServer = new CommunicationServer();
             CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
@@ -80,6 +80,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             
 
         }
+
+
+        /// <summary>
+        /// 关闭服务
+        /// </summary>
+        public void Close()
+        {
+            CommServer.CommonServer.Close();
+            RtuServer.Close();
+        }
+
+
 
         /// <summary>
         /// RTU帧数据接收
@@ -126,7 +138,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             if((_modelServer == null) || flag)
             {
-                return new PlatformModelServer();
+                _modelServer =  new PlatformModelServer();
+                return _modelServer;
             }
             else
             {
@@ -140,11 +153,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             StringBuilder strBuild = new StringBuilder(len*3 + 10);
             for(int i = start; i < start + len; i++)
             {
-                strBuild.AppendFormat("{0:X3} ", data[i]);
+                strBuild.AppendFormat("{0:X2} ", data[i]);
             }
            
             return strBuild.ToString();
         }
+
+
+        
 
 
 

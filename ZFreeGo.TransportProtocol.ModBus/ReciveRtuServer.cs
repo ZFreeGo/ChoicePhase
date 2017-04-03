@@ -77,8 +77,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
             return (_sendDataDelegate(frame.Frame));
            
         }
-
-
+  
 
 
         private void ReciveThread()
@@ -91,8 +90,11 @@ namespace ZFreeGo.ChoicePhase.Modbus
                 {
                     lock (_dataFirstBuffer)
                     {
-                        _dataSecoundBuffer.AddRange(_dataFirstBuffer);//添加到新数据中
-                        _dataFirstBuffer.Clear();//清空第一缓冲区
+                        if (_dataFirstBuffer.Count > 0)
+                        {
+                            _dataSecoundBuffer.AddRange(_dataFirstBuffer);//添加到新数据中
+                            _dataFirstBuffer.Clear();//清空第一缓冲区
+                        }
                     }
                     
                     if(step == 1)
@@ -103,12 +105,15 @@ namespace ZFreeGo.ChoicePhase.Modbus
                             //超时丢弃处理
                             _dataSecoundBuffer.Clear();
                             step = 0;
-                            _dataSecoundBuffer.RemoveAt(0);//移除丢弃
+                            if (_dataSecoundBuffer.Count > 0)
+                            {
+                                _dataSecoundBuffer.RemoveAt(0);//移除丢弃
+                            }
                             CLog.LogWarning("接收超时，移除第一个重新开始判断。");
                         }
 
                     }
-                    if (_dataFirstBuffer.Count == 0)
+                    if (_dataSecoundBuffer.Count == 0)
                     {
                         Thread.Sleep(50);
                         continue;
@@ -130,7 +135,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     _dataSecoundBuffer.RemoveAt(0);//移除丢弃
                                     continue;
                                 }
-                                timeStart = new DateTime();//开始设置时间,超时计算
+                                timeStart =  DateTime.Now;//开始设置时间,超时计算
                                 step = 1;
                                 break;
                             }
@@ -143,21 +148,23 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     continue;
                                 }
                                 int allLen = _dataSecoundBuffer[2] + 5;
-                                ushort crc = GenCRC.CRC16(_dataSecoundBuffer.ToArray(), 3, (ushort)_dataSecoundBuffer[2]);
+                                ushort crc = GenCRC.CRC16(_dataSecoundBuffer.ToArray(), 0, (ushort)(_dataSecoundBuffer[2] + 3));
                                 var low = (byte)(crc & 0xFF); //低8位
                                 if (low != _dataSecoundBuffer[allLen -2])
                                 {
                                     CLog.LogWarning("接收CRC校验不正确，移除第一个重新判断。");
                                     step = 0;
                                     _dataSecoundBuffer.RemoveAt(0);
+                                    continue;
                                 }
 
-                                var hig = (byte)(crc & 0xFF00 >> 8);//高8位
-                                if (low != _dataSecoundBuffer[allLen - 1])
+                                var hig = (byte)((crc & 0xFF00) >> 8);//高8位
+                                if (hig != _dataSecoundBuffer[allLen - 1])
                                 {
                                     CLog.LogWarning("接收CRC校验不正确，高8bit，移除第一个重新判断。");
                                     step = 0;
                                     _dataSecoundBuffer.RemoveAt(0);
+                                    continue;
                                 }
                                 if (RtuFrameArrived != null)
                                 {                             
@@ -169,10 +176,11 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     RtuFrameArrived(this, new RtuFrameArgs(frame));
                                     //移除处理后的数据
                                     _dataSecoundBuffer.RemoveRange(0, allLen);
+                                   
                                 }
 
                                 step = 0;
-                                break;
+                                continue; ;
                             }
                 }
                     //进行CRC校验

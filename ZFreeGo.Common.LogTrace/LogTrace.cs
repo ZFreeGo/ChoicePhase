@@ -25,7 +25,8 @@ namespace ZFreeGo.Common.LogTrace
                            "      [{0}{1}]: {2}",
                            DateTime.Now.ToLongDateString(),
                            DateTime.Now.ToLongTimeString(),
-                           strMessage);            
+                           strMessage);
+            Debug.WriteLine(strMessage);
         }
 
         public static void LogWarning(string strMessage)
@@ -35,7 +36,8 @@ namespace ZFreeGo.Common.LogTrace
                            "    [{0}{1}]: {2}",
                            DateTime.Now.ToLongDateString(),
                            DateTime.Now.ToLongTimeString(),
-                           strMessage);            
+                           strMessage);
+            Debug.WriteLine(strMessage);
         }
 
         public static void LogInformation(string strMessage)
@@ -45,7 +47,8 @@ namespace ZFreeGo.Common.LogTrace
                            "[{0}{1}]: {2}",
                            DateTime.Now.ToLongDateString(),
                            DateTime.Now.ToLongTimeString(),
-                           strMessage);             
+                           strMessage);
+            Debug.WriteLine(strMessage);
         }       
 
         private static TraceSource _ts = new TraceSource("LogTrace");

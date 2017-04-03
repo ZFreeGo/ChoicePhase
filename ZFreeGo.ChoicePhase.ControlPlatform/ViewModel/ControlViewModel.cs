@@ -38,6 +38,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _loopSelect.Add("回路I");
              _loopSelect.Add("回路II");
              _loopSelect.Add("回路III");
+
+             _phaseSelect = new ObservableCollection<string>();
+             _phaseSelect.Add("未选择");
+             _phaseSelect.Add("A相");
+             _phaseSelect.Add("B相");
+             _phaseSelect.Add("C相");
         }
 
     
@@ -96,6 +102,13 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             ExecuteSynReadyCommand("Synchronization");
                             break;
                         }
+
+                    case "SynHeDSP":
+                    case "SynHeActionDSP":
+                        {
+                            ExecuteSynReadyDSPCommand(str);
+                            break;
+                        }
                     default:
                         {
                             break;
@@ -109,7 +122,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
+     
 
+        #endregion
+
+        #region 永磁控制器控制
         private byte _macAddress = 0x10;
 
         public string MacAddress
@@ -367,6 +384,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
+        #endregion
+
+        #region 偏移时间
         /// <summary>
         /// 偏移时间 I
         /// </summary>
@@ -498,6 +518,214 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
+        #endregion
+
+        #region DSP控制
+         /// <summary>
+         /// 三相选择字
+         /// </summary>       
+
+         private ObservableCollection<string> _phaseSelect;
+
+         public ObservableCollection<string> PhaseSelect
+         {
+             get
+             {
+                 return _phaseSelect;
+             }
+         }
+
+
+
+         private int _phaseIndexI = 0;
+
+         public int PhaseIndexI
+         {
+             get
+             {
+                 return _phaseIndexI;
+             }
+             set
+             {
+                 _phaseIndexI = value;
+                 RaisePropertyChanged("PhaseIndexI");
+             }
+         }
+         private int _phaseIndexII = 0;
+
+         public int PhaseIndexII
+         {
+             get
+             {
+                 return _phaseIndexII;
+             }
+             set
+             {
+                 _phaseIndexII = value;
+                 RaisePropertyChanged("PhaseIndexII");
+             }
+         }
+         private int _phaseIndexIII = 0;
+
+         public int PhaseIndexIII
+         {
+             get
+             {
+                 return _phaseIndexIII;
+             }
+             set
+             {
+                 _phaseIndexIII = value;
+                 RaisePropertyChanged("PhaseIndexIII");
+             }
+         }
+
+        /// <summary>
+        /// 将字符串转化为，浮点数分辨率为0.5
+         /// "1.23"转化为1，"1.43"转化为1.5,"1.83"转化为2.0
+        /// </summary>
+        /// <param name="str">字符串</param>
+      
+         void CalAngle(string str, out double angle)
+         {
+
+             if (double.TryParse(str, out angle))
+             {
+                 angle = (angle+360) % 360;
+                 double remain = angle - (UInt32)angle;
+                 if (remain <= 0.3)
+                 {
+                      angle=  (double)((UInt32)angle);
+                 }
+                 else if (remain < 0.7)
+                 {
+                      angle = (double)((UInt32)angle) + 0.5;
+                 }
+                 else
+                 {
+                      angle = (double)((UInt32)angle) + 1;
+                 }
+             }             
+         }
+
+
+         /// <summary>
+         /// 弧度 I
+         /// </summary>
+         private double _angleI = 0;
+
+         public string AngleI
+         {
+             set
+             {
+                 CalAngle(value, out _angleI);
+                 RaisePropertyChanged("AngleI");
+             }
+             get
+             {
+                 return _angleI.ToString("f1");
+             }
+         }
+         /// <summary>
+         /// 弧度 II
+         /// </summary>
+         private double _angleII = 120;
+         public string AngleII
+         {
+             set
+             {
+                 CalAngle(value, out _angleII);
+                 RaisePropertyChanged("AngleII");
+             }
+             get
+             {
+                 return _angleII.ToString("f1");
+             }
+         }
+         /// <summary>
+         /// 弧度 III
+         /// </summary>
+         private double _angleIII = 240;
+
+         public string AngleIII
+         {
+             set
+             {
+                 CalAngle(value, out _angleIII);
+                 RaisePropertyChanged("AngleIII");
+             }
+             get
+             {
+                 return _angleIII.ToString("f1");
+             }
+         }
+
+         private void ExecuteSynReadyDSPCommand(string p)
+         {
+             try
+             {
+
+                 var data = new double[3];
+                 int i = 0;
+                 byte selectByte = (byte)(PhaseIndexI);
+                 if (PhaseIndexI == 0)
+                 {
+                     throw new ArgumentNullException("你没有选择任何相!");
+                 }
+
+                 data[i++] = _angleI;
+                 if (PhaseIndexII != 0)
+                 {                    
+                     selectByte = (byte)(selectByte | ((PhaseIndexII) << 2));
+                     data[i++] = _angleII;
+
+                     if (PhaseIndexIII != 0)
+                     {
+                         data[i++] = _angleIII;
+                         selectByte = (byte)(selectByte | ((PhaseIndexIII) << 4));
+                     }
+                 }
+                 var byteArray = new byte[i * 2];
+                 for (int k = 0; k < i; k++)
+                 {
+                     var angle = data[k];
+                     UInt16 tris =(ushort)(angle / 360 * 65536);//转化为以65536为为基准的归一化值
+
+                     byteArray[2 * k] = (byte)(tris & 0x00FF);
+                     byteArray[2 * k + 1] = (byte)(tris >> 8);
+                 }
+
+                 var command = new byte[2 + 2 + 6];
+                 command[0] = 0x0D; //DSP地址
+                 command[1] = 0;
+                 if (p == "SynHeDSP")
+                 {
+                     command[2] = 0x30;
+                 }
+                 else if (p == "SynHeActionDSP")
+                 {
+                      command[2] = 0x31;
+                 }
+                 else
+                 {
+                     return;
+                 }
+                 
+               
+                 command[3] = selectByte;
+                 Array.Copy(byteArray, 0, command, 4, 2 * i);
+                 //此处发送控制命令
+                 var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)(4 + 2 * i));
+
+                 modelServer.RtuServer.SendFrame(frame);
+
+
+             }
+             catch (Exception ex)
+             {
+                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+             }
+         }
         #endregion
     }
 }

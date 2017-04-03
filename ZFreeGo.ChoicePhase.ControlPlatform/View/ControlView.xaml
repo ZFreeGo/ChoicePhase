@@ -100,10 +100,19 @@
                     </Canvas>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Margin="3">
-                    <TextBlock Margin="3" VerticalAlignment="Center">实时合闸时间(us)：</TextBlock>
-                    <TextBox MinWidth="40" Margin="3"  Name="realHezhaTime" VerticalAlignment="Center">0</TextBox>
-                    <Button Margin="30,3,3,3" Height="30" Foreground="Red">设置合闸时间</Button>
-                </StackPanel>
+
+                            <Label Margin="3">三相相选择:</Label>
+                            <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding PhaseSelect}" SelectedIndex="{Binding PhaseIndexI}"></ComboBox>
+                        <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding PhaseSelect}" SelectedIndex="{Binding PhaseIndexII}"></ComboBox>
+                        <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding PhaseSelect}" SelectedIndex="{Binding PhaseIndexIII}"></ComboBox>
+                            <Label Margin="3">合闸相角(角度):</Label>
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding AngleI}"></TextBox>
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding AngleII}"></TextBox>
+                            <TextBox MinWidth="60" Margin="3" Text="{Binding AngleIII}" ></TextBox>
+                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynHeDSP">同步合闸预制</Button>
+                        <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynHeActionDSP">同步合闸执行</Button>
+                    </StackPanel>
+                    
             </StackPanel>
 
 
