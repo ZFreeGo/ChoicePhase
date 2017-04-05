@@ -106,7 +106,13 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "SynHeDSP":
                     case "SynHeActionDSP":
                         {
-                            ExecuteSynReadyDSPCommand(str);
+                            ExecuteSynCommand_DSP(str);
+                            break;
+                        }
+                    case "SynHeARM":
+                    case "SynHeActionARM":
+                        {
+                            ExecuteSynCommand_ARM(str);
                             break;
                         }
                     default:
@@ -659,8 +665,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  return _angleIII.ToString("f1");
              }
          }
-
-         private void ExecuteSynReadyDSPCommand(string p)
+        /// <summary>
+        /// 获取同步命令字
+        /// </summary>
+        /// <param name="p">命令参数</param>
+        /// <returns>带有长度的命令字节</returns>
+         private Tuple<byte[], int> GetSynCommand(string p)
          {
              try
              {
@@ -675,7 +685,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                  data[i++] = _angleI;
                  if (PhaseIndexII != 0)
-                 {                    
+                 {
                      selectByte = (byte)(selectByte | ((PhaseIndexII) << 2));
                      data[i++] = _angleII;
 
@@ -689,7 +699,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  for (int k = 0; k < i; k++)
                  {
                      var angle = data[k];
-                     UInt16 tris =(ushort)(angle / 360 * 65536);//转化为以65536为为基准的归一化值
+                     UInt16 tris = (ushort)(angle / 360 * 65536);//转化为以65536为为基准的归一化值
 
                      byteArray[2 * k] = (byte)(tris & 0x00FF);
                      byteArray[2 * k + 1] = (byte)(tris >> 8);
@@ -698,24 +708,94 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  var command = new byte[2 + 2 + 6];
                  command[0] = 0x0D; //DSP地址
                  command[1] = 0;
-                 if (p == "SynHeDSP")
+                 if (p == "Ready")
                  {
                      command[2] = 0x30;
                  }
-                 else if (p == "SynHeActionDSP")
+                 else if (p == "Action")
                  {
-                      command[2] = 0x31;
+                     command[2] = 0x31;
                  }
                  else
                  {
-                     return;
+                     return null;
                  }
-                 
-               
+
+
                  command[3] = selectByte;
                  Array.Copy(byteArray, 0, command, 4, 2 * i);
+
+                 return new Tuple<byte[], int>(command, 4 + 2 * i);
+
+
+             }
+             catch (Exception ex)
+             {
+                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+                 return null;
+             }
+         }
+         private void ExecuteSynCommand_DSP(string p)
+         {
+             try
+             {
+                 if(p == "SynHeDSP")
+                 {
+                     p = "Ready";
+                 }
+                 else if (p == "SynHeActionDSP")
+                 {
+                     p = "Action";
+                 }
+                 var command = GetSynCommand(p);
+                
+                 if (command == null)
+                 {
+                     return;
+                 }
                  //此处发送控制命令
-                 var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)(4 + 2 * i));
+                 var frame = new RTUFrame(_downAddress, _triansFunction, command.Item1, (byte)command.Item2);
+
+                 modelServer.RtuServer.SendFrame(frame);
+
+
+             }
+             catch (Exception ex)
+             {
+                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+             }
+         }
+         private void ExecuteSynCommand_ARM(string p)
+         {
+             try
+             {
+                 byte commandByte = 0;
+                 if (p == "SynHeARM")
+                 {
+                     p = "Ready";
+                     commandByte = 0x20;
+                 }
+                 else if (p == "SynHeActionARM")
+                 {
+                     p = "Action";
+                     commandByte = 0x21;
+                 }
+                 var command = GetSynCommand(p);
+
+                 if (command == null)
+                 {
+                     return;
+                 }
+                 var commandData = new byte[3 + command.Item2];
+                 commandData[0] = 0x02; //ARM地址
+                 commandData[1] = 0;
+                 commandData[2] = commandByte; //命令字节
+                 Array.Copy(command.Item1, 0, commandData, 3, command.Item2);
+
+
+
+                 //此处发送控制命令
+                 var frame = new RTUFrame(_downAddress, _triansFunction, commandData, (byte)commandData.Length);
 
                  modelServer.RtuServer.SendFrame(frame);
 
