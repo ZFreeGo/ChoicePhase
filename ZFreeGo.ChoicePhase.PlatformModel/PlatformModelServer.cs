@@ -85,6 +85,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         void StationServer_ArrtributesArrived(object sender, ArrtributesEventArgs e)
         {
             _monitorViewData.UpdateYongciAttributeData(e.ID, e.AttributeByte);
+            _monitorViewData.UpdateAttributeData(0x10, e.ID, e.AttributeByte);
         }
 
         /// <summary>

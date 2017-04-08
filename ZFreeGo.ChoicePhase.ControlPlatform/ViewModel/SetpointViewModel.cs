@@ -11,6 +11,7 @@ using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -62,9 +63,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         //加载用户数据
         void ExecuteLoadDataCommand()
         {
-
-           
-            UserData = modelServer.MonitorData.ReadYongciAttribute(false);
+            UserData = modelServer.MonitorData.ReadAttribute(AttributeIndex.YongciSetA, false);
         }
         #endregion
 
@@ -139,7 +138,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                
+             
+
                 switch(str)
                 {
                     case "Read":
@@ -237,12 +237,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "Reload":
                         {
 
-                            UserData = modelServer.MonitorData.ReadYongciAttribute(true);
+                            UserData = modelServer.MonitorData.ReadAttribute(AttributeIndex.YongciSetA, true);
                             break;
                         }
                     case "Save":
                         {
-                            modelServer.MonitorData.InsertYongciAttribute();
+                            modelServer.MonitorData.InsertAttribute(AttributeIndex.YongciSetA);
                             break;
                         }
                     case "AddUp":

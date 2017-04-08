@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.Modbus;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -32,6 +33,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             DataGridMenumSelected = new RelayCommand<string>(ExecuteDataGridMenumSelected);
             modelServer = PlatformModelServer.GetServer();
             _downAddress = modelServer.CommServer.DownAddress;
+
+           
         }
 
 
@@ -60,8 +63,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         //加载用户数据
         void ExecuteLoadDataCommand()
         {
-            
-            UserData = modelServer.MonitorData.ReadYongciMonitorAttribute(false);
+
+            UserData = modelServer.MonitorData.ReadAttribute(AttributeIndex.YongciReadA, false);
             
         }
         #endregion
@@ -200,12 +203,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 case "Reload":
                     {
 
-                        UserData = modelServer.MonitorData.ReadYongciMonitorAttribute(true);
+                        UserData = modelServer.MonitorData.ReadAttribute(AttributeIndex.YongciReadA, true);
                         break;
                     }
                 case "Save":
                     {
-                        modelServer.MonitorData.InsertYongciMonitorAttribute();
+                        modelServer.MonitorData.InsertAttribute(AttributeIndex.YongciReadA);
                         break;
                     }
                 case "AddUp":
