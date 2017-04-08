@@ -6,7 +6,8 @@ using System.Text;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
-    class CommandDdentifyItem : ObservableObject
+    
+    public class CommandIdentifyItem : ObservableObject
     {
         private int _ID;
 

@@ -11,6 +11,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
     public class CommunicationServer : ObservableObject
     {
         /// <summary>
+        /// 下位机地址
+        /// </summary>
+        public byte DownAddress
+        {
+            private set;
+            get;
+        }
+   
+
+        /// <summary>
         /// 通讯服务
         /// </summary>
         private SerialPortServer _commonServer;
@@ -97,6 +107,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             _commonServer = new SerialPortServer();
             
             SerialPortParameter = new SerialPortParameterItem();
+
+            DownAddress = 0xA1;
         }
     }
 }

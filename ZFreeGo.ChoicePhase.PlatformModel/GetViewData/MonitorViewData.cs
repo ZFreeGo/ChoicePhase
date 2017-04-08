@@ -163,5 +163,39 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             return true;
         }
         #endregion
+
+        /// <summary>
+        /// 更新属性字节
+        /// </summary>
+        /// <param name="id">ID号</param>
+        /// <param name="data">数据字节</param>
+        public void UpdateYongciAttributeData(int id, byte[] data)
+        {
+
+            if(id < 0x41)//设置属性
+            {
+                ReadYongciAttribute(false);
+                for(int i = 0; i< _yongciAttribute.Count; i++)
+                {
+                    if(_yongciAttribute[i].ConfigID == id)
+                    {
+                        _yongciAttribute[i].UpdateAttribute(data);
+                    }
+                }
+            }
+            else  //读取属性
+            {
+                ReadYongciMonitorAttribute(false);
+                for (int i = 0; i < _yongciMonitorAttribute.Count; i++)
+                {
+                    if (_yongciMonitorAttribute[i].ConfigID == id)
+                    {
+                        _yongciMonitorAttribute[i].UpdateAttribute(data);
+                    }
+                }
+            }
+        }
+    
+    
     }
 }

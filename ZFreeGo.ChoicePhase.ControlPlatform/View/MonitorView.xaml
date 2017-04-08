@@ -21,7 +21,12 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Margin="3" Orientation="Horizontal" >
-
+                <Label Margin="3">MAC:</Label>
+                <TextBox MinWidth="60" Margin="3" Text="{Binding MacAddress}"></TextBox>
+                <Label Margin="3">Start:</Label>
+                <TextBox MinWidth="60" Margin="3" Text="{Binding StartAddress}"></TextBox>
+                <Label Margin="3">End:</Label>
+                <TextBox MinWidth="60" Margin="3" Text="{Binding EndAddress}"></TextBox>
                 <Button Margin="30,3,3,3" Padding="3"  Command="{Binding UpdateOperate}">更新监控数据</Button>
                                 
             </StackPanel>
@@ -44,10 +49,11 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="配置号"  Width="50" Binding="{Binding  ConfigID, StringFormat={}{0:X2}}"></DataGridTextColumn>
                 <DataGridTextColumn Header="名称"    MinWidth="50" Binding="{Binding Name}"></DataGridTextColumn>
-                <DataGridTextColumn Header="原始值"   MinWidth="50" Binding="{Binding RawValue}"></DataGridTextColumn>
-                <DataGridTextColumn Header="数据类型"    MinWidth="50" Binding="{Binding DataType}"></DataGridTextColumn>
-                <DataGridTextColumn Header="属性值"    MinWidth="50" Binding="{Binding Value, StringFormat={}{0:F3}}"></DataGridTextColumn>
+                <DataGridTextColumn Header="原始值"   MinWidth="50" Binding="{Binding RawValue, StringFormat={}{0:X2}}"></DataGridTextColumn>
+                <DataGridTextColumn Header="数据类型"    MinWidth="50" Binding="{Binding DataType, StringFormat={}{0:X2}}"></DataGridTextColumn>
+                <DataGridTextColumn Header="属性值"    MinWidth="50" Binding="{Binding Value}"></DataGridTextColumn>
                 <DataGridTextColumn Header="注释"    MinWidth="50" Binding="{Binding Comment}"></DataGridTextColumn>
+                <DataGridTextColumn Header="更新时间"    MinWidth="50" Binding="{Binding TimeStamp}"></DataGridTextColumn>
 
             </DataGrid.Columns>
         </DataGrid>

@@ -16,8 +16,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     /// </summary>
     public class ControlViewModel : ViewModelBase
     {
-        private const byte _downAddress = 0xA1;
-        private const byte _triansFunction = 1;
+        private readonly byte _downAddress ;
+        private readonly byte _triansFunction = 1;
 
         private PlatformModelServer modelServer;
         /// <summary>
@@ -32,6 +32,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              ActionCommand = new RelayCommand<string>(ExecuteReadyCommand);
              ActionCommandsynchronization = new RelayCommand<string>(ExecuteSynReadyCommand);
              modelServer = PlatformModelServer.GetServer();
+             _downAddress = modelServer.CommServer.DownAddress;
 
              _loopSelect = new ObservableCollection<string>();
              _loopSelect.Add("未选择");
@@ -147,8 +148,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 RaisePropertyChanged("MacAddress");
             }
         }
-
-
+    
         private int selectActionIndex = 0;
 
         public int SelectActionIndex

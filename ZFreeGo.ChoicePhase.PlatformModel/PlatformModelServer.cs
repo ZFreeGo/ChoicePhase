@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer;
 using ZFreeGo.Monitor.DASModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel
@@ -47,6 +48,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             private set;
             get;
         }
+
+        /// <summary>
+        /// 站服务列表
+        /// </summary>
+        public MasterStationServer StationServer
+        {
+            private set;
+            get;
+        }
         /// <summary>
         /// 初始化控制平台Model服务
         /// </summary>
@@ -58,8 +68,23 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
             RtuServer = new RtuServer(_localAddr, 500, sendRtuData);
             RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
+            StationServer = new MasterStationServer(0x10);
+            StationServer.ArrtributesArrived += StationServer_ArrtributesArrived;
+            StationServer.ExceptionArrived += StationServer_ExceptionArrived;
+        }
 
+        void StationServer_ExceptionArrived(object sender, ExceptionMessage e)
+        {
+            CommServer.LinkMessage += "\n\n" + DateTime.Now.ToLongTimeString() + "  异常:\n";
 
+            CommServer.LinkMessage += e.Comment + "\n";
+            CommServer.LinkMessage += e.Ex.Message + "\n";
+            CommServer.LinkMessage += e.Ex.StackTrace + "\n";
+        }
+
+        void StationServer_ArrtributesArrived(object sender, ArrtributesEventArgs e)
+        {
+            _monitorViewData.UpdateYongciAttributeData(e.ID, e.AttributeByte);
         }
 
         /// <summary>
@@ -103,6 +128,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             CommServer.LinkMessage += "\n" + DateTime.Now.ToLongTimeString() + "  接收RTU帧:\n";
             CommServer.LinkMessage += ByteToString(e.Frame.Frame, 0, e.Frame.Frame.Length);
+            
+            StationServer.StationDeal(e.Frame.FrameData);
+
         }
 
         /// <summary>
@@ -112,6 +140,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         void CommonServer_SerialDataArrived(object sender, Communication.SerialDataEvent e)
         {
+
             RtuServer.AddBuffer(e.SerialData);
             CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);
         }

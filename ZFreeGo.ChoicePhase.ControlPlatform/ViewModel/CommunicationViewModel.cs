@@ -288,7 +288,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #region 发送帧命令
         
-        private byte sendAddr;
+        private byte sendAddr = 0xA1;
         public string SendAddr
         {
             get
@@ -303,7 +303,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-        private byte sendFunction = 0x10;
+        private byte sendFunction = 0x01;
         public string SendFunction
         {
             get
@@ -318,7 +318,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-        private byte sendDataLen = 0; //发送数据长度
+        private byte sendDataLen = 5; //发送数据长度
         public string SendDataLen
         {
             get
@@ -332,7 +332,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-        private byte[] sendData = new byte[3]{0 , 1, 2};
+        private byte[] sendData = new byte[3]{10 , 0, 2};
 
         public string SendDataString
         {

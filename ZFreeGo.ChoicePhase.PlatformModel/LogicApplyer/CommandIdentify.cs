@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ZFreeGo.ChoicePhase.PlatformModel.LogicData
+namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
 {
     /// <summary>
     /// 命令ID
     /// </summary>
-    enum CommandIdentify : byte
+    public enum CommandIdentify : byte
     {
         /// <summary>
         /// 合闸预制
@@ -36,11 +36,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicData
         /// </summary>
         SyncReadyAction = 5,
 
+        
+
+
+
         /// <summary>
         /// 主站参数设置
         /// </summary>
         MasterParameterSet = 0x10,
-
+        // <summary>
+        /// 主站参数设置，非顺序——按点设置
+        /// </summary>
+        MasterParameterSetPoint = 0x11,
         /// <summary>
         /// 主站参数读取
         /// </summary>

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel;
+using ZFreeGo.ChoicePhase.Modbus;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -17,7 +18,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     {
 
         private PlatformModelServer modelServer;
-
+        private readonly byte _downAddress;
+        private readonly byte _triansFunction = 1;
         /// <summary>
         /// Initializes a new instance of the DataGridPageViewModel class.
         /// </summary>
@@ -28,6 +30,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             UpdateOperate = new RelayCommand<string>(ExecuteUpdateOperate);
             DataGridMenumSelected = new RelayCommand<string>(ExecuteDataGridMenumSelected);
+            modelServer = PlatformModelServer.GetServer();
+            _downAddress = modelServer.CommServer.DownAddress;
         }
 
 
@@ -56,13 +60,55 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         //加载用户数据
         void ExecuteLoadDataCommand()
         {
-            modelServer = PlatformModelServer.GetServer();          
+            
             UserData = modelServer.MonitorData.ReadYongciMonitorAttribute(false);
-
+            
         }
         #endregion
 
         #region 值选择，下载,读取
+        private byte _macAddress = 0x10;
+
+        public string MacAddress
+        {
+            get
+            {
+                return _macAddress.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out  _macAddress);
+                RaisePropertyChanged("MacAddress");
+            }
+        }
+        private byte _startAddress = 0x41;
+
+        public string StartAddress
+        {
+            get
+            {
+                return _startAddress.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out  _startAddress);
+                RaisePropertyChanged("StartAddress");
+            }
+        }
+        private byte _endAddress = 0x70;
+
+        public string EndAddress
+        {
+            get
+            {
+                return _endAddress.ToString("X2");
+            }
+            set
+            {
+                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out  _endAddress);
+                RaisePropertyChanged("EndAddress");
+            }
+        }
         /// <summary>
         /// 定值功能
         /// </summary>
@@ -73,10 +119,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                
-               
-
-                
+                var command = new byte[] { _macAddress, 0, 0x12, _startAddress, _endAddress };
+                //此处发送控制命令
+                var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
+                modelServer.RtuServer.SendFrame(frame);                
             }
             catch (Exception ex)
             {
@@ -139,7 +185,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
 
-
+       
 
         public RelayCommand<string> DataGridMenumSelected { get; private set; }
 

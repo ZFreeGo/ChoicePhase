@@ -62,6 +62,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             set
             {
                 _rawValue = value;
+                UpdateAttribute(value);
                 RaisePropertyChanged("RawValue");
             }
         }
@@ -95,10 +96,29 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             set
             {
                 _value = value;
+                
                 RaisePropertyChanged("Value");
+                
             }
         }
+        private double _newValue;
+        /// <summary>
+        /// 属性值
+        /// </summary>
+        public double NewValue
+        {
+            get
+            {
+                return _newValue;
+            }
+            set
+            {
+                _newValue = value;
+                UpdateAttribute(value); //更新原始数组
+                RaisePropertyChanged("NewValue");
 
+            }
+        }
         private  string _comment;
 
         /// <summary>
@@ -117,8 +137,112 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
-        
-      
+        /// <summary>
+        /// 时间戳
+        /// </summary>
+        private string _timeStamp;
+        public string TimeStamp
+        {
+            get
+            {
+                return _timeStamp;
+            }
+            set
+            {
+                _timeStamp = value;
+                RaisePropertyChanged("TimeStamp");
+            }
+
+        }
+
+
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>true/false 更新是否成功</returns> 
+        public bool UpdateAttribute(byte[] data)
+        {
+            int byteNum = _dataType >> 4;
+            int signalNum = _dataType & 0x0F;
+
+            UInt32 raw = 0;
+
+            if (data.Length != byteNum)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                raw = (UInt32)(raw + (double)data[i] * Math.Pow(256, i));
+            }
+            _rawValue = (int)raw;
+            RaisePropertyChanged("RawValue");
+            double ration = Math.Pow(0.1, signalNum); //计算系数
+            _value = raw * ration;
+            RaisePropertyChanged("Value");
+            TimeStamp = DateTime.Now.ToLongTimeString();
+
+            
+            return true;
+        }
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="setValue">设定的属性值</param>
+        /// <returns>true/false 更新是否成功</returns> 
+        public bool UpdateAttribute(double setValue)
+        {
+            
+            int signalNum = _dataType & 0x0F;
+
+            double ration = Math.Pow(10, signalNum); //计算系数
+            var mediumValue = setValue * ration;
+
+
+            _rawValue = (int)mediumValue;
+            RaisePropertyChanged("RawValue");     
+            
+            TimeStamp = DateTime.Now.ToLongTimeString();
+            return true;
+        }
+        /// <summary>
+        /// 更新属性
+        /// </summary>
+        /// <param name="setValue">设定的属性值</param>
+        /// <returns>true/false 更新是否成功</returns> 
+        public bool UpdateAttribute(int raw)
+        {
+
+            int signalNum = _dataType & 0x0F;
+
+            double ration = Math.Pow(0.1, signalNum); //计算系数
+            var mediumValue = (double)raw * ration;
+
+
+            _newValue = mediumValue;
+            RaisePropertyChanged("NewValue");
+
+            TimeStamp = DateTime.Now.ToLongTimeString();
+            return true;
+        }
+        /// <summary>
+        /// 获取原始数据字节数组
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetAttributeByteData()
+        {
+            UpdateAttribute(NewValue);//更新原始数组
+            int byteNum = _dataType >> 4;
+            byte[] data = new byte[byteNum];
+            var outData = _rawValue;
+            for(int i =0; i < byteNum; i++)
+            {
+                data[i] = (byte)(outData >> (i * 8));
+            }
+            return data;
+        }
 
         /// <summary>
         /// 属性值
@@ -130,7 +254,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             _rawValue = rawValue;
             _dataType = dataType;
             _value = value;           
-            _comment = comment;           
+            _comment = comment;
+            _timeStamp = DateTime.Now.ToLongTimeString();
+            _newValue = _value;
         }
 
 
