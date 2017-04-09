@@ -255,7 +255,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             _dataType = dataType;
             _value = value;           
             _comment = comment;
-            _timeStamp = DateTime.Now.ToLongTimeString();
+            _timeStamp = "历史数据载入";
             _newValue = _value;
         }
 

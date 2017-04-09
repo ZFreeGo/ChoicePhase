@@ -22,7 +22,9 @@
         <Grid Grid.Row="0">
             <StackPanel Margin="3" Orientation="Horizontal" >
                 <Label Margin="3">MAC:</Label>
-                <TextBox MinWidth="60" Margin="3" Text="{Binding MacAddress}"></TextBox>
+                <ComboBox MinWidth="60" Margin="3" ItemsSource="{Binding StationNameList}" SelectedIndex="{Binding SelectMacIndex}"></ComboBox>
+                <TextBox MinWidth="60" Margin="3" Text="{Binding MacAddress}" IsReadOnly="True"></TextBox>
+          
                 <Label Margin="3">Start:</Label>
                 <TextBox MinWidth="60" Margin="3" Text="{Binding StartAddress}"></TextBox>
                 <Label Margin="3">End:</Label>

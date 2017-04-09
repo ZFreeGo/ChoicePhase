@@ -68,7 +68,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
             RtuServer = new RtuServer(_localAddr, 500, sendRtuData);
             RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
-            StationServer = new MasterStationServer(0x10);
+            StationServer = new MasterStationServer(_monitorViewData.MacList);
             StationServer.ArrtributesArrived += StationServer_ArrtributesArrived;
             StationServer.ExceptionArrived += StationServer_ExceptionArrived;
         }
@@ -84,8 +84,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
         void StationServer_ArrtributesArrived(object sender, ArrtributesEventArgs e)
         {
-            _monitorViewData.UpdateYongciAttributeData(e.ID, e.AttributeByte);
-            _monitorViewData.UpdateAttributeData(0x10, e.ID, e.AttributeByte);
+            
+            _monitorViewData.UpdateAttributeData(e.MAC, e.ID, e.AttributeByte);
         }
 
         /// <summary>

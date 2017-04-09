@@ -36,6 +36,30 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// </summary>
         private List<string> _tableAttributeName;
 
+        private  List<byte> _macList;
+
+        public List<byte> MacList
+        {
+            get
+            {
+                return _macList;
+            }
+        }
+
+        private const byte readonlyStartIndex  =0x41;
+
+        /// <summary>
+        /// 站点名称列表
+        /// </summary>
+        public ObservableCollection<string> StationNameList
+        {
+            private set;
+            get;
+
+        }
+
+
+
         /// <summary>
         /// 数据库操作
         /// </summary>
@@ -81,6 +105,185 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             _tableAttributeName.Add("AttributeReadMonitorB");
             _tableAttributeName.Add("AttributeSetMonitorC");
             _tableAttributeName.Add("AttributeReadMonitorC");
+
+
+            //站点名称
+            StationNameList = new ObservableCollection<string>();
+            StationNameList.Add("A相控制器");
+            StationNameList.Add("B相控制器");
+            StationNameList.Add("C相控制器");
+            StationNameList.Add("同步控制器");
+            StationNameList.Add("网络控制器");
+            StationNameList.Add("A相监测");
+            StationNameList.Add("B相监测");
+            StationNameList.Add("C相监测");
+
+            _macList = new List<byte>();
+            _macList.Add(0x10);
+            _macList.Add(0x12);
+            _macList.Add(0x14);
+            _macList.Add(0x0D);
+            _macList.Add(0x02);
+            _macList.Add(0x16);
+            _macList.Add(0x18);
+            _macList.Add(0x1A);
+
+        }
+
+
+        /// <summary>
+        /// 更具索引获取MAC地址
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public  byte GetMacAddr(AttributeIndex index)
+        {
+            switch (index)
+            {
+                case AttributeIndex.YongciReadA:
+                case AttributeIndex.YongciSetA:
+                    {
+                        return _macList[0];
+                    }
+                case AttributeIndex.YongciReadB:
+                case AttributeIndex.YongciSetB:
+                    {
+                        return _macList[1];
+                    }
+                case AttributeIndex.YongciReadC:
+                case AttributeIndex.YongciSetC:
+                    {
+                        return _macList[2];
+                    }
+                case AttributeIndex.DspRead:
+                case AttributeIndex.DspSet:
+                    {
+                        return _macList[3];
+                    }
+                case AttributeIndex.ArmRead:
+                case AttributeIndex.ArmSet:
+                    {
+                        return _macList[4];
+                    }
+                case AttributeIndex.MonitorReadA:
+                case AttributeIndex.MonitorSetA:
+                    {
+                        return _macList[5];
+                    }
+                case AttributeIndex.MonitorReadB:
+                case AttributeIndex.MonitorSetB:
+                    {
+                        return _macList[6];
+                    }
+                case AttributeIndex.MonitorReadC:
+                case AttributeIndex.MonitorSetC:
+                    {
+                        return _macList[7];
+                    }
+                default:
+                    {
+                        return 0xFF;
+                    }
+            }
+        }
+
+
+        public AttributeIndex GetAttributeIndex(int mac, int id)
+        {
+
+
+            if (_macList[0] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.YongciSetA;
+                }
+                else
+                {
+                    return AttributeIndex.YongciReadA;
+                }
+            }
+            if (_macList[1] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.YongciSetB;
+                }
+                else
+                {
+                    return AttributeIndex.YongciReadB;
+                }
+            }
+            if (_macList[2] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.YongciSetC;
+                }
+                else
+                {
+                    return AttributeIndex.YongciReadC;
+                }
+            }
+
+            if (_macList[3] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.DspSet;
+                }
+                else
+                {
+                    return AttributeIndex.DspRead;
+                }
+            }
+            if (_macList[4] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.ArmSet;
+                }
+                else
+                {
+                    return AttributeIndex.ArmRead;
+                }
+            }
+            if (_macList[5] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.MonitorSetA;
+                }
+                else
+                {
+                    return AttributeIndex.MonitorReadA;
+                }
+            }
+
+            if (_macList[6] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.MonitorSetB;
+                }
+                else
+                {
+                    return AttributeIndex.MonitorReadB;
+                }
+            }
+
+            if (_macList[7] == mac)
+            {
+                if (id < readonlyStartIndex)
+                {
+                    return AttributeIndex.MonitorSetC;
+                }
+                else
+                {
+                    return AttributeIndex.MonitorReadC;
+                }
+            }
+            return AttributeIndex.Null;
         }
 
 
@@ -244,7 +447,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
             var tableName = _tableAttributeName[(int)index];
             var collect = _AttributeCollect[(int)index];
-         
+
+
             var listStr = new List<String>();
             foreach (var m in collect)
             {
@@ -344,31 +548,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// <param name="data">数据字节</param>
         public void UpdateAttributeData(int mac, int id, byte[] data)
         {
-            if (mac == 0x10)//测试使用
+          
+            var index= GetAttributeIndex (mac, id);
+            if (index != AttributeIndex.Null)
             {
-                
-                if (id < 0x41)//设置属性
+                ReadAttribute(index, false);
+                var collect = _AttributeCollect[(int)index];
+                for (int i = 0; i < collect.Count; i++)
                 {
-                    ReadAttribute(AttributeIndex.YongciSetA, false);
-                    var collect = _AttributeCollect[(int)AttributeIndex.YongciSetA];
-                    for (int i = 0; i < collect.Count; i++)
+                    if (collect[i].ConfigID == id)
                     {
-                        if (collect[i].ConfigID == id)
-                        {
-                            collect[i].UpdateAttribute(data);
-                        }
-                    }
-                }
-                else  //读取属性
-                {
-                    ReadAttribute(AttributeIndex.YongciReadA, false);
-                    var collect = _AttributeCollect[(int)AttributeIndex.YongciReadA];
-                    for (int i = 0; i < collect.Count; i++)
-                    {
-                        if (collect[i].ConfigID == id)
-                        {
-                            collect[i].UpdateAttribute(data);
-                        }
+                        collect[i].UpdateAttribute(data);
                     }
                 }
             }
@@ -446,5 +636,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// 监控只读参数C
         /// </summary>
         MonitorReadC = 15,
+
+
+        Null = 0xFF,
     }
 }

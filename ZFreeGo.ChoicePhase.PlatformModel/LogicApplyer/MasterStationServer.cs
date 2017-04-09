@@ -12,22 +12,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
         public event EventHandler<ExceptionMessage> ExceptionArrived;
 
 
-        private int _macID;
+        private List<byte> _macList;
 
-        /// <summary>
-        /// 该服务对应MAC地址
-        /// </summary>
-        public int MacID
-        {
-            get
-            {
-                return _macID;
-            }
-        }
+        private int _mac;
 
-        public MasterStationServer(int mac)
+        public MasterStationServer(List<byte> macList)
         {
-            _macID = mac;
+            _macList = macList;
         }
 
         /// <summary>
@@ -47,14 +38,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
                    // throw new ArgumentException("reciveData[1] != 0xAA");
                     return;
                 }
-                if (reciveData[0] == _macID)//永磁控制器A
+
+                foreach (var m in _macList)
                 {
-                    byte[] serverData = new byte[reciveData.Length -  2];
-                    Array.Copy(reciveData, 2, serverData, 0, reciveData.Length - 2);
-                    YongciServer(serverData);
+                    _mac = m;
+                    if (reciveData[0] == m)
+                    {
+                        byte[] serverData = new byte[reciveData.Length - 2];
+                        Array.Copy(reciveData, 2, serverData, 0, reciveData.Length - 2);
+                        YongciServer(serverData);
+                        break;
+                    }
                 }
-
-
             }
             catch(Exception ex)
             {
@@ -93,7 +88,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
 
                             if (ArrtributesArrived != null)
                             {
-                                ArrtributesArrived(this, new ArrtributesEventArgs(serverData[1], serverData, 2, serverData.Length - 2));
+                                ArrtributesArrived(this, new ArrtributesEventArgs(serverData[1],_mac , serverData, 2, serverData.Length - 2));
                             }
                             break;
                         }
@@ -159,7 +154,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
             set;
 
         }
-        public ArrtributesEventArgs( int id, byte[] data, int start, int len)
+        public int MAC
+        {
+            get;
+            set;
+        }
+
+        public ArrtributesEventArgs(byte id,int mac, byte[] data, int start, int len)
         {
            
             if (data.Length < (start + len))
@@ -169,8 +170,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
             AttributeByte = new byte[len];
             Array.Copy(data, start, AttributeByte, 0, len);
             ID = id;
+            MAC = mac;
         }
       
+     
 
 
     }

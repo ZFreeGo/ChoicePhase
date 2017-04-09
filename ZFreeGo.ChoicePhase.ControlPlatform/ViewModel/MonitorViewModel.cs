@@ -21,6 +21,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private PlatformModelServer modelServer;
         private readonly byte _downAddress;
         private readonly byte _triansFunction = 1;
+
+        private AttributeIndex _attributeIndex = AttributeIndex.YongciReadA;
         /// <summary>
         /// Initializes a new instance of the DataGridPageViewModel class.
         /// </summary>
@@ -33,8 +35,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             DataGridMenumSelected = new RelayCommand<string>(ExecuteDataGridMenumSelected);
             modelServer = PlatformModelServer.GetServer();
             _downAddress = modelServer.CommServer.DownAddress;
-
-           
+            _stationNameList = modelServer.MonitorData.StationNameList;
+            
         }
 
 
@@ -64,8 +66,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         void ExecuteLoadDataCommand()
         {
 
-            UserData = modelServer.MonitorData.ReadAttribute(AttributeIndex.YongciReadA, false);
-            
+            UserData = modelServer.MonitorData.ReadAttribute(_attributeIndex, false);
+            _macAddress = modelServer.MonitorData.GetMacAddr(_attributeIndex);
+            RaisePropertyChanged("MacAddress");
         }
         #endregion
 
@@ -84,6 +87,51 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 RaisePropertyChanged("MacAddress");
             }
         }
+
+        private ObservableCollection<string> _stationNameList;
+
+        public ObservableCollection<string> StationNameList
+        {
+            get
+            {
+                return _stationNameList;
+            }
+        }
+        private int _selectMacIndex;
+
+        /// <summary>
+        /// 选择的MACName
+        /// </summary>
+        public int SelectMacIndex
+        {
+            get
+            {
+                return _selectMacIndex;
+            }
+            set
+            {
+                _selectMacIndex = value;
+
+
+                //更新suoyin
+                var newIndex = (AttributeIndex)(_selectMacIndex * 2 + 1);
+                if (_attributeIndex != newIndex)
+                {
+                    //选择不相等，则重新载入数据
+                    _attributeIndex = newIndex;
+                    _macAddress = modelServer.MonitorData.GetMacAddr(_attributeIndex);
+                    RaisePropertyChanged("MacAddress");
+                    UserData = modelServer.MonitorData.ReadAttribute(_attributeIndex, false);
+
+                }
+
+
+                RaisePropertyChanged("SelectMacIndex");
+            }
+        }
+
+
+
         private byte _startAddress = 0x41;
 
         public string StartAddress
@@ -203,28 +251,34 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 case "Reload":
                     {
 
-                        UserData = modelServer.MonitorData.ReadAttribute(AttributeIndex.YongciReadA, true);
+                        UserData = modelServer.MonitorData.ReadAttribute(_attributeIndex, true);
                         break;
                     }
                 case "Save":
                     {
-                        modelServer.MonitorData.InsertAttribute(AttributeIndex.YongciReadA);
+                        modelServer.MonitorData.InsertAttribute(_attributeIndex);
                         break;
                     }
                 case "AddUp":
                     {
+                        var item = new AttributeItem(0, "ABC", 1, 1, 1.0, "A");
                         if (SelectedIndex > -1)
                         {
-                            var item = new AttributeItem(0, "ABC", 1, 1, 1.0, "A");
+                           
                             UserData.Insert(SelectedIndex, item);
+                        }
+                        else
+                        {
+                            UserData.Add(item);
                         }
                         break;
                     }
                 case "AddDown":
                     {
+                        var item = new AttributeItem(0, "ABC", 1, 1, 1.0, "A");
                         if (SelectedIndex > -1)
                         {
-                            var item = new AttributeItem(0, "ABC", 1, 1, 1.0, "A");
+                           
                             if (SelectedIndex < UserData.Count - 1)
                             {
 
@@ -234,6 +288,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             {
                                 UserData.Add(item);
                             }
+                        }
+                        else
+                        {
+                            UserData.Add(item);
                         }
                         break;
                     }
