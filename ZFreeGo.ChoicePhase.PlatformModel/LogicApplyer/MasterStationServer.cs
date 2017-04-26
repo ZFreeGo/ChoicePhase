@@ -10,7 +10,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
     {
         public event EventHandler<ArrtributesEventArgs> ArrtributesArrived;
         public event EventHandler<ExceptionMessage> ExceptionArrived;
-
+        public event EventHandler<MultiFrameEventArgs> MultiFrameArrived;
 
         private List<byte> _macList;
 
@@ -46,7 +46,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
                     {
                         byte[] serverData = new byte[reciveData.Length - 2];
                         Array.Copy(reciveData, 2, serverData, 0, reciveData.Length - 2);
-                        YongciServer(serverData);
+                        Server(serverData);
                         break;
                     }
                 }
@@ -59,10 +59,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
             
         }
         /// <summary>
-        /// 永磁控制器Server处理
+        /// 控制器Server处理
         /// </summary>
         /// <param name="serverData">服务数据</param>
-        private void YongciServer(byte[] serverData)
+        private void Server(byte[] serverData)
         {
             try
             {
@@ -88,7 +88,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
 
                             if (ArrtributesArrived != null)
                             {
-                                ArrtributesArrived(this, new ArrtributesEventArgs(serverData[1],_mac , serverData, 2, serverData.Length - 2));
+                                ArrtributesArrived(this, new ArrtributesEventArgs(serverData[1], _mac , serverData, 2, serverData.Length - 2));
+                            }
+                            break;
+                        }
+                    case CommandIdentify.MutltiFrame:
+                        {
+                            if (MultiFrameArrived != null)
+                            {
+                                MultiFrameArrived(this, new MultiFrameEventArgs(_mac, serverData[1], serverData, 2, serverData.Length - 2));
                             }
                             break;
                         }
@@ -128,6 +136,54 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
             Comment = comment;
         }
 
+
+    }
+
+    /// <summary>
+    /// 多帧事件参数
+    /// </summary>
+    public class MultiFrameEventArgs: EventArgs
+    {
+        /// <summary>
+        /// 属性字节数组
+        /// </summary>
+        public byte[] ByteData
+        {
+            get;
+            set;
+        } 
+
+        /// <summary>
+        /// MAC地址
+        /// </summary>
+        public int MAC
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Index号
+        /// </summary>
+        public int Index
+        {
+            get;
+            set;
+
+        }
+        /// <summary>
+        /// 多帧事件参数
+        /// </summary>
+        /// <param name="mac">MAC地址</param>
+        /// <param name="data">数据</param>
+        /// <param name="start">开始索引</param>
+        /// <param name="len">数据长度</param>
+        public MultiFrameEventArgs(int mac, int index,  byte[] data, int start, int len)
+        {
+            MAC = mac;
+            ByteData = new byte[len];
+            Array.Copy(data, start, ByteData, 0, len);
+            Index = index;
+        }
 
     }
 

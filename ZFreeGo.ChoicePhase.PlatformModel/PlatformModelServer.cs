@@ -57,6 +57,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             private set;
             get;
         }
+
+        /// <summary>
+        /// 多帧帧缓冲
+        /// </summary>
+        private List<byte> _multiFrameBuffer;
+        private byte _lastIndex;
         /// <summary>
         /// 初始化控制平台Model服务
         /// </summary>
@@ -68,9 +74,58 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
             RtuServer = new RtuServer(_localAddr, 500, sendRtuData);
             RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
+
             StationServer = new MasterStationServer(_monitorViewData.MacList);
             StationServer.ArrtributesArrived += StationServer_ArrtributesArrived;
             StationServer.ExceptionArrived += StationServer_ExceptionArrived;
+            StationServer.MultiFrameArrived += StationServer_MultiFrameArrived;
+            _multiFrameBuffer = new List<byte>();
+            _lastIndex = 0;
+        }
+
+        void StationServer_MultiFrameArrived(object sender, MultiFrameEventArgs e)
+        {
+            //判断是否为首帧
+            if (e.Index == 0)
+            {
+                _multiFrameBuffer.Clear();//清空历史数据
+                _lastIndex = 0;
+                 _multiFrameBuffer.AddRange(e.ByteData);
+                return;
+            }
+
+            int currentIndex = e.Index & 0x7F; //当前索引
+            //是否为递增索引,正常接收
+            if ((_lastIndex + 1) == currentIndex)
+            {
+                _multiFrameBuffer.AddRange(e.ByteData);
+                _lastIndex++;
+            }
+            else
+            {
+
+            }
+            //判断是否为最后一帧
+            if ((e.Index & 0x80) == 0x80)
+            {
+
+                //TODO:显示
+                CommServer.LinkMessage += "\n\n" + DateTime.Now.ToLongTimeString() + "  多帧接收:\n";
+                CommServer.LinkMessage += "接收完成"+ "\n";
+                //适当处理
+                StringBuilder stb = new StringBuilder(_multiFrameBuffer.Count*4);
+                if (_multiFrameBuffer.Count % 2 == 0)
+                {
+                    for (int i = 0; i < _multiFrameBuffer.Count; i += 2)
+                    {
+                        stb.AppendFormat("{0},", _multiFrameBuffer[i] + 256*_multiFrameBuffer[i + 1]);
+                    }
+                    CommServer.LinkMessage += "\n\n" + "  有效数据:\n";
+                    CommServer.LinkMessage += stb.ToString() + "\n";
+                }
+            }
+
+            
         }
 
         void StationServer_ExceptionArrived(object sender, ExceptionMessage e)

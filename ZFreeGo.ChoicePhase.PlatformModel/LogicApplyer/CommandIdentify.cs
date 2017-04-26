@@ -59,10 +59,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
         /// </summary>
         ErrorACK = 0x14,
 
+        /// <summary>
+        /// 多帧数据
+        /// </summary>
+        MutltiFrame = 0x1B,
 
         /// <summary>
         /// 子站状态改变信息上传
         /// </summary>
         SubstationStatuesChange = 0x20,
+
+
+
+        
     }
 }
