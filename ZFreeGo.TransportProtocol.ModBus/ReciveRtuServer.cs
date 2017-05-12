@@ -28,14 +28,17 @@ namespace ZFreeGo.ChoicePhase.Modbus
 
         private Func<byte[], bool> _sendDataDelegate;
 
-       
+        /// <summary>
+        /// 异常处理委托
+        /// </summary>
+        private Action<Exception> ExceptionDelegate;
 
         /// <summary>
         /// 接收RTU帧服务
         /// </summary>
         /// <param name="addr">地址</param>
         /// <param name="overTime">超时时间</param>
-        public RtuServer(byte addr, int overTime, Func<byte[], bool> sendDataDelegate)
+        public RtuServer(byte addr, int overTime, Func<byte[], bool> sendDataDelegate, Action<Exception> exceptionDelegate)
         {
             _addrss = addr;
             _overTime = overTime;
@@ -43,8 +46,8 @@ namespace ZFreeGo.ChoicePhase.Modbus
             _dataSecoundBuffer = new List<byte>();
             _sendDataDelegate = sendDataDelegate;
 
-            
 
+            ExceptionDelegate = exceptionDelegate;
 
             readThread = new Thread(ReciveThread);
             readThread.Priority = ThreadPriority.Normal;
@@ -155,11 +158,11 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     continue;
                                 }
                                 int allLen = _dataSecoundBuffer[2] + 5;
-                                ushort crc = GenCRC.CRC16(_dataSecoundBuffer.ToArray(), 0, (ushort)(_dataSecoundBuffer[2] + 3));
+                                ushort crc = GenCRC.CumulativeSumCalculate(_dataSecoundBuffer.ToArray(), 0, (ushort)(_dataSecoundBuffer[2] + 3));
                                 var low = (byte)(crc & 0xFF); //低8位
                                 if (low != _dataSecoundBuffer[allLen -2])
                                 {
-                                    CLog.LogWarning("接收CRC校验不正确，移除第一个重新判断。");
+                                    CLog.LogWarning("接收累加和校验不正确，移除第一个重新判断。");
                                     step = 0;
                                     _dataSecoundBuffer.RemoveAt(0);
                                     continue;
@@ -168,7 +171,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                 var hig = (byte)((crc & 0xFF00) >> 8);//高8位
                                 if (hig != _dataSecoundBuffer[allLen - 1])
                                 {
-                                    CLog.LogWarning("接收CRC校验不正确，高8bit，移除第一个重新判断。");
+                                    CLog.LogWarning("接收累加和校验不正确，高8bit，移除第一个重新判断。");
                                     step = 0;
                                     _dataSecoundBuffer.RemoveAt(0);
                                     continue;
@@ -203,7 +206,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
             catch (Exception ex)
             {                
                 CLog.LogError("串口接收进程::" + ex.Message);
-
+                ExceptionDelegate(ex);
             }
         }
 

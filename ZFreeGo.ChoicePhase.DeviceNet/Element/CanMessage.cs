@@ -49,9 +49,9 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.Element
                 throw new ArgumentOutOfRangeException("数据长度应大于0，小于等于8");
             }
             ID = id;
-            Data = new byte[data.Length];
-            Array.Copy(data, 0, Data, start, len);
-            DataLen = (byte)data.Length;
+            Data = new byte[len];
+            Array.Copy(data, start, Data, 0, len);
+            DataLen = (byte)len;
         }
 
     

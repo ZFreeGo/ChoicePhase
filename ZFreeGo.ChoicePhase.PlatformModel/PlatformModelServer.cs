@@ -85,7 +85,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             _monitorViewData = new MonitorViewData();
             CommServer = new CommunicationServer();
             CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
-            RtuServer = new RtuServer(_localAddr, 500, sendRtuData);
+            RtuServer = new RtuServer(_localAddr, 500, sendRtuData, ExceptionDeal);
             RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
 
             StationServer = new MasterStationServer(_monitorViewData.MacList);
@@ -229,7 +229,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         }
         private CanMessage GetCanMessage(RTUFrame frame)
         {
-            if (frame.Function != 0x55)//是否为0xAA 是否为上送
+            if (frame.Function != 0xAA)//是否为0xAA 是否为上送
             {
                 return null;
             }

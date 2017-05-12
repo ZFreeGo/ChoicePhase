@@ -50,12 +50,12 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             groupList.Add(new Identifier("GROUP2_BIT_STROBE", 0));
             groupList.Add(new Identifier("GROUP2_POLL", 1));
             groupList.Add(new Identifier("GROUP2_STATUS_POLL", 2));
-            groupList.Add(new Identifier("GROUP2_VISIBLE_UCN ", 3));
+            groupList.Add(new Identifier("GROUP2_VISIBLE_UCN", 3));
 
             groupList.Add(new Identifier("GROUP2_VSILBLE", 4));
             groupList.Add(new Identifier("GROUP2_POLL_STATUS_CYCLE", 5));
             groupList.Add(new Identifier("GROUP2_VSILBLE_ONLY2", 6));
-            groupList.Add(new Identifier("GROUP2_REPEAT_MACID ", 7));
+            groupList.Add(new Identifier("GROUP2_REPEAT_MACID", 7));
 
            var serverCode = new List<Identifier>();
            serverCode.Add(new Identifier("SVC_AllOCATE_MASTER_SlAVE_CONNECTION_SET", 0x4B));
@@ -134,6 +134,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 var can = MakeUnconnectVisibleRequestMessageOnlyGroup2(station.MacID,
                 "SVC_AllOCATE_MASTER_SlAVE_CONNECTION_SET", connectType);
                 station.SendMessage = can;
+                station.WaitFlag = true;
                 SendData(can);
             }
             catch (Exception ex)
@@ -258,21 +259,28 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         /// <param name="message">消息</param>
         public void ReciveCenter(CanMessage message)
         {
-            DeviceNetID netID = new DeviceNetID(message.ID);
-            var num = netID.GetGroupNumber();
-            switch (num)
+            try
             {
-                case 1://Group1
-                    {
+                DeviceNetID netID = new DeviceNetID(message.ID);
+                var num = netID.GetGroupNumber();
+                switch (num)
+                {
+                    case 1://Group1
+                        {
 
-                        GroupOneDeal(message, netID);
-                        break;
-                    }
-                case 2://Group2
-                    {
-                        GroupTwoDeal(message, netID);
-                        break;
-                    }
+                            GroupOneDeal(message, netID);
+                            break;
+                        }
+                    case 2://Group2
+                        {
+                            GroupTwoDeal(message, netID);
+                            break;
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionDelegate(ex);
             }
         }
         #region GROUP 接收处理
@@ -449,7 +457,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                     return;
                 }               
                 //判断服务代码是否是对应的应答代码,
-                if ((station.SendMessage.Data[1] | 0x80) == message.Data[1])
+                if ((station.SendMessage.Data[1] | 0x80) != message.Data[1])
                 {
                     return;
                 }
@@ -467,7 +475,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 if (serverCode == CodeDictionary.ServerCode["SVC_AllOCATE_MASTER_SlAVE_CONNECTION_SET"])
                 {
                     //配置连接字
-                    station.State |= message.Data[4];
+                    station.State |= station.SendMessage.Data[4];
                     if ((station.State & (byte)LinkConnectType.CycleInquiry) == (byte)LinkConnectType.CycleInquiry) //建立轮询连接
                     {
                         station.Step = NetStep.Cycle;

@@ -74,11 +74,11 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.Element
             {
                 case 1:
                     {
-                        return (UInt16)((ID) & 0x0007);
+                        return (UInt16)((((ID) >> 6)) & 0x003F);
                     }
                 case 2:
                     {
-                        return (UInt16)((((ID) >> 6)) & 0x003F);
+                        return (UInt16)((ID) & 0x0007);
                     }
                 default:
                     {
