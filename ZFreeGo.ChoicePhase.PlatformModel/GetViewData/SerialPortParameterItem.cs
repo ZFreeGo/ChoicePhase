@@ -53,6 +53,7 @@ namespace ZFreeGo.Monitor.DASModel.GetViewData
             Baud.Add(new SerialPortParamer<int>(14400));
             Baud.Add(new SerialPortParamer<int>(28800));
             Baud.Add(new SerialPortParamer<int>(38400));
+            Baud.Add(new SerialPortParamer<int>(56000));
             Baud.Add(new SerialPortParamer<int>(57600));
             Baud.Add(new SerialPortParamer<int>(115200));
 

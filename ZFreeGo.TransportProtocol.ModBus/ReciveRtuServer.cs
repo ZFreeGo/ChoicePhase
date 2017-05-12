@@ -28,6 +28,8 @@ namespace ZFreeGo.ChoicePhase.Modbus
 
         private Func<byte[], bool> _sendDataDelegate;
 
+       
+
         /// <summary>
         /// 接收RTU帧服务
         /// </summary>
@@ -41,11 +43,16 @@ namespace ZFreeGo.ChoicePhase.Modbus
             _dataSecoundBuffer = new List<byte>();
             _sendDataDelegate = sendDataDelegate;
 
+            
+
+
             readThread = new Thread(ReciveThread);
             readThread.Priority = ThreadPriority.Normal;
             readThread.Name = "ReciveRtuServer";
             readThread.Start();
         }
+
+
         /// <summary>
         /// 关闭RTU服务
         /// </summary>

@@ -64,6 +64,10 @@
     <Content Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ZFreeGo.ChoicePhase.DeviceNet\ZFreeGo.ChoicePhase.DeviceNet.csproj">
+      <Project>{653fbee0-bf21-4288-8c68-0d3d49d685f1}</Project>
+      <Name>ZFreeGo.ChoicePhase.DeviceNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj">
       <Project>{201f117c-a205-4b77-92b3-08780a6aa754}</Project>
       <Name>ZFreeGo.TransportProtocol.ModBus</Name>

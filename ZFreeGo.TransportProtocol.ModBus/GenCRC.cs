@@ -18,6 +18,9 @@ namespace ZFreeGo.ChoicePhase.Modbus
         /// <returns></returns>
         public static ushort CRC16(byte[] puchMsg, ushort usDataLen)
         {
+
+            return CumulativeSumCalculate(puchMsg, 0, usDataLen);
+
             byte uchCRCHi = 0xFF; /* 初始化高字节*/
             byte uchCRCLo = 0xFF; /* 初始化低字节*/
             byte uIndex = 0; /*CRC表*/
@@ -105,5 +108,15 @@ namespace ZFreeGo.ChoicePhase.Modbus
             0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42, 0x43, 0x83, 0x41, 0x81, 0x80, 
             0x40 
         };
+       
+        public static ushort CumulativeSumCalculate(byte[] puchMsg, int start, ushort usDataLen)
+         {
+             ushort sum = 0;
+            for(int i = start; i < start + usDataLen; i++)
+            {
+                sum += puchMsg[i];
+            }
+            return sum;
+         }
     }
 }

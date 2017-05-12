@@ -60,6 +60,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             {
                 linkMessage = value;
                 RaisePropertyChanged("LinkMessage");
+                if (linkMessage.Length > 10000)
+                {
+                    linkMessage = "";
+                }
 
             }
         }
@@ -78,6 +82,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             {
                 rawReciveMessage = value;
                 RaisePropertyChanged("RawReciveMessage");
+                if (rawReciveMessage.Length > 10000)
+                {
+                    rawReciveMessage = "";
+                }
 
             }
         }

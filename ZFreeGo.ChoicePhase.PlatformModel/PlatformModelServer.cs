@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ZFreeGo.ChoicePhase.DeviceNet;
+using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 using ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer;
@@ -58,6 +60,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             get;
         }
 
+
+        /// <summary>
+        /// DeviceNet服务
+        /// </summary>
+        public DeviceNetServer ControlNetServer
+        {
+            private set;
+            get;
+        }
+
+
         /// <summary>
         /// 多帧帧缓冲
         /// </summary>
@@ -81,7 +94,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             StationServer.MultiFrameArrived += StationServer_MultiFrameArrived;
             _multiFrameBuffer = new List<byte>();
             _lastIndex = 0;
+
+            ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal);
         }
+
+
 
         void StationServer_MultiFrameArrived(object sender, MultiFrameEventArgs e)
         {
@@ -137,6 +154,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             CommServer.LinkMessage += e.Ex.StackTrace + "\n";
         }
 
+        
+
+
         void StationServer_ArrtributesArrived(object sender, ArrtributesEventArgs e)
         {
             
@@ -156,12 +176,25 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 CommServer.LinkMessage += "\n" +DateTime.Now.ToLongTimeString() + "  RTU发送帧:\n";
                 CommServer.LinkMessage += ByteToString(data, 0, data.Length);
                 CommServer.RawSendMessage += ByteToString(data, 0, data.Length);
+
+
             }
             return CommServer.CommonServer.CommState;
             
 
         }
 
+        /// <summary>
+        /// 打包发送数据并发送
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private bool PacketDevicetNetData(byte[] data)
+        {
+            var frame = new RTUFrame(0xA1, 0x55, data, (byte)data.Length);
+            sendRtuData(frame.Frame);
+            return true;
+        }
 
         /// <summary>
         /// 关闭服务
@@ -170,6 +203,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             CommServer.CommonServer.Close();
             RtuServer.Close();
+            ControlNetServer.Close();
         }
 
 
@@ -185,10 +219,30 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             CommServer.LinkMessage += "\n" + DateTime.Now.ToLongTimeString() + "  接收RTU帧:\n";
             CommServer.LinkMessage += ByteToString(e.Frame.Frame, 0, e.Frame.Frame.Length);
             
-            StationServer.StationDeal(e.Frame.FrameData);
+            //StationServer.StationDeal(e.Frame.FrameData);
+            var can = GetCanMessage(e.Frame);
+            if(can != null)
+            {
+                ControlNetServer.ReciveCenter(can);
+            }            
+            
+        }
+        private CanMessage GetCanMessage(RTUFrame frame)
+        {
+            if (frame.Function != 0x55)//是否为0xAA 是否为上送
+            {
+                return null;
+            }
+            if (frame.DataLen <= 2)
+            {
+                return null;
+            }
+            var id = frame.FrameData[0] + ((ushort)(frame.FrameData[1]) << 8);
+            var can = new CanMessage((ushort)id, frame.FrameData, 2, frame.DataLen - 2);
+            return can;
+
 
         }
-
         /// <summary>
         /// 通讯数据到达
         /// </summary>
@@ -200,6 +254,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             RtuServer.AddBuffer(e.SerialData);
             CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);
         }
+
+        void ExceptionDeal(Exception ex)
+        {
+            CommServer.LinkMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
+            CommServer.LinkMessage += ex.Message;
+            CommServer.LinkMessage += ex.StackTrace;
+            
+        }
+
+
+
+
 
         private static PlatformModelServer _modelServer; 
 
