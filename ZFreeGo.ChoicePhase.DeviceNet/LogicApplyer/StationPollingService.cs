@@ -2,67 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ZFreeGo.ChoicePhase.DeviceNet.Element;
 
-namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
+namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
 {
-    //主站服务——处理子站节点信息
-    public class MasterStationServer
+    //主站轮询，从站应答服务
+    public class StationPollingService
     {
         public event EventHandler<ArrtributesEventArgs> ArrtributesArrived;
-        public event EventHandler<ExceptionMessage> ExceptionArrived;
+        
         public event EventHandler<MultiFrameEventArgs> MultiFrameArrived;
 
-        private List<byte> _macList;
-
-        private int _mac;
-
-        public MasterStationServer(List<byte> macList)
-        {
-            _macList = macList;
-        }
-
         /// <summary>
-        /// 站信息处理
+        /// 异常处理委托
         /// </summary>
-        /// <param name="reciveData"></param>
-        public void StationDeal(byte[] reciveData)
-        {
-            try
-            {
-                if (reciveData.Length < 3)
-                {
-                    throw new ArgumentException("reciveData.Length < 3");
-                }
-                if (reciveData[1] != 0xAA) //简单返回并不是主动上传
-                {
-                   // throw new ArgumentException("reciveData[1] != 0xAA");
-                    return;
-                }
+        private Action<Exception> ExceptionDelegate;
 
-                foreach (var m in _macList)
-                {
-                    _mac = m;
-                    if (reciveData[0] == m)
-                    {
-                        byte[] serverData = new byte[reciveData.Length - 2];
-                        Array.Copy(reciveData, 2, serverData, 0, reciveData.Length - 2);
-                        Server(serverData);
-                        break;
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                ExceptionArrived(this, new ExceptionMessage(ex, "MaterStation"));
-            }
-            
-            
+      
+        public StationPollingService(Action<Exception> exceptionDelegate)
+        {
+            ExceptionDelegate = exceptionDelegate;
         }
+       
+
+       
         /// <summary>
         /// 控制器Server处理
         /// </summary>
         /// <param name="serverData">服务数据</param>
-        private void Server(byte[] serverData)
+        public void Server(byte[] serverData, byte mac)
         {
             try
             {
@@ -88,7 +56,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
 
                             if (ArrtributesArrived != null)
                             {
-                                ArrtributesArrived(this, new ArrtributesEventArgs(serverData[1], _mac , serverData, 2, serverData.Length - 2));
+                                ArrtributesArrived(this, new ArrtributesEventArgs(serverData[1], mac , serverData, 2, serverData.Length - 2));
                             }
                             break;
                         }
@@ -96,7 +64,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
                         {
                             if (MultiFrameArrived != null)
                             {
-                                MultiFrameArrived(this, new MultiFrameEventArgs(_mac, serverData[1], serverData, 2, serverData.Length - 2));
+                                MultiFrameArrived(this, new MultiFrameEventArgs(mac, serverData[1], serverData, 2, serverData.Length - 2));
                             }
                             break;
                         }
@@ -109,7 +77,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
             }
             catch (Exception ex)
             {
-                throw ex;
+                ExceptionDelegate(ex);
             }
         }
     }

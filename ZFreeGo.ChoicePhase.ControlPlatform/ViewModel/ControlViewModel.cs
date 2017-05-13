@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.ObjectModel;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel;
 
@@ -17,7 +18,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     public class ControlViewModel : ViewModelBase
     {
         private readonly byte _downAddress ;
-        private readonly byte _triansFunction = 1;
+       
 
         private PlatformModelServer modelServer;
         /// <summary>
@@ -45,6 +46,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _phaseSelect.Add("A相");
              _phaseSelect.Add("B相");
              _phaseSelect.Add("C相");
+
+
+             
+
+            
+
         }
 
     
@@ -64,38 +71,45 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     case "ReadyAction":
                         {
-                            byte id = 0;
+                            CommandIdentify cmd;                            
                             if (SelectActionIndex == 0)//合闸预制
                             {
-                                id = 1;
+                                cmd = CommandIdentify.ReadyClose;
                             }
                             else if (SelectActionIndex == 1)//分闸预制
                             {
-                                id = 3;
+                                cmd = CommandIdentify.ReadyOpen;
                             }
-                            var command = new byte[] {_macAddress, 0,  id, _circleByte, (byte)_actionTime };
-                            //此处发送控制命令
-                            var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
-                            modelServer.RtuServer.SendFrame(frame);
+                            else
+                            {
+                                return;
+                            }
+                            var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);                          
+
 
                             break;
                         }
                     case "ExecuteAction":
                         {
-                            byte id = 0;
+                            CommandIdentify cmd;
                             if (SelectActionIndex == 0)//合闸执行
                             {
-                                id = 2;
+                                cmd = CommandIdentify.CloseAction;
                             }
                             else if (SelectActionIndex == 1)//分闸执行
                             {
-                                id = 4;
+                                cmd = CommandIdentify.OpenAction;
                             }
-                            var command = new byte[] { _macAddress, 0, id, _circleByte, (byte)_actionTime };
-                            //此处发送控制命令
-                            var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
+                            else
+                            {
+                                return;
+                            }
+                            var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);  
 
-                            modelServer.RtuServer.SendFrame(frame);
                             break;
                         }
                     case "Synchronization":
@@ -113,7 +127,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "SynHeARM":
                     case "SynHeActionARM":
                         {
-                            ExecuteSynCommand_ARM(str);
+                           
                             break;
                         }
                     default:
@@ -505,16 +519,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     byteArray[2 * k + 1] = (byte)(data[k] >> 8);
                 }              
  
-                var command = new byte[2 + 2 + 6];
-                command[0] = _macAddress;
-                command[1] = 0;
-                command[2] = 5;
-                command[3] = _circleSelectByte;
-                Array.Copy(byteArray, 0, command, 4, 2 * i);
-                //此处发送控制命令
-                var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)(4 + 2 * i));
+                var command = new byte[2 + 6];             
+                command[0] = (byte)CommandIdentify.SyncReadyClose;
+                command[1] = _circleSelectByte;
+                Array.Copy(byteArray, 0, command, 2, 2 * i);
+             
+                //此处发送控制命令                     
+                modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, 2 + 2*i);  
 
-                modelServer.RtuServer.SendFrame(frame);
 
 
             }
@@ -543,7 +555,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
 
-         private int _phaseIndexI = 0;
+         private int _phaseIndexI = 1;
 
          public int PhaseIndexI
          {
@@ -557,7 +569,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  RaisePropertyChanged("PhaseIndexI");
              }
          }
-         private int _phaseIndexII = 0;
+         private int _phaseIndexII = 2;
 
          public int PhaseIndexII
          {
@@ -571,7 +583,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  RaisePropertyChanged("PhaseIndexII");
              }
          }
-         private int _phaseIndexIII = 0;
+         private int _phaseIndexIII = 3;
 
          public int PhaseIndexIII
          {
@@ -616,7 +628,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
          /// <summary>
-         /// 弧度 I
+         /// 角度 I
          /// </summary>
          private double _angleI = 0;
 
@@ -633,9 +645,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              }
          }
          /// <summary>
-         /// 弧度 II
+         /// 角度 II
          /// </summary>
-         private double _angleII = 120;
+         private double _angleII = 0;
          public string AngleII
          {
              set
@@ -649,9 +661,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              }
          }
          /// <summary>
-         /// 弧度 III
+         /// 角度 III
          /// </summary>
-         private double _angleIII = 240;
+         private double _angleIII = 0;
 
          public string AngleIII
          {
@@ -705,16 +717,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                      byteArray[2 * k + 1] = (byte)(tris >> 8);
                  }
 
-                 var command = new byte[2 + 2 + 6];
-                 command[0] = 0x0D; //DSP地址
-                 command[1] = 0;
+                 var command = new byte[2 + 6];
+
                  if (p == "Ready")
                  {
-                     command[2] = 0x30;
+                     command[0] = 0x30;
                  }
                  else if (p == "Action")
                  {
-                     command[2] = 0x31;
+                     command[0] = 0x31;
                  }
                  else
                  {
@@ -722,10 +733,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  }
 
 
-                 command[3] = selectByte;
-                 Array.Copy(byteArray, 0, command, 4, 2 * i);
+                 command[1] = selectByte;
+                 Array.Copy(byteArray, 0, command, 2, 2 * i);
 
-                 return new Tuple<byte[], int>(command, 4 + 2 * i);
+                 return new Tuple<byte[], int>(command, 2 + 2 * i);
 
 
              }
@@ -754,50 +765,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                      return;
                  }
                  //此处发送控制命令
-                 var frame = new RTUFrame(_downAddress, _triansFunction, command.Item1, (byte)command.Item2);
 
-                 modelServer.RtuServer.SendFrame(frame);
-
-
-             }
-             catch (Exception ex)
-             {
-                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-             }
-         }
-         private void ExecuteSynCommand_ARM(string p)
-         {
-             try
-             {
-                 byte commandByte = 0;
-                 if (p == "SynHeARM")
-                 {
-                     p = "Ready";
-                     commandByte = 0x20;
-                 }
-                 else if (p == "SynHeActionARM")
-                 {
-                     p = "Action";
-                     commandByte = 0x21;
-                 }
-                 var command = GetSynCommand(p);
-
-                 if (command == null)
-                 {
-                     return;
-                 }
-                 var commandData = new byte[3 + command.Item2];
-                 commandData[0] = 0x02; //ARM地址
-                 commandData[1] = 0;
-                 commandData[2] = commandByte; //命令字节
-                 Array.Copy(command.Item1, 0, commandData, 3, command.Item2);
-
-
-
-                 //此处发送控制命令
-                 var frame = new RTUFrame(_downAddress, _triansFunction, commandData, (byte)commandData.Length);
-
-                 modelServer.RtuServer.SendFrame(frame);
+                 //
+                 modelServer.ControlNetServer.MasterSendCommand(0x0D, command.Item1, 0, command.Item2);  
 
 
              }
@@ -806,6 +776,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
              }
          }
+       
         #endregion
     }
 }

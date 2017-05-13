@@ -11,6 +11,7 @@ using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -169,11 +170,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         void ExecuteUpdateOperate(string str)
         {
             try
-            {
-                var command = new byte[] { _macAddress, 0, 0x12, _startAddress, _endAddress };
-                //此处发送控制命令
-                var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
-                modelServer.RtuServer.SendFrame(frame);                
+            {                
+                var command = new byte[] { (byte)CommandIdentify.MasterParameterRead, _startAddress, _endAddress };
+                //此处发送控制命令                     
+                modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);                          
+                
+             
+
+
             }
             catch (Exception ex)
             {

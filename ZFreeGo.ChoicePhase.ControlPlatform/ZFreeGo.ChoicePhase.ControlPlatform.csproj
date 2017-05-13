@@ -148,6 +148,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ZFreeGo.ChoicePhase.DeviceNet\ZFreeGo.ChoicePhase.DeviceNet.csproj">
+      <Project>{653fbee0-bf21-4288-8c68-0d3d49d685f1}</Project>
+      <Name>ZFreeGo.ChoicePhase.DeviceNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZFreeGo.ChoicePhase.PlatformModel\ZFreeGo.ChoicePhase.PlatformModel.csproj">
       <Project>{c6d3acac-470c-4dc7-a924-57f40cfedb95}</Project>
       <Name>ZFreeGo.ChoicePhase.PlatformModel</Name>

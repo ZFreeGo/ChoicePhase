@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
+namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
 {
     /// <summary>
     /// 命令ID
@@ -13,49 +13,52 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer
         /// <summary>
         /// 合闸预制
         /// </summary>
-        ReadyClose = 0,
+        ReadyClose = 1,
         /// <summary>
         /// 合闸执行
         /// </summary>
-        CloseAction = 1,
+        CloseAction = 2,
         /// <summary>
         /// 分闸预制
         /// </summary>
-        ReadyOpen = 2,
+        ReadyOpen = 3,
         /// <summary>
         /// 分闸执行
         /// </summary>
-        OpenAction = 3,
+        OpenAction = 4,
 
         /// <summary>
         /// 同步合闸预制
         /// </summary>
-        SyncReadyClose = 4,
+        SyncReadyClose = 5,
         /// <summary>
         /// 同步分闸预制
         /// </summary>
-        SyncReadyAction = 5,
+        SyncReadyAction = 6,
 
         
 
 
 
         /// <summary>
-        /// 主站参数设置
+        /// 主站参数设置,顺序
         /// </summary>
-        MasterParameterSet = 0x10,
+      //  MasterParameterSet = 0x10,
         // <summary>
         /// 主站参数设置，非顺序——按点设置
         /// </summary>
-        MasterParameterSetPoint = 0x11,
+        MasterParameterSetOne = 0x11,
         /// <summary>
-        /// 主站参数读取
+        /// 主站参数读取，顺序
         /// </summary>
         MasterParameterRead = 0x12,
-
+        /// <summary>
+        /// 主站参数读取，非顺序——按点读取
+        /// </summary>
+       // MasterParameterReadOne = 0x13,
 
         /// <summary>
-        /// 主站参数读取
+        /// 错误
         /// </summary>
         ErrorACK = 0x14,
 

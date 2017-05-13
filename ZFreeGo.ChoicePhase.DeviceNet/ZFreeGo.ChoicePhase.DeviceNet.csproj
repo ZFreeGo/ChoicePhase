@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogicApplyer\CommandIdentify.cs" />
+    <Compile Include="LogicApplyer\StationPollingService.cs" />
     <Compile Include="CodeDictionary.cs" />
     <Compile Include="Element\CanMessage.cs" />
     <Compile Include="Element\DeviceNetID.cs" />

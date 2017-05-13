@@ -11,8 +11,9 @@
         
         <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>            
-        </Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
             <GroupBox Header="开关控制" Grid.Row="0" Margin="3">                
                 <TabControl Margin="3">
                     <TabItem Header="遥控操作" >
@@ -54,17 +55,10 @@
                         </StackPanel>
                     </TabItem>
                 </TabControl>
-            </GroupBox>
-            
-        <GroupBox Header="同步控制" Grid.Row="1" Margin="3" >
+            </GroupBox>            
+            <GroupBox Header="同步控制控制器" Grid.Row="1" Margin="3" >
             <StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="3">
-                    <TextBlock Margin="3" VerticalAlignment="Center">A相合闸相角：</TextBlock>
-                    <TextBox MinWidth="40" Margin="3"  Name="setHezhaPhase" VerticalAlignment="Center">0</TextBox>
-                    <RadioButton VerticalAlignment="Center"  Name="jiaoDuRadio"  IsChecked="True">角度</RadioButton>
-                    <RadioButton VerticalAlignment="Center" Name="huduRadio" >弧度</RadioButton>
-                    <Button Margin="30,3,3,3" Height="30" Foreground="Red" >合闸控制</Button>
-                </StackPanel>
+                
                 <Grid Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -113,19 +107,31 @@
                             <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynHeDSP">同步合闸预制</Button>
                             <Button Margin="3" Command="{Binding ActionCommand}" CommandParameter="SynHeActionDSP">同步合闸执行</Button>
                         </StackPanel>
-                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="3">
-                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynHeARM">同步合闸预制</Button>
-                            <Button Margin="3" Command="{Binding ActionCommand}" CommandParameter="SynHeActionARM">同步合闸执行</Button>
-                        </StackPanel>
+                       
                     </StackPanel>
              
                     
             </StackPanel>
 
 
-        </GroupBox>
-       
-            
-    </Grid>
+            </GroupBox >
+            <GroupBox Header="同步开关" Grid.Row="2" Margin="3" >
+                <StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchHe">同步合闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchAction">同步合闸执行</Button>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
+                        <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchHe">分闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchAction">分闸执行</Button>
+                </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchHe">合闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchAction">合闸执行</Button>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+        </Grid>
     </ScrollViewer>
 </Page>

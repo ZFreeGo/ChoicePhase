@@ -29,13 +29,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// Initializes a new instance of the DataGridPageViewModel class.
         /// </summary>
         public CommunicationViewModel()
-        {
+        {          
 
-           
-
-            LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
-
-            
+            LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);            
          
             ClearText = new RelayCommand<string>(ExecuteClearText);
             ToEnd = new RelayCommand<string>(ExecuteToEnd);

@@ -33,6 +33,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.Element
             set;
         }
 
+         
 
 
         /// <summary>

@@ -24258,3 +24258,15 @@ LogTrace Error: 0 :       [2017年5月12日10:30:23]: 串口接收进程::目标
 LogTrace Error: 0 :       [2017年5月12日10:32:10]: 串口接收进程::目标数组的长度不够。请检查 destIndex 和长度以及数组的下限。
 LogTrace Warning: 0 :     [2017年5月12日13:03:26]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年5月12日13:03:26]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月12日16:03:43]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月12日16:03:43]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月12日17:33:59]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月12日17:33:59]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日9:21:36]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日9:21:36]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日9:28:36]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日9:28:37]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日10:28:56]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日10:28:56]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日10:49:45]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月13日10:49:45]: DeviceNet::正在中止线程。

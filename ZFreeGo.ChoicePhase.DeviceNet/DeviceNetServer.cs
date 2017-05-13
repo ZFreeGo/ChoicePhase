@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.Common.LogTrace;
 
 
@@ -29,6 +30,13 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         /// </summary>
         Func<byte[], bool> SendDelegate;
 
+       /// <summary>
+       /// 主站轮询，从站应答服务。 IO报文 GROUP1_POLL_STATUS_CYCLER_ACK
+       /// </summary>
+        public StationPollingService PollingService;
+
+
+
         /// <summary>
         /// 异常处理委托
         /// </summary>
@@ -41,6 +49,8 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             StationInformation.Add(new DefStationInformation(0x10, true, "A相"));
 
             ExceptionDelegate = exceptionDelegate;
+            PollingService = new StationPollingService(ExceptionDelegate);
+
 
             List<Identifier> groupList = new List<Identifier>();
             groupList.Add(new Identifier("GROUP1_STATUS_CYCLE_ACK", 13));
@@ -91,16 +101,19 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         /// <param name="can">CAN</param>
         public void SendData(CanMessage can)
         {
+            var data = GetCanData(can);
+            SendDelegate(data);
+        }
 
+
+        private byte[] GetCanData(CanMessage can)
+        {
             var data = new byte[can.DataLen + 2];
             data[0] = (byte)can.ID;
             data[1] = (byte)(can.ID >> 8);
             Array.Copy(can.Data, 0, data, 2, can.DataLen);
-            SendDelegate(data);
-
-
+            return data;
         }
-
 
         /// <summary>
         /// 生成CAN UnconnectVisibleRequestMessageOnlyGroup2 报文
@@ -145,6 +158,21 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         }
 
         /// <summary>
+        /// 主站发送命令或者数据，通过主站轮询命令
+        /// </summary>
+        /// <param name="destMAC">目的地址</param>
+        /// <param name="data">数据</param>
+        /// <param name="start">其实索引</param>
+        /// <param name="len">长度</param>
+        public void MasterSendCommand(byte destMAC, byte[] data, int start, int len)
+        {
+            var can = MakeIOMessage(destMAC, data, start, len);            
+            SendData(can);
+
+        }
+
+
+        /// <summary>
         /// 生成主站IO报文(GROUP2_POLL_STATUS_CYCLE)消息
         /// </summary>
         /// <param name="destMAC"> 目的MAC地址</param>
@@ -156,7 +184,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         {
             if (len < 8)
             {
-                var id = DeviceNetID.MakeGroupIDTwo((byte)CodeDictionary.ServerCode["GROUP2_POLL_STATUS_CYCLE"], destMAC);
+                var id = DeviceNetID.MakeGroupIDTwo((byte)CodeDictionary.GroupFunctionCode["GROUP2_POLL_STATUS_CYCLE"], destMAC);
                 CanMessage can = new CanMessage(id, data, start, len);
                 return can;
             }
@@ -294,7 +322,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             var function = netID.GetFunctionCode();
             if (CodeDictionary.GroupFunctionCode["GROUP1_POLL_STATUS_CYCLER_ACK"] == function)
             {
-                SlaveStationStatusCycleService(message, netID);
+                SlaveStationPollingAckService(message, netID);
             }
             else if (CodeDictionary.GroupFunctionCode["GROUP1_STATUS_CYCLE_ACK"] == function)
             {
@@ -387,20 +415,20 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
 
         #region 从站循环状态改变服务 从站状态改变服务
         /// <summary>
-        /// 从站循环状态改变服务
+        /// 主站轮询，从站应答服务
         /// </summary>
         /// <param name="message">CAN消息</param>
         /// <param name="netID">CAN ID标识</param>
-        void SlaveStationStatusCycleService(CanMessage message, DeviceNetID netID)
+        void SlaveStationPollingAckService(CanMessage message, DeviceNetID netID)
         {
             var station = GetStationPoint((byte)netID.GetMAC());
 
             if (station != null)
             {
-                //检测是否已经建立循环连接
+                //检测是否已经建立循环连接--用于功能码读取与应答，读写通过此进行。
                 if ((station.State & (byte)LinkConnectType.CycleInquiry) == (byte)LinkConnectType.CycleInquiry)
                 {
-
+                    PollingService.Server(message.Data, (byte)netID.GetMAC());
                 }
             }
 
@@ -420,7 +448,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 //检测是否已经建立循环连接
                 if ((station.State & (byte)LinkConnectType.CycleInquiry) == (byte)LinkConnectType.CycleInquiry)
                 {
-
+                    
                 }
             }
 
@@ -564,4 +592,5 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
 
 
     }
+
 }

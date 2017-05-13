@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.Modbus;
-using ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -187,10 +187,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     case "Read":
                         {
-                            var command = new byte[] { _macAddress, 0, 0x12, _startAddress, _endAddress };
-                            //此处发送控制命令
-                            var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
-                            modelServer.RtuServer.SendFrame(frame);
+                            var command = new byte[] { (byte)CommandIdentify.MasterParameterRead, _startAddress, _endAddress };
+                            //此处发送控制命令                     
+                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);
+                            
                             break;
                         }
                     case "Update":
@@ -349,7 +349,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                                     command[0] = _macAddress;
                                     command[1] = 0;
-                                    command[2] = (byte)CommandIdentify.MasterParameterSetPoint;
+                                    command[2] = (byte)CommandIdentify.MasterParameterSetOne;
                                     command[3] = (byte)m.ConfigID;
                                     Array.Copy(atrribute, 0, command, 4, atrribute.Length);
 

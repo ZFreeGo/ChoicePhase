@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.DeviceNet;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
-using ZFreeGo.ChoicePhase.PlatformModel.LogicApplyer;
 using ZFreeGo.Monitor.DASModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel
 {
+
+
 
 
     public class PlatformModelServer
@@ -51,14 +53,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             get;
         }
 
-        /// <summary>
-        /// 站服务列表
-        /// </summary>
-        public MasterStationServer StationServer
-        {
-            private set;
-            get;
-        }
+        ///// <summary>
+        ///// 站服务列表
+        ///// </summary>
+        //public MasterStationServer StationServer
+        //{
+        //    private set;
+        //    get;
+        //}
 
 
         /// <summary>
@@ -88,14 +90,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             RtuServer = new RtuServer(_localAddr, 500, sendRtuData, ExceptionDeal);
             RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
 
-            StationServer = new MasterStationServer(_monitorViewData.MacList);
-            StationServer.ArrtributesArrived += StationServer_ArrtributesArrived;
-            StationServer.ExceptionArrived += StationServer_ExceptionArrived;
-            StationServer.MultiFrameArrived += StationServer_MultiFrameArrived;
+          
+           
             _multiFrameBuffer = new List<byte>();
             _lastIndex = 0;
 
             ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal);
+            ControlNetServer.PollingService.ArrtributesArrived += StationServer_ArrtributesArrived;
+            ControlNetServer.PollingService.MultiFrameArrived += StationServer_MultiFrameArrived;
         }
 
 
@@ -145,14 +147,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             
         }
 
-        void StationServer_ExceptionArrived(object sender, ExceptionMessage e)
-        {
-            CommServer.LinkMessage += "\n\n" + DateTime.Now.ToLongTimeString() + "  异常:\n";
-
-            CommServer.LinkMessage += e.Comment + "\n";
-            CommServer.LinkMessage += e.Ex.Message + "\n";
-            CommServer.LinkMessage += e.Ex.StackTrace + "\n";
-        }
+       
 
         
 
@@ -241,7 +236,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             var can = new CanMessage((ushort)id, frame.FrameData, 2, frame.DataLen - 2);
             return can;
 
-
         }
         /// <summary>
         /// 通讯数据到达
@@ -316,4 +310,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
 
     }
+
+
+    
 }
