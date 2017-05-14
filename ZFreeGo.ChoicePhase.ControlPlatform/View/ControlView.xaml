@@ -104,7 +104,7 @@
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleI}"></TextBox>
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleII}"></TextBox>
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleIII}" ></TextBox>
-                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynHeDSP">同步合闸预制</Button>
+                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynReadyHeDSP">同步合闸预制</Button>
                             <Button Margin="3" Command="{Binding ActionCommand}" CommandParameter="SynHeActionDSP">同步合闸执行</Button>
                         </StackPanel>
                        
@@ -118,16 +118,16 @@
             <GroupBox Header="同步开关" Grid.Row="2" Margin="3" >
                 <StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchHe">同步合闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchAction">同步合闸执行</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchReadyHe">同步合闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchActionHe">同步合闸执行</Button>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchHe">分闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchAction">分闸执行</Button>
+                        <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe">分闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe">分闸执行</Button>
                 </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchHe">合闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchAction">合闸执行</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen">合闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen">合闸执行</Button>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

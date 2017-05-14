@@ -3,9 +3,11 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -21,6 +23,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
        
 
         private PlatformModelServer modelServer;
+
+
+        
+
         /// <summary>
         /// Initializes a new instance of the ControlViewModel class.
         /// </summary>
@@ -31,7 +37,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _actionSelect.Add("分闸");
 
              ActionCommand = new RelayCommand<string>(ExecuteReadyCommand);
-             ActionCommandsynchronization = new RelayCommand<string>(ExecuteSynReadyCommand);
+           
              modelServer = PlatformModelServer.GetServer();
              _downAddress = modelServer.CommServer.DownAddress;
 
@@ -85,6 +91,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 return;
                             }
                             var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
+
+                            //复位状态
+                            modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
                             //此处发送控制命令                     
                             modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);                          
 
@@ -106,6 +115,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             {
                                 return;
                             }
+                            //复位状态
+                            modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
                             var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
                             //此处发送控制命令                     
                             modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);  
@@ -117,17 +128,75 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             ExecuteSynReadyCommand("Synchronization");
                             break;
                         }
-
-                    case "SynHeDSP":
+                    case "SynReadyHeDSP":
                     case "SynHeActionDSP":
                         {
                             ExecuteSynCommand_DSP(str);
                             break;
                         }
-                    case "SynHeARM":
-                    case "SynHeActionARM":
+                        //以下为总控
+                    case "SynSwitchReadyHe":
                         {
+                            modelServer.MonitorData.GetNdoe(0x0D).ResetState();//复位状态
+                            ExecuteSynCommand_DSP("SynReadyHeDSP"); //首先发送命令到同步控制器，置为同步合闸预制状态
+                            Thread.Sleep(20);
+                            SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
+                            
+                            break;
+                        }
+                    case "SynSwitchActionHe":
+                        {
+                            if (modelServer.MonitorData.GetNdoe(0x0D).SynReadyCloseState)
+                            {
+                                throw new Exception("同步控制器未就绪");
+                            }
+                            if (modelServer.MonitorData.GetNdoe(0x10).SynReadyCloseState)
+                            {
+                                throw new Exception("A相未就绪");
+                            }
+                            if (modelServer.MonitorData.GetNdoe(0x12).SynReadyCloseState)
+                            {
+                                throw new Exception("B相未就绪");
+                            }
+                            if (modelServer.MonitorData.GetNdoe(0x14).SynReadyCloseState)
+                            {
+                                throw new Exception("C相未就绪");
+                            }
+                            ExecuteSynCommand_DSP("SynHeActionDSP");
                            
+                            break;
+                        }
+                    case "ReadyAllHe":                   
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
+                            //此处发送控制命令   
+                            SendToABC(command);
+
+                            break;
+                        }
+                    case "ActionAllHe":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            SendToABC(command);
+                            break;
+                        }
+                    case "ReadyAllFen":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            SendToABC(command);
+                            break;
+                        }
+                    case "ActionAllFen":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            SendToABC(command);
                             break;
                         }
                     default:
@@ -142,7 +211,57 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
         }
+        
 
+       
+
+
+        /// <summary>
+        /// 发送同步命令发送到A,B,C
+        /// </summary>
+        /// <param name="command"></param>
+        private void SendSynCMDToABC(CommandIdentify cmd)
+        {
+            var cb = modelServer.MonitorData.GetNdoe(0x10).SynConfigByte;
+            byte t1 = (byte)(modelServer.MonitorData.GetNdoe(0x10).DelayTime1 & 0x00FF);
+            byte t2 = (byte)(modelServer.MonitorData.GetNdoe(0x10).DelayTime1 >> 8);
+            var command = new byte[] { (byte)cmd, cb, t1, t2};
+            modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态
+            modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
+            Thread.Sleep(20);
+
+
+            cb = modelServer.MonitorData.GetNdoe(0x12).SynConfigByte;
+            t1 = (byte)(modelServer.MonitorData.GetNdoe(0x12).DelayTime1 & 0x00FF);
+            t2 = (byte)(modelServer.MonitorData.GetNdoe(0x12).DelayTime1 >> 8);
+            command = new byte[] { (byte)cmd, cb, t1, t2 };            
+            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态          
+            modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
+            Thread.Sleep(20);
+
+            cb = modelServer.MonitorData.GetNdoe(0x14).SynConfigByte;
+            t1 = (byte)(modelServer.MonitorData.GetNdoe(0x14).DelayTime1 & 0x00FF);
+            t2 = (byte)(modelServer.MonitorData.GetNdoe(0x14).DelayTime1 >> 8);
+            command = new byte[] { (byte)cmd, cb, t1, t2 };      
+            modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
+            modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
+        }
+      
+        /// <summary>
+        /// 将命令发送到A,B,C
+        /// </summary>
+        /// <param name="command"></param>
+        private void SendToABC(byte[] command)
+        {
+            modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态
+            modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
+            Thread.Sleep(20);
+            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态          
+            modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
+            Thread.Sleep(20);
+            modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
+            modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
+        }
      
 
         #endregion
@@ -481,10 +600,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
 
-        /// <summary>
-        /// 同步合闸预制命令
-        /// </summary>
-        public RelayCommand<string> ActionCommandsynchronization;
+       
 
 
          void ExecuteSynReadyCommand(string obj)
@@ -523,7 +639,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 command[0] = (byte)CommandIdentify.SyncReadyClose;
                 command[1] = _circleSelectByte;
                 Array.Copy(byteArray, 0, command, 2, 2 * i);
-             
+
+                //复位状态
+                modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
                 //此处发送控制命令                     
                 modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, 2 + 2*i);  
 
@@ -721,11 +839,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                  if (p == "Ready")
                  {
-                     command[0] = 0x30;
+                     command[0] = (byte)CommandIdentify.SyncOrchestratorReadyClose;
                  }
                  else if (p == "Action")
                  {
-                     command[0] = 0x31;
+                     command[0] = (byte)CommandIdentify.SyncOrchestratorCloseAction;
                  }
                  else
                  {
@@ -766,7 +884,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  }
                  //此处发送控制命令
 
-                 //
+                 modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
                  modelServer.ControlNetServer.MasterSendCommand(0x0D, command.Item1, 0, command.Item2);  
 
 

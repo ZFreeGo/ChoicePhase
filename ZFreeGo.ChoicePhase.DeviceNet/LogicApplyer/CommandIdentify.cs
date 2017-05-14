@@ -34,7 +34,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// <summary>
         /// 同步分闸预制
         /// </summary>
-        SyncReadyAction = 6,
+        //SyncReadyClose = 6,
 
         
 
@@ -62,15 +62,27 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// </summary>
         ErrorACK = 0x14,
 
+
+        /// <summary>
+        /// 子站状态改变信息上传
+        /// </summary>
+        SubstationStatuesChange = 0x1A,
+
         /// <summary>
         /// 多帧数据
         /// </summary>
         MutltiFrame = 0x1B,
 
         /// <summary>
-        /// 子站状态改变信息上传
+        /// 同步控制器 合闸预制
         /// </summary>
-        SubstationStatuesChange = 0x20,
+        SyncOrchestratorReadyClose = 0x30,
+        /// <summary>
+        /// 同步控制器 合闸执行
+        /// </summary>
+        SyncOrchestratorCloseAction = 0x31,
+       // SyncOrchestratorReadyOpen = 0x32,
+        //SyncOrchestratorOpenAction = 0x32,
 
 
 

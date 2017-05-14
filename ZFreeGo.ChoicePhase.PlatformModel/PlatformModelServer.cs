@@ -96,13 +96,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             _lastIndex = 0;
 
             ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal);
-            ControlNetServer.PollingService.ArrtributesArrived += StationServer_ArrtributesArrived;
-            ControlNetServer.PollingService.MultiFrameArrived += StationServer_MultiFrameArrived;
+            ControlNetServer.PollingService.ArrtributesArrived += PollingService_ArrtributesArrived;
+            ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
+            ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
+        }
+
+        /// <summary>
+        /// 预制分闸，合闸，同步设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PollingService_ReadyActionArrived(object sender, ReadyActionMessage e)
+        {
+            
         }
 
 
 
-        void StationServer_MultiFrameArrived(object sender, MultiFrameEventArgs e)
+        void PollingService_MultiFrameArrived(object sender, MultiFrameEventArgs e)
         {
             //判断是否为首帧
             if (e.Index == 0)
@@ -147,12 +158,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             
         }
 
-       
-
-        
 
 
-        void StationServer_ArrtributesArrived(object sender, ArrtributesEventArgs e)
+
+
+
+        void PollingService_ArrtributesArrived(object sender, ArrtributesEventArgs e)
         {
             
             _monitorViewData.UpdateAttributeData(e.MAC, e.ID, e.AttributeByte);
@@ -171,12 +182,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 CommServer.LinkMessage += "\n" +DateTime.Now.ToLongTimeString() + "  RTU发送帧:\n";
                 CommServer.LinkMessage += ByteToString(data, 0, data.Length);
                 CommServer.RawSendMessage += ByteToString(data, 0, data.Length);
-
-
             }
-            return CommServer.CommonServer.CommState;
-            
-
+            return CommServer.CommonServer.CommState;            
         }
 
         /// <summary>
@@ -244,7 +251,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         void CommonServer_SerialDataArrived(object sender, Communication.SerialDataEvent e)
         {
-
             RtuServer.AddBuffer(e.SerialData);
             CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);
         }

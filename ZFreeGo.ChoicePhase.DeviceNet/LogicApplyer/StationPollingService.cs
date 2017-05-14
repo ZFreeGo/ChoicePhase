@@ -13,18 +13,27 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         
         public event EventHandler<MultiFrameEventArgs> MultiFrameArrived;
 
+        public event EventHandler<ReadyActionMessage> ReadyActionArrived;
+
         /// <summary>
         /// 异常处理委托
         /// </summary>
         private Action<Exception> ExceptionDelegate;
 
-      
-        public StationPollingService(Action<Exception> exceptionDelegate)
+       // private DeviceNetServer controlNetServer;
+
+        public StationPollingService( Action<Exception> exceptionDelegate)
         {
             ExceptionDelegate = exceptionDelegate;
+           // controlNetServer = netServer;
         }
        
-
+        public void SendCommand(byte mac, byte[] command)
+        {
+           //  var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
+            //此处发送控制命令                     
+            //controlNetServer.MasterSendCommand(mac, command, 0, command.Length); 
+        }
        
         /// <summary>
         /// 控制器Server处理
@@ -68,6 +77,21 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                             }
                             break;
                         }
+                    case CommandIdentify.CloseAction://合闸执行
+                    case CommandIdentify.OpenAction: //分闸执行
+                    case CommandIdentify.ReadyClose: // 合闸预制
+                    case CommandIdentify.ReadyOpen:  //分闸预制                   
+                    case CommandIdentify.SyncReadyClose:  //同步合闸预制 
+                    case CommandIdentify.SyncOrchestratorReadyClose:  //同步控制器合闸预制
+                    case CommandIdentify.SyncOrchestratorCloseAction:  //同步控制合闸执行
+                        {
+
+                            if (ReadyActionArrived != null)
+                            {
+                                ReadyActionArrived(this, new ReadyActionMessage(mac, serverData));
+                            }
+                            break;
+                        }
                     default:
                         {
                             break;
@@ -82,30 +106,43 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         }
     }
 
-    public class ExceptionMessage :EventArgs
+ 
+
+    /// <summary>
+    /// 节点预制，执行等信息
+    /// </summary>
+    public class ReadyActionMessage : EventArgs
     {
-        /// <summary>
-        /// 原始异常
+         /// <summary>
+        /// MAC地址
         /// </summary>
-        public Exception Ex
-        {
-            get;
-            set;
-        }
-        public string Comment
+        public int MAC
         {
             get;
             set;
         }
 
-        public ExceptionMessage(Exception ex, string comment)
+        public byte[] Data
         {
-            Ex =ex;
-            Comment = comment;
+            get;
+            set;
         }
 
+        /// <summary>
+        /// 预制，执行消息
+        /// </summary>
+        /// <param name="mac">MAC</param>
+        /// <param name="serverData">服务数据</param>
+        public ReadyActionMessage(int mac, byte[] serverData)
+        {
+            MAC = mac;
+
+            Data = new byte[serverData.Length];
+            Array.Copy(serverData, Data, Data.Length);
+        }
 
     }
+
 
     /// <summary>
     /// 多帧事件参数

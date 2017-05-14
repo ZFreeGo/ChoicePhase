@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 
@@ -59,6 +60,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
+        /// <summary>
+        /// 节点状态
+        /// </summary>
+        public ObservableCollection< NodeStatus> NodeStatusList
+        {
+            private set;
+            get;
+        }
+       
 
         /// <summary>
         /// 数据库操作
@@ -127,6 +137,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             _macList.Add(0x16);
             _macList.Add(0x18);
             _macList.Add(0x1A);
+
+
+
+            NodeStatusList = new ObservableCollection<NodeStatus>();
+            NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器"));
+            NodeStatusList.Add(new NodeStatus(0x10, "A相控制器"));
+            NodeStatusList.Add(new NodeStatus(0x12, "B相控制器"));
+            NodeStatusList.Add(new NodeStatus(0x14, "C相控制器"));
+
+
 
         }
 
@@ -563,6 +583,99 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
         }
+
+        /// <summary>
+        /// 合闸预制状态
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <param name="data"></param>
+        public void UpdateNodeStatus(byte mac, byte[] data)
+        {
+            var node = GetNdoe(mac);
+            if (node == null)
+            {
+                return;
+            }
+            node.IsValid(data);
+
+            var cmd = (CommandIdentify)(data[0] & 0x7F);
+
+            node.ResetState();
+            switch (mac)
+            {
+                case 0x0D://同步控制器                    
+                    {
+                        switch (cmd)
+                        {
+                            case CommandIdentify.SyncOrchestratorCloseAction:
+                                {
+                                    node.SynActionCloseState = true;
+                                    break;
+                                }
+                            case CommandIdentify.SyncOrchestratorReadyClose:
+                                {
+                                    node.SynReadyCloseState = true;
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case 0x10: //A相                  
+                case 0x12://B相             
+                case 0x14: //C相
+                    {
+                       
+                        switch (cmd)
+                        {
+                            case CommandIdentify.CloseAction://合闸执行
+                                {
+                                    node.ActionCloseState = true;
+                                    break;
+                                }
+                            case CommandIdentify.OpenAction: //分闸执行
+                                {
+                                    node.ActionOpenState = true;
+                                    break;
+                                }
+                            case CommandIdentify.ReadyClose: // 合闸预制
+                                {
+                                    node.ReadyCloseState = true;
+                                    break;
+                                }
+                            case CommandIdentify.ReadyOpen:  //分闸预制                   
+                                {
+                                    node.ReadyOpenState = true;
+                                    break;
+                                }
+                            case CommandIdentify.SyncReadyClose:  //同步合闸预制 
+                                {
+                                    node.SynReadyCloseState = true;
+                                    break;
+                                }
+                           
+                        }
+                        break;
+                    }
+
+            }
+        }
+        
+
+
+        public NodeStatus GetNdoe(byte mac)
+        {
+            foreach(var m in NodeStatusList)
+            {
+                if (m.Mac == mac)
+                {
+                    return m;
+                }
+            }
+            return null;
+
+        }
+
+        
     
     }
     /// <summary>
