@@ -182,7 +182,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         /// <returns>生成的CAN消息</returns>
         public CanMessage MakeIOMessage(byte destMAC, byte[] data, int start, int len)
         {
-            if (len < 8)
+            if (len <= 8)
             {
                 var id = DeviceNetID.MakeGroupIDTwo((byte)CodeDictionary.GroupFunctionCode["GROUP2_POLL_STATUS_CYCLE"], destMAC);
                 CanMessage can = new CanMessage(id, data, start, len);

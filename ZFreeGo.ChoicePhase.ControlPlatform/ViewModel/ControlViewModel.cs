@@ -129,7 +129,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             break;
                         }
                     case "SynReadyHeDSP":
-                    case "SynHeActionDSP":
+                    case "SynActionHeDSP":
                         {
                             ExecuteSynCommand_DSP(str);
                             break;
@@ -868,11 +868,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
          {
              try
              {
-                 if(p == "SynHeDSP")
+                 if (p == "SynReadyHeDSP")
                  {
                      p = "Ready";
                  }
-                 else if (p == "SynHeActionDSP")
+                 else if (p == "SynActionHeDSP")
                  {
                      p = "Action";
                  }

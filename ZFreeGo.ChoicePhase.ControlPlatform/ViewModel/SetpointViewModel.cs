@@ -345,17 +345,19 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 foreach(var m  in _selectedItems)
                                 {
                                     var atrribute = m.GetAttributeByteData();
-                                    var command = new byte[4 + atrribute.Length];
+                                    var command = new byte[2 + atrribute.Length];
 
-                                    command[0] = _macAddress;
-                                    command[1] = 0;
-                                    command[2] = (byte)CommandIdentify.MasterParameterSetOne;
-                                    command[3] = (byte)m.ConfigID;
-                                    Array.Copy(atrribute, 0, command, 4, atrribute.Length);
+                                    command[0] = (byte)CommandIdentify.MasterParameterSetOne;
+                                    command[1] = (byte)m.ConfigID;
+                                    Array.Copy(atrribute, 0, command, 2, atrribute.Length);
+
 
                                     //此处发送控制命令
-                                    var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
-                                    modelServer.RtuServer.SendFrame(frame);
+                                  //  var frame = new RTUFrame(_downAddress, _triansFunction, command, (byte)command.Length);
+                                   // modelServer.RtuServer.SendFrame(frame);
+
+                                    modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);
+
                                     System.Threading.Thread.Sleep(100);
                                 }
                                 

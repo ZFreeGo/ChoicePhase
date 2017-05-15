@@ -105,7 +105,7 @@
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleII}"></TextBox>
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleIII}" ></TextBox>
                             <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynReadyHeDSP">同步合闸预制</Button>
-                            <Button Margin="3" Command="{Binding ActionCommand}" CommandParameter="SynHeActionDSP">同步合闸执行</Button>
+                            <Button Margin="3" Command="{Binding ActionCommand}" CommandParameter="SynActionHeDSP">同步合闸执行</Button>
                         </StackPanel>
                        
                     </StackPanel>

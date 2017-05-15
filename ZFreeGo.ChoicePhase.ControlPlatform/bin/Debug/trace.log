@@ -24270,3 +24270,13 @@ LogTrace Warning: 0 :     [2017年5月13日10:28:56]: 串口接收进程::正在
 LogTrace Warning: 0 :     [2017年5月13日10:28:56]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年5月13日10:49:45]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年5月13日10:49:45]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月14日16:16:32]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月14日16:16:32]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月14日16:20:08]: 接收累加和校验不正确，移除第一个重新判断。
+LogTrace Warning: 0 :     [2017年5月14日16:26:28]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月14日16:26:28]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月14日17:04:16]: 接收累加和校验不正确，移除第一个重新判断。
+LogTrace Warning: 0 :     [2017年5月14日18:07:16]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月14日18:07:16]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月15日8:32:03]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年5月15日8:32:03]: DeviceNet::正在中止线程。
