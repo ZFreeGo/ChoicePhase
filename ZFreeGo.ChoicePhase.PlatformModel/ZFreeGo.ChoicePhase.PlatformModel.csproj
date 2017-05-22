@@ -48,6 +48,8 @@
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="DataItemSet\CommandDdentifyItem.cs" />
     <Compile Include="DataItemSet\NodeStatus.cs" />
+    <Compile Include="Helper\XmlDatasetConvert.cs" />
+    <Compile Include="Helper\XMLOperate.cs" />
     <Compile Include="PlatformModelServer.cs" />
     <Compile Include="DataItemSet\AttributeItem.cs" />
     <Compile Include="DataItemSet\SerialPortParamer.cs" />
@@ -58,6 +60,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Communication\SerialPortServer.cs" />
     <Compile Include="Communication\SerialDataEvent.cs" />
+    <Compile Include="Secure\AccountManager.cs" />
+    <Compile Include="Secure\AuthorityLevel.cs" />
+    <Compile Include="Secure\UserAccount.cs" />
+    <Compile Include="Secure\WhbEncypt.cs" />
+    <Compile Include="Secure\XMLAccountOperate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReadMe.txt" />
@@ -67,11 +74,16 @@
       <Project>{653fbee0-bf21-4288-8c68-0d3d49d685f1}</Project>
       <Name>ZFreeGo.ChoicePhase.DeviceNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ZFreeGo.Common.LogTrace\ZFreeGo.Common.LogTrace.csproj">
+      <Project>{b89398a0-0f99-4fb9-bf91-3e4d030b427d}</Project>
+      <Name>ZFreeGo.Common.LogTrace</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj">
       <Project>{201f117c-a205-4b77-92b3-08780a6aa754}</Project>
       <Name>ZFreeGo.TransportProtocol.ModBus</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

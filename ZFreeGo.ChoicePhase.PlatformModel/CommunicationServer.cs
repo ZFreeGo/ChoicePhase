@@ -112,11 +112,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// </summary>
         public CommunicationServer()
         {
-            _commonServer = new SerialPortServer();
-            
-            SerialPortParameter = new SerialPortParameterItem();
+             _commonServer = new SerialPortServer();
 
-            DownAddress = 0xA1;
+                SerialPortParameter = new SerialPortParameterItem();
+
+                DownAddress = 0xA1;
+           
         }
     }
 }

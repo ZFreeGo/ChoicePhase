@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using GalaSoft.MvvmLight.Threading;
+using System;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform
 {
@@ -12,5 +13,16 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
         {
             DispatcherHelper.Initialize();
         }
+
+        //protected override void OnStartup(StartupEventArgs e)
+        //{
+        //     SplashScreen s = new SplashScreen("pictures/sojo-c.jpg");
+        //     s.Show(false);
+        //     s.Close(new TimeSpan(0, 0, 5));           
+
+
+        //    base.OnStartup(e);
+        //}
+
     }
 }

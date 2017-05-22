@@ -83,22 +83,32 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// </summary>
         public PlatformModelServer()
         {
-            _localAddr = 0x1A;
-            _monitorViewData = new MonitorViewData();
-            CommServer = new CommunicationServer();
-            CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
-            RtuServer = new RtuServer(_localAddr, 500, sendRtuData, ExceptionDeal);
-            RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
+            try
+            {
+                _localAddr = 0x1A;
+                _monitorViewData = new MonitorViewData();
+                CommServer = new CommunicationServer();
+                CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
+                RtuServer = new RtuServer(_localAddr, 500, sendRtuData, ExceptionDeal);
+                RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
 
-          
-           
-            _multiFrameBuffer = new List<byte>();
-            _lastIndex = 0;
 
-            ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal);
-            ControlNetServer.PollingService.ArrtributesArrived += PollingService_ArrtributesArrived;
-            ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
-            ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
+
+                _multiFrameBuffer = new List<byte>();
+                _lastIndex = 0;
+
+                ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal);
+                ControlNetServer.PollingService.ArrtributesArrived += PollingService_ArrtributesArrived;
+                ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
+                ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
+
+            }
+            catch(Exception ex)
+            {
+                //CommServer.LinkMessage += ex.StackTrace;
+                ZFreeGo.Common.LogTrace.CLog.LogError(ex.StackTrace);
+            }
+
         }
 
         /// <summary>
@@ -287,6 +297,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <returns>Model Server</returns>
         public static PlatformModelServer GetServer(bool flag)
         {
+           
             if((_modelServer == null) || flag)
             {
                 _modelServer =  new PlatformModelServer();

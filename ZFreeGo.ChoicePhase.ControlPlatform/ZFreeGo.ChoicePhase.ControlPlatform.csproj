@@ -88,6 +88,9 @@
     <Compile Include="View\SetpointView.xaml.cs">
       <DependentUpon>SetpointView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\StartupInterface.xaml.cs">
+      <DependentUpon>StartupInterface.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,6 +120,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\SetpointView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\StartupInterface.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -167,6 +174,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\064.ico" />
+    <Resource Include="Pictures\sj1.ico" />
+    <Resource Include="Pictures\sojo-b.jpg" />
+    <Resource Include="Pictures\sojo-c.jpg" />
+    <Resource Include="Pictures\SOJO.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

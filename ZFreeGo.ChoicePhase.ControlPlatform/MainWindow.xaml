@@ -65,7 +65,7 @@
 
         </Grid>
 
-        <Frame Grid.Column="1" Grid.Row="0" Name="frame" Source="{Binding ShowUri}">
+        <Frame Grid.Column="1" Grid.Row="0" Name="frame" Source="{Binding ShowUri}"   >
 
         </Frame>
         <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="LightBlue" Height="5"  HorizontalAlignment="Stretch"

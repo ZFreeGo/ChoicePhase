@@ -13,6 +13,7 @@ using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using System.Text;
 using System.Collections.Generic;
 using ZFreeGo.ChoicePhase.Modbus;
+using System.IO.Ports;
 
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -66,7 +67,23 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 serialPortParameter = modelServer.CommServer.SerialPortParameter;
  
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
-                SelectedIndexDataBit = 3;
+
+
+                if (modelServer.CommServer.SerialPortParameter.LastRecord != null)
+                {
+                    SelectedIndexCommonPort = modelServer.CommServer.SerialPortParameter.GetIndex<string>(serialPortParameter.CommonPort, 
+                        modelServer.CommServer.SerialPortParameter.LastRecord.CommonPort);
+                    SelectedIndexBaud = modelServer.CommServer.SerialPortParameter.GetIndex<int>(serialPortParameter.Baud,
+                        modelServer.CommServer.SerialPortParameter.LastRecord.Baud);
+                    SelectedIndexDataBit = modelServer.CommServer.SerialPortParameter.GetIndex<int>(serialPortParameter.DataBit,
+                        modelServer.CommServer.SerialPortParameter.LastRecord.DataBit);
+                    SelectedIndexStopBit = modelServer.CommServer.SerialPortParameter.GetIndex<StopBits>(serialPortParameter.StopBit,
+                        modelServer.CommServer.SerialPortParameter.LastRecord.StopBit);
+                    SelectedIndexParity = modelServer.CommServer.SerialPortParameter.GetIndex<Parity>(serialPortParameter.ParityBit,
+                        modelServer.CommServer.SerialPortParameter.LastRecord.ParityBit);
+                }
+
+
 
                 RaisePropertyChanged("Baud");
                 RaisePropertyChanged("DataBit");

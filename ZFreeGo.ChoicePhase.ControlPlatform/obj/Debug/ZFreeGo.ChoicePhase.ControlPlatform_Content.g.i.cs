@@ -8,6 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("textfile1.txt")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/064.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/sj1.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/sojo-b.jpg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/sojo-c.jpg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/sojo.jpg")]
 
 

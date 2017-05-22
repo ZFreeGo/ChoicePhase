@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
@@ -145,8 +146,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             NodeStatusList.Add(new NodeStatus(0x10, "A相控制器"));
             NodeStatusList.Add(new NodeStatus(0x12, "B相控制器"));
             NodeStatusList.Add(new NodeStatus(0x14, "C相控制器"));
-
-
+            
 
         }
 
@@ -658,8 +658,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     }
 
             }
-        }
-        
+        }       
+
+       
+
+
 
 
         public NodeStatus GetNdoe(byte mac)
@@ -672,8 +675,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
             return null;
-
         }
+
+
+
+
 
         
     
