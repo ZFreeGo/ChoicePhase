@@ -3,9 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:ignore="http://www.galasoft.ch/ignore"
-        mc:Ignorable="d ignore" ShowsNavigationUI="False"
-        DataContext="{Binding Control, Source={StaticResource Locator}}">
+        mc:Ignorable="d ignore" ShowsNavigationUI="False" 
+        DataContext="{Binding Control, Source={StaticResource Locator}}" >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
     <ScrollViewer>
         <Grid ScrollViewer.VerticalScrollBarVisibility="Visible">   
         
@@ -13,8 +20,224 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <GroupBox Header="开关控制" Grid.Row="0" Margin="3">                
+            <StackPanel Grid.Row="0">                
+                    <Grid Grid.Column="0" Grid.Row="2"  Width="660" >
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition  Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition  Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="20"></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontFamily="黑体" FontSize="24">A相</TextBlock>
+                            
+                            <Grid Grid.Row="0" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding LedCloseA1}" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">合位1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding LedCloseA2}" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">合位2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Row="0" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding LedOpenA1}" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">分位1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding LedOpenA2}" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">分位2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Row="0" Grid.Column="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding LedEneryA1}" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">储能1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="{Binding  LedEneryA2}" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">储能2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Grid.Row="0" Grid.Column="5" >
+                                    <Grid>
+                                        <Image Source="{Binding LedCloseA}" Height="64" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">合位</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="6" >
+                                <Image Source="{Binding LedOpenA}" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">分位</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="7" >
+                                <Image Source="{Binding  LedEneryA}" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">储能</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="8" >
+                                <Image Source="{Binding LedErrorA}"  Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">故障</TextBlock>
+                                </StackPanel>
+
+                            <Grid Grid.Row="1" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">合位1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">合位2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Row="1" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">分位1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">分位2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontFamily="黑体" FontSize="24">B相</TextBlock>
+                                <StackPanel Grid.Row="1" Grid.Column="5" >
+                                <Image Source= "../Pictures/red.png" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">合位</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="6" >
+                                    <Image Source="../Pictures/off.jpg" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">分位</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="7" >
+                                    <Image Source="../Pictures/green.png" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">储能</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="8" >
+                                    <Image Source="../Pictures/yellow.png" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">故障</TextBlock>
+                                </StackPanel>
+
+
+                            <Grid Grid.Row="2" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">合位1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">合位2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Row="2" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">分位1</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image Source="../Pictures/dp1.png" Height="48" ></Image>
+                                    </Grid>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="16">分位2</TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontFamily="黑体" FontSize="24">C相</TextBlock>
+                                <StackPanel Grid.Row="2" Grid.Column="5" >
+                                    <Image Source="../Pictures/dp1.png" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">合位</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="6" >
+                                    <Image Source="../Pictures/off.jpg" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">分位</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="7" >
+                                    <Image Source="../Pictures/green.png" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">储能</TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="8" >
+                                    <Image Source="../Pictures/yellow.png" Height="64"></Image>
+                                    <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">故障</TextBlock>
+                                </StackPanel>
+
+
+                            </Grid>
+                        </StackPanel>
+
+
+
+                    </Grid>                                                  
+            </StackPanel>
+            <GroupBox Header="开关控制" Grid.Row="1" Margin="3">                
                 <TabControl Margin="3">
                     <TabItem Header="遥控操作" >
                         <StackPanel Orientation="Horizontal">
@@ -56,7 +279,8 @@
                     </TabItem>
                 </TabControl>
             </GroupBox>            
-            <GroupBox Header="同步控制控制器" Grid.Row="1" Margin="3" >
+            <GroupBox Header="同步控制控制器" Grid.Row="2" Margin="3" >
+                
             <StackPanel>
                 
                 <Grid Margin="5">
@@ -115,7 +339,7 @@
 
 
             </GroupBox >
-            <GroupBox Header="同步开关" Grid.Row="2" Margin="3" >
+            <GroupBox Header="同步开关" Grid.Row="3" Margin="3" >
                 <StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
                         <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchReadyHe">同步合闸预制</Button>

@@ -448,7 +448,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 //检测是否已经建立循环连接
                 if ((station.State & (byte)LinkConnectType.CycleInquiry) == (byte)LinkConnectType.CycleInquiry)
                 {
-                    
+                    PollingService.StatusChangeServer(message.Data, (byte)netID.GetMAC());
                 }
             }
 

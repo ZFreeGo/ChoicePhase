@@ -60,13 +60,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             {
                 linkMessage = value;
                 RaisePropertyChanged("LinkMessage");
-                if (linkMessage.Length > 10000)
+                if (linkMessage.Length > 5000)
                 {
                     linkMessage = "";
                 }
 
             }
         }
+
+
+
+
+
         private string rawReciveMessage = "";
 
         /// <summary>

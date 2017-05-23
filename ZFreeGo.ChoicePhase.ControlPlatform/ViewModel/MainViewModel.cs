@@ -24,7 +24,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             showUri = "view/CommunicationView.xaml";
             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
-            TreeSelectedItemCommand = new RelayCommand<object>(ExecuteTreeSelectedItemCommand);
+            TreeSelectedItemCommand = new RelayCommand<string>(ExecuteTreeSelectedItemCommand);
             ClosingCommand = new RelayCommand(ExecuteClosingCommand);
             ClearText = new RelayCommand<string>(ExecuteClearText);
         }
@@ -84,22 +84,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <summary>
         /// 绑定树状控件命令
         /// </summary>
-        public RelayCommand<object> TreeSelectedItemCommand { get; private set; }
+        public RelayCommand<string> TreeSelectedItemCommand { get; private set; }
 
         /// <summary>
         /// 执行选择菜单命令
         /// </summary>
         /// <param name="obj"></param>
-        private void ExecuteTreeSelectedItemCommand(object obj)
+        private void ExecuteTreeSelectedItemCommand(string obj)
         {
             try
-            {
-                if(obj is TreeViewItem)
-                {
-                    var item = obj as TreeViewItem;
-                   // Messenger.Default.Send<string>(item.Name, "ShowUserView"); 
+            {            
+                   
+                  
 
-                    switch (item.Name)
+                    switch (obj)
                     {
                         case "SerialPortConfig":
                             {
@@ -131,7 +129,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
                    
-                }
+                
             }
             catch(Exception ex)
             {
@@ -154,7 +152,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             }
         }
+      
+        public string StatusMessage
+        {
+            get
+            {
 
+                return modelServer.MonitorData.StatusMessage;
+            }
+            set
+            {
+                modelServer.MonitorData.StatusMessage = value;
+                RaisePropertyChanged("StatusMessage");
+
+            }
+        }
         #region ClearText
         public RelayCommand<string> ClearText { get; private set; }
 

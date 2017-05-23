@@ -182,6 +182,21 @@
     <Resource Include="Pictures\sojo-c.jpg" />
     <Resource Include="Pictures\SOJO.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\dp1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\dp1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\off.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -111,7 +111,73 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             set;
         }
 
+
+        public Action UpdateViewDelegate;
+
+
+        private StatusLoop[] statusLoopCollect;
+        /// <summary>
+        /// 合分状态1
+        /// </summary>
+        public StatusLoop[] StatusLoopCollect
+        {
+            get
+            {
+                return statusLoopCollect;
+            }
+            set
+            {
+                statusLoopCollect = value;
+                RaisePropertyChanged("StatusLoopCollect");
+               
+            }
+
+        }
+
+        private EnergyStatusLoop[] energyStatusLoopCollect;
+        /// <summary>
+        /// 回路储能状态1
+        /// </summary>
+        public EnergyStatusLoop[] EnergyStatusLoopCollect
+        {
+            get
+            {
+                return energyStatusLoopCollect;
+            }
+            set
+            {
+                energyStatusLoopCollect = value;
+                RaisePropertyChanged("EnergyStatusLoopCollect");
+            }
+        }
         
+
+
+       
+        /// <summary>
+        /// 更新开关状态
+        /// </summary>
+        /// <param name="statusByte"></param>
+        public void UpdateSwitchStatus(byte[] statusByte)
+        {
+            //判断长度
+            if (statusByte.Length != 6)
+            {
+                return;
+            }         
+            for( int k = 0; k < 4; k++)
+            {
+                StatusLoopCollect[k] = (StatusLoop)((statusByte[1] >> (2 * k)) & (0x03));
+            }
+            for (int k = 0; k < 4; k++)
+            {
+                EnergyStatusLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
+            }
+            if (UpdateViewDelegate != null)
+            {
+                UpdateViewDelegate();
+            }
+        }
 
 
 
@@ -130,10 +196,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 return false;
             }
-            if (reciveData.Length != LastSendData.Length)
-            {
-                return false;
-            }
+            //if (reciveData.Length != LastSendData.Length)
+            //{
+            //    return false;
+            //}
             //比较是否为应答
             if ((LastSendData[0] | 0x80) != reciveData[0] )
             {
@@ -165,7 +231,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             SynReadyCloseState = false;
             SynActionCloseState = false;
 
+
+           
         }
+
+        
+
+
+
+
+
+
+
         /// <summary>
         /// 节点状态
         /// </summary>
@@ -175,10 +252,66 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             Mac = mac;
             Name = name;
+
+            StatusLoopCollect = new StatusLoop[4];
+            for (int i = 0; i < StatusLoopCollect.Length; i++ )
+            {
+                StatusLoopCollect[i] = DataItemSet.StatusLoop.Null;
+            }
+
+            EnergyStatusLoopCollect = new EnergyStatusLoop[4];
+            for (int i = 0; i < EnergyStatusLoopCollect.Length; i++)
+            {
+                EnergyStatusLoopCollect[i] = DataItemSet.EnergyStatusLoop.Null;
+            }
         }
 
     }
 
+    /// <summary>
+    /// 回路状态
+    /// </summary>
+    public enum StatusLoop
+    {
+        /// <summary>
+        /// 空
+        /// </summary>
+        Null = 0,
+        /// <summary>
+        /// 合位
+        /// </summary>
+        Close = 2,
+        /// <summary>
+        /// 分位
+        /// </summary>
+        Open = 1,
+        /// <summary>
+        /// 故障
+        /// </summary>
+        Error = 3,
+    }
+    /// <summary>
+    /// 储能状态
+    /// </summary>
+    public enum EnergyStatusLoop
+    {
+        /// <summary>
+        /// 空
+        /// </summary>
+        Null = 0,
+
+        /// <summary>
+        /// 范围内
+        Normal = 2,
+        /// <summary>
+        /// 小于下限
+        /// </summary>
+        Less = 1,
+        /// <summary>
+        /// 超过
+        /// </summary>
+        More = 3,
+    }
         
     
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 {
 
 
-    public class MonitorViewData
+    public class MonitorViewData : ObservableObject
     {
         /// <summary>
         /// 设定值 属性列表
@@ -148,6 +149,41 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             NodeStatusList.Add(new NodeStatus(0x14, "C相控制器"));
             
 
+        }
+
+        private string statusMessage = "";
+
+
+        /// <summary>
+        /// 状态信息
+        /// </summary>
+        public string StatusMessage
+        {
+            get
+            {
+                return statusMessage;
+            }
+            set
+            {
+                statusMessage = value;
+                RaisePropertyChanged("StatusMessage");
+                if (StatusMessage.Length > 5000)
+                {
+                    StatusMessage = "";
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 更新状态
+        /// </summary>
+        /// <param name="der">描述</param>
+        public void UpdateStatus(string  des)
+        {
+            StatusMessage += "\n";
+            StatusMessage += DateTime.Now.ToLongTimeString() + ":\n";
+            StatusMessage += des + "\n";
         }
 
 
@@ -607,14 +643,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     {
                         switch (cmd)
                         {
+                                //执行合闸
                             case CommandIdentify.SyncOrchestratorCloseAction:
                                 {
                                     node.SynActionCloseState = true;
+                                    UpdateStatus("同步控制器，执行合闸");
                                     break;
                                 }
+                                //预备合闸
                             case CommandIdentify.SyncOrchestratorReadyClose:
                                 {
                                     node.SynReadyCloseState = true;
+                                    UpdateStatus("同步控制器，预制合闸");
                                     break;
                                 }
                         }
@@ -630,6 +670,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.CloseAction://合闸执行
                                 {
                                     node.ActionCloseState = true;
+                                    UpdateStatus("A相合闸预制");
                                     break;
                                 }
                             case CommandIdentify.OpenAction: //分闸执行
@@ -681,8 +722,36 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
 
-        
-    
+
+        /// <summary>
+        /// 更新节点状态改变信息，循环心跳报告等
+        /// </summary>
+        /// <param name="mac">MAC ID</param>
+        /// <param name="data">数据</param>
+        internal void UpdateNodeStatusChange(byte mac, byte[] data)
+        {
+            var node = GetNdoe(mac);
+            if (node == null)
+            {
+                return;
+            }
+
+           switch (mac)
+           {
+               case 0x10:
+               case 0x12:
+               case 0x14:
+                   {
+                       node.UpdateSwitchStatus(data);
+                       break;
+                   }
+
+           }
+            
+
+
+
+        }
     }
     /// <summary>
     /// 参数表格索引

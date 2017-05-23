@@ -7,6 +7,7 @@ using System.Threading;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -19,11 +20,16 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     /// </summary>
     public class ControlViewModel : ViewModelBase
     {
-        private readonly byte _downAddress ;
+        private  byte _downAddress ;
        
 
         private PlatformModelServer modelServer;
 
+
+        private static string redLed =  @"../Pictures/dp1.png";
+        private static string greenLed =  @"../Pictures/green.png";
+        private static string yellowLed = @"../Pictures/yellow.png";
+        private static string offLed = @"../Pictures/off.jpg";
 
         
 
@@ -38,9 +44,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
              ActionCommand = new RelayCommand<string>(ExecuteReadyCommand);
            
-             modelServer = PlatformModelServer.GetServer();
-             _downAddress = modelServer.CommServer.DownAddress;
-
              _loopSelect = new ObservableCollection<string>();
              _loopSelect.Add("未选择");
              _loopSelect.Add("回路I");
@@ -53,24 +56,461 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _phaseSelect.Add("B相");
              _phaseSelect.Add("C相");
 
-
-             
-
-            
-
+             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
+              
         }
 
-    
+        #region 加载数据命令：LoadDataCommand
+        /// <summary>
+        /// 加载数据
+        /// </summary>
+        public RelayCommand LoadDataCommand { get; private set; }
+
+        //加载用户数据
+        void ExecuteLoadDataCommand()
+        {
+            if ( modelServer == null)
+            {
+
+                modelServer = PlatformModelServer.GetServer();
+                _downAddress = modelServer.CommServer.DownAddress;
+                modelServer.MonitorData.NodeStatusList[1].UpdateViewDelegate = ControlViewModelPhaseA;
+            }
+           
+        }
+
+        void ControlViewModelPhaseA()
+        {
+            var  status = modelServer.MonitorData.NodeStatusList[1].StatusLoopCollect;
+            UpdatePositionStatus(status, "A");
+            UpdateEnergyStatus( modelServer.MonitorData.NodeStatusList[1].EnergyStatusLoopCollect, "A");
+        }
+        void ControlViewModelPhaseB()
+        {
+            var status = modelServer.MonitorData.NodeStatusList[2].StatusLoopCollect;
+            UpdatePositionStatus(status, "B");
+            UpdateEnergyStatus(modelServer.MonitorData.NodeStatusList[2].EnergyStatusLoopCollect, "B");
+        }
+        void ControlViewModelPhaseC()
+        {
+            var status = modelServer.MonitorData.NodeStatusList[3].StatusLoopCollect;
+            UpdatePositionStatus(status, "C");
+            UpdateEnergyStatus(modelServer.MonitorData.NodeStatusList[2].EnergyStatusLoopCollect, "C");
+        }
+        void UpdatePositionStatus(StatusLoop[] status, string ph)
+        {                  
+          
+            var statusLoop = status[0];
+
+            //针对双路
+            if(status[0] == status[1])
+            {
+                UpdateWholeLedStatus(status[0], ph);                
+            }
+            else
+            {
+                //认为为故障状态
+                LedCloseA = offLed;
+                LedOpenA = offLed;
+                LedErrorA = redLed;
+            }
+            statusLoop = status[0];
+            UpdateLedStatus(status[0], ph + "1");
+
+            statusLoop = status[1];
+            UpdateLedStatus(status[1], ph + "2");
+                     
+        }
+        void UpdateEnergyStatus(EnergyStatusLoop[] status, string ph)
+        {
+           
+           if (status[0] == status[1])
+           {
+               UpdateEnerggLedStatus(status[0], ph);
+                        
+           }
+           else
+           {
+               SetLed("LedEneryA", offLed);              
+           }
+
+           UpdateEnerggLedStatus(status[0], ph + "1");
+           UpdateEnerggLedStatus(status[1], ph + "2");  
+
+
+
+
+
+        }
+        /// <summary>
+        /// 更新单只 储能LED状态
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="ph"></param>
+        void UpdateEnerggLedStatus(EnergyStatusLoop status, string ph)
+        {
+            string led = "LedEnery" + ph;
+
+            switch (status)
+            {
+                case EnergyStatusLoop.Less: //欠压
+                    {
+                        SetLed(led, yellowLed);
+                        break;
+                    }
+                case EnergyStatusLoop.Normal: //正常范围
+                    {
+                        SetLed(led, greenLed);
+                        break;
+                    }
+                case EnergyStatusLoop.More: //过压或为空
+                    {
+                        SetLed(led, redLed);
+                        break;
+                    }
+                case EnergyStatusLoop.Null:
+                    {
+                        SetLed(led, offLed);
+                        break;
+                    }
+            }
+                         
+        }
+        /// <summary>
+        /// 针对多个机构，更新整体的合位状态
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="ph"></param>
+        void UpdateWholeLedStatus(StatusLoop status, string ph)
+        {
+            string close = "LedClose" + ph;
+            string open = "LedOpen" + ph;
+            string error = "LedError" + ph;
+
+            switch (status)
+            {
+                case StatusLoop.Null:
+                case StatusLoop.Error:
+                    {
+                        SetLed(close, offLed);
+                        SetLed(open, offLed);
+                        SetLed(error, redLed);
+                        break;
+                    }
+                case StatusLoop.Close:
+                    {
+                        SetLed(close, redLed);
+                        SetLed(open, offLed);
+                        SetLed(error, offLed);
+                        break;
+                    }
+                case StatusLoop.Open:
+                    {
+                        SetLed(close, offLed);
+                        SetLed(open, greenLed);
+                        SetLed(error, offLed);
+                        break;
+                    }
+
+            }
+        }
+        /// <summary>
+        /// 更新合分位状态
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="ph"></param>
+        void UpdateLedStatus(StatusLoop status, string ph)
+        {
+            string close = "LedClose" + ph;
+            string open = "LedOpen" + ph;
+          
+
+            switch (status)
+            {
+                case StatusLoop.Null:
+                case StatusLoop.Error:
+                    {
+                        SetLed(close, offLed);
+                        SetLed(open, offLed);
+                        
+                        break;
+                    }
+                case StatusLoop.Close:
+                    {
+                        SetLed(close, redLed);
+                        SetLed(open, offLed);
+                       
+                        break;
+                    }
+                case StatusLoop.Open:
+                    {
+                        SetLed(close, offLed);
+                        SetLed(open, greenLed);
+                        
+                        break;
+                    }
+
+            }
+        }
+
+        /// <summary>
+        /// 设置LED
+        /// </summary>
+        /// <param name="led">指定等号</param>
+        /// <param name="state">led状态</param>
+        void SetLed(string led, string state)
+        {
+            switch(led)
+            {
+                case "LedCloseA1":
+                    {
+                        LedCloseA1 = state;
+                        break;
+                    }
+                case "LedCloseA2":
+                    {
+                        LedCloseA2 = state;
+                        break;
+                    }
+                case "LedOpenA1":
+                    {
+                        LedOpenA1 = state;
+                        break;
+                    }
+                case "LedOpenA2":
+                    {
+                        LedOpenA2 = state;
+                        break;
+                    }
+                case "LedCloseA":
+                    {
+                        LedCloseA= state;
+                        break;
+                    }
+                case "LedOpenA":
+                    {
+                        LedOpenA = state;
+                        break;
+                    }
+                case "LedErrorA":
+                    {
+                        LedErrorA = state;
+                        break;
+                    }
+                case "LedEneryA":
+                    {
+                        LedEneryA = state;
+                        break;
+                    }
+                case "LedEneryA1":
+                    {
+                        LedEneryA1 = state;
+                        break;
+                    }
+                case "LedEneryA2":
+                    {
+                        LedEneryA2 = state;
+                        break;
+                    }
+                    
+                default:
+                    {
+                        throw new Exception("没有指示灯");
+                    }
+
+            }
+        }
+
+
+
+
+
+
+        #endregion
+
+
+        #region 状态指示灯
+        
+         
+        private string ledCloseA1 = offLed;
+        /// <summary>
+        /// 合闸指示A1
+        /// </summary>
+        public String LedCloseA1
+        {
+            get
+            {
+                return ledCloseA1;
+            }
+            set
+            {
+                ledCloseA1 = value;
+                RaisePropertyChanged("LedCloseA1");
+            }
+        }
+        private string ledCloseA2 = offLed;
+        /// <summary>
+        /// 合闸指示A2
+        /// </summary>
+        public String LedCloseA2
+        {
+            get
+            {
+                return ledCloseA2;
+            }
+            set
+            {
+                ledCloseA2 = value;
+                RaisePropertyChanged("LedCloseA2");
+            }
+        }
+
+
+        private string ledOpenA1 = offLed;
+        /// <summary>
+        /// 分闸指示A1
+        /// </summary>
+        public String LedOpenA1
+        {
+            get
+            {
+                return ledOpenA1;
+            }
+            set
+            {
+                ledOpenA1 = value;
+                RaisePropertyChanged("LedOpenA1");
+            }
+        }
+        private string ledOpenA2 = offLed;
+        /// <summary>
+        /// 分闸指示A2
+        /// </summary>
+        public String LedOpenA2
+        {
+            get
+            {
+                return ledOpenA2;
+            }
+            set
+            {
+                ledOpenA2 = value;
+                RaisePropertyChanged("LedOpenA2");
+            }
+        }
+
+
+
+        private string ledCloseA = offLed;
+        /// <summary>
+        /// 总合闸指示
+        /// </summary>
+        public String LedCloseA
+        {
+            get
+            {
+                return ledCloseA;
+            }
+            set
+            {
+                ledCloseA = value;
+                RaisePropertyChanged("LedCloseA");
+            }
+        }
+
+
+        private string ledOpenA = offLed;
+        /// <summary>
+        /// 总分闸指示A1
+        /// </summary>
+        public String LedOpenA
+        {
+            get
+            {
+                return ledOpenA;
+            }
+            set
+            {
+                ledOpenA = value;
+                RaisePropertyChanged("LedOpenA");
+            }
+        }
+
+        private string ledErrorA = offLed;
+        /// <summary>
+        /// 故障指示A
+        /// </summary>
+        public String LedErrorA 
+        {
+            get
+            {
+                return ledErrorA;
+            }
+            set
+            {
+                ledErrorA = value;
+                RaisePropertyChanged("LedErrorA");
+            }
+        }
+        private string ledEneryA = offLed;
+        public String LedEneryA
+        {
+            get
+            {
+                return ledEneryA;
+            }
+            set
+            {
+                ledEneryA = value;
+                RaisePropertyChanged("LedEneryA");
+            }
+        }
+        private string ledEneryA1 = offLed;
+        public String LedEneryA1
+        {
+            get
+            {
+                return ledEneryA1;
+            }
+            set
+            {
+                ledEneryA1 = value;
+                RaisePropertyChanged("LedEneryA1");
+            }
+        }
+        private string ledEneryA2 = offLed;
+        public String LedEneryA2
+        {
+            get
+            {
+                return ledEneryA2;
+            }
+            set
+            {
+                ledEneryA2 = value;
+                RaisePropertyChanged("LedEneryA2");
+            }
+        }
+
+        #endregion
+
+
+
 
         #region 合分闸控制，同步预制
 
 
-      
+
 
         public RelayCommand<string> ActionCommand { get; private set; }
 
+
+      
         void ExecuteReadyCommand(string str)
         {
+
+           
+
             try
             {
                 switch (str)
@@ -94,6 +534,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                             //复位状态
                             modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
+                            modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command;
                             //此处发送控制命令                     
                             modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);                          
 
@@ -118,6 +559,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             //复位状态
                             modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
                             var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
+                            modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command;
                             //此处发送控制命令                     
                             modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);  
 
@@ -227,6 +669,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             byte t2 = (byte)(modelServer.MonitorData.GetNdoe(0x10).DelayTime1 >> 8);
             var command = new byte[] { (byte)cmd, cb, t1, t2};
             modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态
+            modelServer.MonitorData.GetNdoe(0x10).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
             Thread.Sleep(20);
 
@@ -235,7 +678,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             t1 = (byte)(modelServer.MonitorData.GetNdoe(0x12).DelayTime1 & 0x00FF);
             t2 = (byte)(modelServer.MonitorData.GetNdoe(0x12).DelayTime1 >> 8);
             command = new byte[] { (byte)cmd, cb, t1, t2 };            
-            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态          
+            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态  
+            modelServer.MonitorData.GetNdoe(0x12).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
             Thread.Sleep(20);
 
@@ -244,6 +688,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             t2 = (byte)(modelServer.MonitorData.GetNdoe(0x14).DelayTime1 >> 8);
             command = new byte[] { (byte)cmd, cb, t1, t2 };      
             modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
+            modelServer.MonitorData.GetNdoe(0x14).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
         }
       
@@ -254,12 +699,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private void SendToABC(byte[] command)
         {
             modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态
+            modelServer.MonitorData.GetNdoe(0x10).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
             Thread.Sleep(20);
-            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态          
+            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态        
+            modelServer.MonitorData.GetNdoe(0x12).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
             Thread.Sleep(20);
             modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
+            modelServer.MonitorData.GetNdoe(0x14).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
         }
      
@@ -642,6 +1090,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                 //复位状态
                 modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
+                modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command;
                 //此处发送控制命令                     
                 modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, 2 + 2*i);  
 
@@ -885,6 +1334,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  //此处发送控制命令
 
                  modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
+                 modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command.Item1;
                  modelServer.ControlNetServer.MasterSendCommand(0x0D, command.Item1, 0, command.Item2);  
 
 

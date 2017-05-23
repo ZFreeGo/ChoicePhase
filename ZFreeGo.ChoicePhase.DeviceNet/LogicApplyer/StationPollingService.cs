@@ -6,14 +6,16 @@ using ZFreeGo.ChoicePhase.DeviceNet.Element;
 
 namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
 {
-    //主站轮询，从站应答服务
+    //主站轮询，从站应答服务，从站状态变换服务
     public class StationPollingService
     {
         public event EventHandler<ArrtributesEventArgs> ArrtributesArrived;
         
         public event EventHandler<MultiFrameEventArgs> MultiFrameArrived;
 
-        public event EventHandler<ReadyActionMessage> ReadyActionArrived;
+        public event EventHandler<StatusChangeMessage> ReadyActionArrived;
+
+        public event EventHandler<StatusChangeMessage> SubStationStatusChanged;
 
         /// <summary>
         /// 异常处理委托
@@ -88,7 +90,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
 
                             if (ReadyActionArrived != null)
                             {
-                                ReadyActionArrived(this, new ReadyActionMessage(mac, serverData));
+                                ReadyActionArrived(this, new StatusChangeMessage(mac, serverData));
                             }
                             break;
                         }
@@ -104,6 +106,42 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                 ExceptionDelegate(ex);
             }
         }
+
+        /// <summary>
+        /// 从站状态改变报告
+        /// </summary>
+        /// <param name="serverData"></param>
+        /// <param name="mac"></param>
+        public void StatusChangeServer(byte[] serverData, byte mac)
+        {
+            try
+            {
+                if (serverData.Length == 0)
+                {
+                    throw new Exception("serverData.Length == 0");
+                }
+                byte ackID = serverData[0];
+                if ((ackID & 0x80) != 0x80)
+                {
+                    throw new Exception("不是应答ID|0x80");
+                }
+                byte id =(byte)(ackID & 0x7F);
+                if ((CommandIdentify)id == CommandIdentify.SubstationStatuesChange)
+                {
+                    if (SubStationStatusChanged != null)
+                    {
+                        SubStationStatusChanged(this, new StatusChangeMessage(mac, serverData));
+                    }
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                ExceptionDelegate(ex);
+            }
+        }
+
     }
 
  
@@ -111,12 +149,12 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
     /// <summary>
     /// 节点预制，执行等信息
     /// </summary>
-    public class ReadyActionMessage : EventArgs
+    public class StatusChangeMessage : EventArgs
     {
          /// <summary>
         /// MAC地址
         /// </summary>
-        public int MAC
+        public byte MAC
         {
             get;
             set;
@@ -133,7 +171,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// </summary>
         /// <param name="mac">MAC</param>
         /// <param name="serverData">服务数据</param>
-        public ReadyActionMessage(int mac, byte[] serverData)
+        public StatusChangeMessage(byte mac, byte[] serverData)
         {
             MAC = mac;
 

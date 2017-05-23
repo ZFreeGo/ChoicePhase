@@ -92,8 +92,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 RtuServer = new RtuServer(_localAddr, 500, sendRtuData, ExceptionDeal);
                 RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
 
-
-
                 _multiFrameBuffer = new List<byte>();
                 _lastIndex = 0;
 
@@ -101,6 +99,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ControlNetServer.PollingService.ArrtributesArrived += PollingService_ArrtributesArrived;
                 ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
                 ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
+                  ControlNetServer.PollingService.SubStationStatusChanged +=PollingService_SubStationStatusChanged;
 
             }
             catch(Exception ex)
@@ -110,15 +109,26 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             }
 
         }
+        
+
+        /// <summary>
+        /// 从站状态改变信息,循环报告信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PollingService_SubStationStatusChanged(object sender, StatusChangeMessage e)
+        {
+            _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data);
+        }
 
         /// <summary>
         /// 预制分闸，合闸，同步设置
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void PollingService_ReadyActionArrived(object sender, ReadyActionMessage e)
+        void PollingService_ReadyActionArrived(object sender, StatusChangeMessage e)
         {
-            
+            _monitorViewData.UpdateNodeStatus(e.MAC,  e.Data);
         }
 
 

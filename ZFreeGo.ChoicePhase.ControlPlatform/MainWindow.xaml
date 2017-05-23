@@ -6,8 +6,8 @@
         xmlns:ignore="http://www.galasoft.ch/ignore"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d ignore"
-        Height="600"
-        Width="800"
+        Height="800"
+        Width="1200" WindowStyle="SingleBorderWindow"
         Title="选相控制平台"
         DataContext="{Binding Main, Source={StaticResource Locator}}"  >
     <i:Interaction.Triggers>
@@ -30,59 +30,168 @@
     <Grid x:Name="LayoutRoot" >
 
         <Grid.ColumnDefinitions >
-            <ColumnDefinition Width="160"></ColumnDefinition>
+            <ColumnDefinition Width="0"></ColumnDefinition>
             <ColumnDefinition  Width="3*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="0"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="5"></RowDefinition>
-            <RowDefinition Height="70"></RowDefinition>
-        </Grid.RowDefinitions>       
-        <Grid Grid.Column="0" Grid.Row="0"  >
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2">
+            <Menu DockPanel.Dock="Top">                
+                <MenuItem Header="帮助">
+                    <MenuItem Header="关于CBS-I 选相合闸控制系统"></MenuItem>                    
+                </MenuItem>
+            </Menu>
+            <ToolBar DockPanel.Dock="Top" Height="40">
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock  VerticalAlignment="Center">通讯配置</TextBlock>
+                    </DockPanel>
+                    
+                </Button>
+                <Separator></Separator>
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="MonitorParameter">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock  VerticalAlignment="Center">监控参数</TextBlock>
+                    </DockPanel>
+                </Button>
+                <Separator></Separator>
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="RemoteControl">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock VerticalAlignment="Center">开关操作</TextBlock>
+                    </DockPanel>
+                </Button>
+                <Separator></Separator>
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock VerticalAlignment="Center">系统配置</TextBlock>
+                    </DockPanel>                    
+                </Button>
+                <Separator></Separator>
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock VerticalAlignment="Center">建立连接</TextBlock>
+                    </DockPanel>
+                </Button>
+                <Separator></Separator>
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock VerticalAlignment="Center">断开连接</TextBlock>
+                    </DockPanel>
+                </Button>
+                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SetpointParameter">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock VerticalAlignment="Center">定值参数</TextBlock>
+                    </DockPanel>
+                </Button>
+            </ToolBar>
+           
+        </DockPanel>
 
-            <TreeView FontFamily="雅黑" FontSize="16" Name="treeView"  >
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectedItemChanged">
-                        <i:InvokeCommandAction Command="{Binding TreeSelectedItemCommand}"  CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <TreeViewItem Header="通讯设置"  IsExpanded="True" Margin="3">
-                    <TreeViewItem Header="串口配置" Margin="3" Name="SerialPortConfig">
-                    </TreeViewItem>
-                </TreeViewItem>
-                <TreeViewItem Header="参数列表" IsExpanded="True" Margin="3">
-                    <TreeViewItem Header="定值参数" Margin="3" Name="SetpointParameter">
-                    </TreeViewItem>
-                    <TreeViewItem Header="监控数据" Margin="3" Name="MonitorParameter">
-                    </TreeViewItem>
-                   
-                </TreeViewItem>
-                <TreeViewItem Header="控制同步" Margin="3" Name="RemoteControl">
+       
 
-                </TreeViewItem>
-             
-            </TreeView>
-
-        </Grid>
-
-        <Frame Grid.Column="1" Grid.Row="0" Name="frame" Source="{Binding ShowUri}"   >
+        <Frame Grid.Column="3" Grid.Row="2" Name="frame" Source="{Binding ShowUri}"   >
 
         </Frame>
-        <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="LightBlue" Height="5"  HorizontalAlignment="Stretch"
+        <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="LightBlue" Height="5"  HorizontalAlignment="Stretch"
                       VerticalAlignment="Center" ></GridSplitter>
-        <Grid Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2">
-            <TextBox Margin="5" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"   Name="txtLinkMessage" 
+        <Grid Grid.Row="4"  Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <TabControl Grid.Column="0">
+                <TabItem Header="通讯信息" IsHitTestVisible="True">
+                </TabItem>
+                <TabItem Header="操作记录" Height="23" VerticalAlignment="Top" >
+                    <TextBox Margin="0" Background="AliceBlue"    Name="txtLinkMessage" 
                                   VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding LinkMessage}">
-                <TextBox.ContextMenu>
-                    <ContextMenu StaysOpen="True"  IsEnabled="True">
-                        <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="Send" />
-                        <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->
+                        <TextBox.ContextMenu>
+                            <ContextMenu StaysOpen="True"  IsEnabled="True">
+                                <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="Send" />
+                                <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->
 
-                    </ContextMenu>
-                </TextBox.ContextMenu>
-                
-            </TextBox>
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
+                </TabItem>
+               
+                <TabItem Header="异常">
+                </TabItem>
+            </TabControl>
+            <TabControl Grid.Column="1">
+                <TabItem Header="状态信息" >
+                    <TextBox Margin="0" Background="AliceBlue"    Name="txtStatusMessage" 
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding StatusMessage}">
+                        <TextBox.ContextMenu>
+                            <ContextMenu StaysOpen="True"  IsEnabled="True">
+                                <!--<MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="Send" />-->
+                                <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->
+
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
+
+                </TabItem>
+            </TabControl>
+            
         </Grid>
+        <StatusBar Grid.Row="5"  Height="25" Grid.ColumnSpan="2">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
 
+            <StatusBarItem Grid.Column="0">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="当前用户：" VerticalAlignment="Center" />
+                    <TextBlock Text="null" Foreground="Black" Name="currentUserName" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <StatusBarItem  Grid.Column="1">
+
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="通讯状态：" VerticalAlignment="Center" />
+                        <Ellipse Width="8" Height="8" Fill="Black" Name="ComShowIndicate"></Ellipse>
+                        <TextBlock Text="通讯暂停" Foreground="Black" Name="ComShow" />
+                    </StackPanel>
+
+                    <StackPanel Margin="10,0,0,0"  Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Text="设备状态：" VerticalAlignment="Center" />
+                        <Ellipse Width="8" Height="8" Fill="Red" Name="DeviceStateShowIndicate"></Ellipse>
+                        <TextBlock Text="设备离线" VerticalAlignment="Center" Foreground="Red"  Name="DeviceStateShow" ></TextBlock>
+                    </StackPanel>
+
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem  Grid.Column="2">
+                <StackPanel Orientation="Horizontal" >
+
+                    <Image  Source="pictures/SOJO.jpg"></Image>                  
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
