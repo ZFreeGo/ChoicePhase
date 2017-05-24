@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ignore="http://www.galasoft.ch/ignore"
-             StartupUri="view/StartupInterface.xaml"
+             StartupUri="MainWindow.xaml"
              mc:Ignorable="d ignore">
-    <!--StartupUri="MainWindow.xaml"-->
+    <!--StartupUri="MainWindow.xaml view/StartupInterface.xaml"-->
     <Application.Resources>
         <!--Global View Model Locator-->
         <vm:ViewModelLocator x:Key="Locator"

@@ -53,6 +53,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.StartupUI
                 {
                     txtLoginUser.Text = user.UserName;
                 }
+               
+               
+               
+               
+
             }
             catch(Exception ex)
             {

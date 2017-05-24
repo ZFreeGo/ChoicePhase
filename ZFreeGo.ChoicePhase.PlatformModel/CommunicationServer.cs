@@ -85,12 +85,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             }
             set
             {
-                rawReciveMessage = value;
-                RaisePropertyChanged("RawReciveMessage");
-                if (rawReciveMessage.Length > 10000)
+                if (rawReciveMessage.Length > 5000)
                 {
                     rawReciveMessage = "";
                 }
+                rawReciveMessage = value;
+                RaisePropertyChanged("RawReciveMessage");
+                
 
             }
         }
@@ -107,7 +108,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             }
             set
             {
+                if (rawReciveMessage.Length > 5000)
+                {
+                    rawReciveMessage = "";
+                }
                 rawSendMessage = value;
+                
                 RaisePropertyChanged("RawSendMessage");
 
             }

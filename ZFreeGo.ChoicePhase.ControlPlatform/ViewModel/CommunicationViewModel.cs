@@ -14,6 +14,7 @@ using System.Text;
 using System.Collections.Generic;
 using ZFreeGo.ChoicePhase.Modbus;
 using System.IO.Ports;
+using System.Windows.Media;
 
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -273,6 +274,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ParityBit[SelectedIndexParity].Paramer, StopBit[SelectedIndexStopBit].Paramer);
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
+                            modelServer.MonitorData.StatusBar.SetCom(true);
+
+                            
                             break;
                         }
                     case "CloseSerial":
@@ -280,6 +284,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             modelServer.CommServer.CommonServer.Close();
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
+                            modelServer.MonitorData.StatusBar.SetCom(false);
+                            
                             break;
                         }
               

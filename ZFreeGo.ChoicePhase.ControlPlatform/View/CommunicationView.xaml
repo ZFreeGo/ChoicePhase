@@ -149,26 +149,8 @@
           
 
 
-            <TextBox Margin="5" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"   
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawSendMessage}">
-                <TextBox.ContextMenu>
-                    <ContextMenu StaysOpen="True"  IsEnabled="True">
-                        <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="Send" />
-                        <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->                      
-                        
-                    </ContextMenu>
-                </TextBox.ContextMenu>
-            </TextBox>
-            <TextBox Margin="5" Background="AliceBlue" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"   
-                                  VerticalScrollBarVisibility="Visible"  TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawReciveMessage}">
-                <TextBox.ContextMenu>
-                    <ContextMenu StaysOpen="True"  IsEnabled="True">
-                        <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="Receive"/>
-                        <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->
-
-                    </ContextMenu>
-                </TextBox.ContextMenu>
-            </TextBox>
+            
+            
         </Grid>
         <Grid Grid.Row="1" >
             <StackPanel Grid.Column="1" Grid.Row="0">             

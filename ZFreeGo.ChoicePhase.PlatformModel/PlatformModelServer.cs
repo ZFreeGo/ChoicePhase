@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media;
 using ZFreeGo.ChoicePhase.DeviceNet;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
@@ -99,7 +101,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ControlNetServer.PollingService.ArrtributesArrived += PollingService_ArrtributesArrived;
                 ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
                 ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
-                  ControlNetServer.PollingService.SubStationStatusChanged +=PollingService_SubStationStatusChanged;
+                ControlNetServer.PollingService.SubStationStatusChanged +=PollingService_SubStationStatusChanged;
+
+                ControlNetServer.StationArrived +=ControlNetServer_StationArrived;
+
+
+                FlashDelegate = ar =>
+                {
+                    if (ar)
+                    {
+                       
+                        MonitorData.StatusBar.ComBrush = new System.Windows.Media.SolidColorBrush(Colors.Green);
+                    }
+                    else
+                    {
+                       
+                        MonitorData.StatusBar.ComBrush = new System.Windows.Media.SolidColorBrush(Colors.Red);
+                    }
+                };
 
             }
             catch(Exception ex)
@@ -108,6 +127,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ZFreeGo.Common.LogTrace.CLog.LogError(ex.StackTrace);
             }
 
+        }
+
+        private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        /// <summary>
+        /// 连接信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ControlNetServer_StationArrived(object sender, StationEventArgs e)
+        {
+            Task.Factory.StartNew(() => _monitorViewData.UpdateStationStatus(e.Station),
+                    new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
+           ;
         }
         
 
@@ -160,8 +192,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             {
 
                 //TODO:显示
-                CommServer.LinkMessage += "\n\n" + DateTime.Now.ToLongTimeString() + "  多帧接收:\n";
-                CommServer.LinkMessage += "接收完成"+ "\n";
+                MonitorData.StatusMessage += "\n\n" + DateTime.Now.ToLongTimeString() + "  多帧接收:\n";
+                MonitorData.StatusMessage += "接收完成"+ "\n";
                 //适当处理
                 StringBuilder stb = new StringBuilder(_multiFrameBuffer.Count*4);
                 if (_multiFrameBuffer.Count % 2 == 0)
@@ -170,8 +202,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                     {
                         stb.AppendFormat("{0},", _multiFrameBuffer[i] + 256*_multiFrameBuffer[i + 1]);
                     }
-                    CommServer.LinkMessage += "\n\n" + "  有效数据:\n";
-                    CommServer.LinkMessage += stb.ToString() + "\n";
+                    MonitorData.StatusMessage += "\n\n" + "  有效数据:\n";
+                    MonitorData.StatusMessage += stb.ToString() + "\n";
                 }
             }
 
@@ -264,6 +296,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             return can;
 
         }
+        bool flag = false;
+        Action<bool> FlashDelegate;
         /// <summary>
         /// 通讯数据到达
         /// </summary>
@@ -273,13 +307,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             RtuServer.AddBuffer(e.SerialData);
             CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);
+            
+             
         }
 
         void ExceptionDeal(Exception ex)
         {
-            CommServer.LinkMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
-            CommServer.LinkMessage += ex.Message;
-            CommServer.LinkMessage += ex.StackTrace;
+            MonitorData.ExceptionMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
+            MonitorData.ExceptionMessage += ex.Message;
+            MonitorData.ExceptionMessage += ex.StackTrace;
             
         }
 

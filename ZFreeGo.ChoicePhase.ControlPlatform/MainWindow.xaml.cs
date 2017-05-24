@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Windows;
+using System.Windows.Media;
 using ZFreeGo.ChoicePhase.ControlPlatform.ViewModel;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform
@@ -24,6 +25,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
             //注册MVVMLight消息
             Messenger.Default.Register<string>(this, "ShowUserView", ShowUserView);
             Messenger.Default.Register<Exception>(this, "ExceptionMessage", ExceptionMessage);
+      
+          
            
         }
 
@@ -64,11 +67,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
         }
 
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-           
-           
-        }
+      
 
       
     }

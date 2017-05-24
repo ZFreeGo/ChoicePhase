@@ -3,7 +3,9 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ZFreeGo.ChoicePhase.PlatformModel;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -27,6 +29,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             TreeSelectedItemCommand = new RelayCommand<string>(ExecuteTreeSelectedItemCommand);
             ClosingCommand = new RelayCommand(ExecuteClosingCommand);
             ClearText = new RelayCommand<string>(ExecuteClearText);
+            ExecuteLoadDataCommand();
         }
 
 
@@ -39,10 +42,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         //加载用户数据
         void ExecuteLoadDataCommand()
         {
-            modelServer = PlatformModelServer.GetServer();
-            modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
+            if (modelServer == null)
+            {
+                modelServer = PlatformModelServer.GetServer();
+                modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
+                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;
+            }
             
-           
+        }
+
+        void MonitorData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
         }
 
         private void ServerInformation_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -157,14 +168,65 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             get
             {
-
                 return modelServer.MonitorData.StatusMessage;
             }
             set
             {
                 modelServer.MonitorData.StatusMessage = value;
                 RaisePropertyChanged("StatusMessage");
+                
+            }
+        }
+        public string ExceptionMessage
+        {
+            get
+            {
+                return modelServer.MonitorData.ExceptionMessage;
+            }
+            set
+            {
+                modelServer.MonitorData.ExceptionMessage = value;
+                RaisePropertyChanged("ExceptionMessage");
+            }
+        }
 
+      
+        /// <summary>
+        /// 连接信息
+        /// </summary>
+        public string RawSendMessage
+        {
+            get
+            {
+                
+               
+               
+                return modelServer.CommServer.RawSendMessage;
+            }
+            set
+            {
+                modelServer.CommServer.RawSendMessage = value;
+               
+                RaisePropertyChanged("RawSendMessage");
+                
+
+
+            }
+        }
+        public string RawReciveMessage
+        {
+            get
+            {
+                
+              
+                return modelServer.CommServer.RawReciveMessage;
+            }
+            set
+            {
+
+                modelServer.CommServer.RawReciveMessage = value;
+                RaisePropertyChanged("RawReciveMessage");
+                
             }
         }
         #region ClearText
@@ -174,7 +236,37 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                LinkMessage = "";
+                switch (name)
+                {
+                    case "RawSendMessage": //原始发送信息
+                        {
+                            RawSendMessage = "";
+                            break;
+                        }
+                    case "RawReciveMessage": //原始接收信息
+                        {
+                            RawReciveMessage = "";
+                            break;
+                        }
+                    case "LinkMessage": //链路信息
+                        {
+                            LinkMessage = "";
+                            break;
+                        }
+                    case "StatusMessage": //状态信息
+                        {
+                            StatusMessage = "";
+                            break;
+                        }
+                    case "ExceptionMessage":
+                        {
+                            ExceptionMessage = "";
+                            break;
+                        }
+                        
+                }
+
+               
             }
             catch (Exception ex)
             {
@@ -182,6 +274,22 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
         #endregion
+
+        
+        public StatusBarMessage StatusBar
+        {
+            get
+            {
+                return modelServer.MonitorData.StatusBar;
+            }
+            set
+            {
+                modelServer.MonitorData.StatusBar = value;
+                RaisePropertyChanged("StatusBar");
+            }
+        }
+
+
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed

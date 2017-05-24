@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -111,7 +112,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             set;
         }
 
-
+        /// <summary>
+        /// 更新视图委托
+        /// </summary>
         public Action UpdateViewDelegate;
 
 
@@ -150,9 +153,69 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("EnergyStatusLoopCollect");
             }
         }
+        /// <summary>
+        /// 超时时间默认为3000 ms
+        /// </summary>
+        public int OverTimeMs
+        {
+            get;
+            private set;
+        }
+
+
+        /// <summary>
+        /// 超时定时器--循环判断是否有接收数据
+        /// </summary>
+        private OverTimeTimer overTimerCycle;
+
+
+        /// <summary>
+        /// 循环接收状态，超时处理委托
+        /// </summary>
+        public Action CycleOverTimeDelegate;
+
+
         
 
+        /// <summary>
+        /// 循环接收状态，超时处理
+        /// </summary>
+        private void CycleOverTime()
+        {
+            if (CycleOverTimeDelegate != null)
+            {
+                CycleOverTimeDelegate();
+            }
+        }
+        /// <summary>
+        /// 更新同步状态
+        /// </summary>
+        /// <param name="statusByte"></param>
+        public void UpdateSynStatus(byte[] statusByte)
+        {
+            //判断长度
+            if (statusByte.Length != 6)
+            {
+                return;
+            }
+            for (int k = 0; k < 4; k++)
+            {
+                StatusLoopCollect[k] = (StatusLoop)((statusByte[1] >> (2 * k)) & (0x03));
+            }
+            for (int k = 0; k < 4; k++)
+            {
+                EnergyStatusLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
+            }
 
+
+
+            if (UpdateViewDelegate != null)
+            {
+                UpdateViewDelegate();
+            }
+
+            overTimerCycle.ReStartTimer();
+        }
        
         /// <summary>
         /// 更新开关状态
@@ -173,10 +236,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 EnergyStatusLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
             }
+
+
+
             if (UpdateViewDelegate != null)
             {
                 UpdateViewDelegate();
             }
+
+            overTimerCycle.ReStartTimer();
         }
 
 
@@ -248,7 +316,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         /// </summary>
         /// <param name="mac">MAC地址</param>
         /// <param name="name">名称</param>
-        public NodeStatus(byte mac, string name)
+        /// <param name="overMs">超时时间ms</param>
+        public NodeStatus(byte mac, string name, int overMs)
         {
             Mac = mac;
             Name = name;
@@ -264,7 +333,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 EnergyStatusLoopCollect[i] = DataItemSet.EnergyStatusLoop.Null;
             }
+            OverTimeMs = overMs;
+            overTimerCycle = new OverTimeTimer(OverTimeMs, CycleOverTime);
+
         }
+
+        
 
     }
 

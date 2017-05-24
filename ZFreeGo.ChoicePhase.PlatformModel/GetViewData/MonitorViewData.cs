@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
@@ -143,13 +144,29 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
             NodeStatusList = new ObservableCollection<NodeStatus>();
-            NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器"));
-            NodeStatusList.Add(new NodeStatus(0x10, "A相控制器"));
-            NodeStatusList.Add(new NodeStatus(0x12, "B相控制器"));
-            NodeStatusList.Add(new NodeStatus(0x14, "C相控制器"));
-            
+            NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器", 3000));
+            NodeStatusList.Add(new NodeStatus(0x10, "A相控制器", 3000));
+            NodeStatusList.Add(new NodeStatus(0x12, "B相控制器", 3000));
+            NodeStatusList.Add(new NodeStatus(0x14, "C相控制器", 3000));
+
+            NodeStatusList[0].CycleOverTimeDelegate = SynControllerOverTime;
+
+
+            StatusBar = new StatusBarMessage("Admin");
 
         }
+
+        /// <summary>
+        /// 同步控制器超时处理
+        /// </summary>
+        private void SynControllerOverTime()
+        {
+            var comment = "同步控制超时离线";
+            StatusBar.SetSyn(false, comment);
+            UpdateStatus(comment);
+        }
+
+
 
         private string statusMessage = "";
 
@@ -175,6 +192,44 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
+        private string exceptionMessage = "";
+
+
+        /// <summary>
+        /// 异常
+        /// </summary>
+        public string ExceptionMessage
+        {
+            get
+            {
+                return exceptionMessage;
+            }
+            set
+            {
+                exceptionMessage = value;
+                RaisePropertyChanged("ExceptionMessage");
+                if (exceptionMessage.Length > 5000)
+                {
+                    exceptionMessage = "";
+                }
+            }
+        }
+
+
+        private StatusBarMessage statusBar ;
+        public StatusBarMessage StatusBar
+        {
+            get
+            {
+                return statusBar;
+            }
+            set
+            {
+                statusBar = value;
+                RaisePropertyChanged("StatusBar");
+            }
+        }
+
         /// <summary>
         /// 更新状态
         /// </summary>
@@ -184,6 +239,34 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             StatusMessage += "\n";
             StatusMessage += DateTime.Now.ToLongTimeString() + ":\n";
             StatusMessage += des + "\n";
+        }
+        public void UpdateStatus(byte mac,string des)
+        {
+            switch(mac)
+            {
+                case 0x10:
+                    {
+                        UpdateStatus("A相:" + des);
+                        break;
+                    }
+                case 0x12:
+                    {
+                        UpdateStatus("B相:" + des);
+                        break;
+                    }
+                case 0x14:
+                    {
+                        UpdateStatus("C相:" + des);
+                        break;
+                    }
+                default:
+                    {
+                        UpdateStatus(des);
+                        break;
+                    }
+
+            }
+            
         }
 
 
@@ -670,26 +753,30 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.CloseAction://合闸执行
                                 {
                                     node.ActionCloseState = true;
-                                    UpdateStatus("A相合闸预制");
+                                    UpdateStatus(mac, "合闸执行");
                                     break;
                                 }
                             case CommandIdentify.OpenAction: //分闸执行
                                 {
                                     node.ActionOpenState = true;
+                                    UpdateStatus(mac, "分闸预制");
                                     break;
                                 }
                             case CommandIdentify.ReadyClose: // 合闸预制
                                 {
                                     node.ReadyCloseState = true;
+                                    UpdateStatus(mac, "合闸预制");
                                     break;
                                 }
                             case CommandIdentify.ReadyOpen:  //分闸预制                   
                                 {
                                     node.ReadyOpenState = true;
+                                    UpdateStatus(mac, "分闸预制");
                                     break;
                                 }
                             case CommandIdentify.SyncReadyClose:  //同步合闸预制 
                                 {
+                                    UpdateStatus(mac, "同步合闸预制");
                                     node.SynReadyCloseState = true;
                                     break;
                                 }
@@ -738,6 +825,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
            switch (mac)
            {
+               case 0x0D:
+                   {
+                       break;
+                   }
                case 0x10:
                case 0x12:
                case 0x14:
@@ -752,6 +843,90 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
         }
+
+        /// <summary>
+        /// 更新站点信息
+        /// </summary>
+        /// <param name="defStationInformation"></param>
+        internal void UpdateStationStatus(DeviceNet.Element.DefStationInformation defStationInformation)
+        {
+            Action<bool, string> action;
+            string comment = "";
+
+
+            switch(defStationInformation.MacID)
+            {
+                
+                case 0x0d:
+                    {
+                        action = statusBar.SetSyn;
+                        comment = "同步控制器";
+                        break;
+                    }
+                case 0x10:
+                    {
+                        action = statusBar.SetPhaseA;
+                        comment = "A相";
+                        break;
+                    }
+                case 0x12:
+                    {
+                        action = statusBar.SetPhaseB;
+                        comment = "B相";
+                        break;
+                    }
+                case 0x14:
+                    {
+                        action = statusBar.SetPhaseC;
+                        comment = "C相";
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+            switch(defStationInformation.Step)
+            {
+                case NetStep.Start:
+                    {
+                        comment += "启动连接";
+                        action(false, comment);
+                        break;
+                    }
+                case NetStep.Linking:
+                    {
+                        comment += "建立显示连接";
+                        action(true, comment);
+                        break;
+                    }
+                case NetStep.StatusChange:
+                    {
+                        comment += "建立状态变化连接";
+                        action(true, comment);
+                        break;
+                    }
+                case NetStep.Cycle:
+                    {
+                        comment += "在线";
+                        action(true, comment);
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+
+            }
+
+            UpdateStatus(comment);
+
+
+
+        }
+        
+
+
     }
     /// <summary>
     /// 参数表格索引

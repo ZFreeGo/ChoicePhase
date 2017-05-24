@@ -26,7 +26,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private PlatformModelServer modelServer;
 
 
-        private static string redLed =  @"../Pictures/dp1.png";
+        private static string redLed =  @"../Pictures/red.png";
         private static string greenLed =  @"../Pictures/green.png";
         private static string yellowLed = @"../Pictures/yellow.png";
         private static string offLed = @"../Pictures/off.jpg";
@@ -57,6 +57,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _phaseSelect.Add("C相");
 
              LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
+             ExecuteLoadDataCommand();
               
         }
 
@@ -75,9 +76,24 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer = PlatformModelServer.GetServer();
                 _downAddress = modelServer.CommServer.DownAddress;
                 modelServer.MonitorData.NodeStatusList[1].UpdateViewDelegate = ControlViewModelPhaseA;
+                modelServer.MonitorData.NodeStatusList[1].CycleOverTimeDelegate = OverTimeCycleA;
+
+
+                modelServer.MonitorData.NodeStatusList[2].UpdateViewDelegate = ControlViewModelPhaseB;
+                modelServer.MonitorData.NodeStatusList[2].CycleOverTimeDelegate = OverTimeCycleB;
+
+                modelServer.MonitorData.NodeStatusList[3].UpdateViewDelegate = ControlViewModelPhaseC;
+                modelServer.MonitorData.NodeStatusList[3].CycleOverTimeDelegate = OverTimeCycleC;
+
+
             }
            
         }
+
+        #endregion
+
+
+        #region 指示灯操作
 
         void ControlViewModelPhaseA()
         {
@@ -97,6 +113,57 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             UpdatePositionStatus(status, "C");
             UpdateEnergyStatus(modelServer.MonitorData.NodeStatusList[2].EnergyStatusLoopCollect, "C");
         }
+
+        void OverTimeCycleA()
+        {
+            LedCloseA1 = offLed;
+            LedOpenA1 = offLed;            
+            LedEneryA1 = offLed;
+            LedCloseA2 = offLed;
+            LedOpenA2 = offLed;
+            LedEneryA2 = offLed;
+
+            LedCloseA = offLed;
+            LedOpenA = offLed;
+            LedErrorA = redLed;
+            LedEneryA = offLed;
+
+            modelServer.MonitorData.StatusBar.SetPhaseA(false, "");
+            modelServer.MonitorData.UpdateStatus("A相超时离线");
+
+        }
+        void OverTimeCycleB()
+        {
+            LedCloseB1 = offLed;
+            LedOpenB1 = offLed;
+            LedEneryB1 = offLed;
+            LedCloseB2 = offLed;
+            LedOpenB2 = offLed;
+            LedEneryB2 = offLed;
+
+            LedCloseB = offLed;
+            LedOpenB = offLed;
+            LedErrorB = redLed;
+            LedEneryB = offLed;
+            modelServer.MonitorData.StatusBar.SetPhaseB(false, "");
+            modelServer.MonitorData.UpdateStatus("B相超时离线");
+        }
+        void OverTimeCycleC()
+        {
+            LedCloseC1 = offLed;
+            LedOpenC1 = offLed;
+            LedEneryC1 = offLed;
+            LedCloseC2 = offLed;
+            LedOpenC2 = offLed;
+            LedEneryC2 = offLed;
+
+            LedCloseC = offLed;
+            LedOpenC = offLed;
+            LedErrorC = redLed;
+            LedEneryC = offLed;
+            modelServer.MonitorData.StatusBar.SetPhaseC(false, "");
+            modelServer.MonitorData.UpdateStatus("C相超时离线");
+        }
         void UpdatePositionStatus(StatusLoop[] status, string ph)
         {                  
           
@@ -110,9 +177,13 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             else
             {
                 //认为为故障状态
-                LedCloseA = offLed;
-                LedOpenA = offLed;
-                LedErrorA = redLed;
+               // LedCloseA = offLed;
+                //LedOpenA = offLed;
+                //LedErrorA = redLed;
+                SetLed("LedClose" + ph, offLed);
+                SetLed("LedOpen" + ph, offLed);
+                SetLed("LedError" + ph, offLed);
+
             }
             statusLoop = status[0];
             UpdateLedStatus(status[0], ph + "1");
@@ -131,7 +202,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
            }
            else
            {
-               SetLed("LedEneryA", offLed);              
+               SetLed("LedEnery" + ph, offLed);              
            }
 
            UpdateEnerggLedStatus(status[0], ph + "1");
@@ -312,7 +383,106 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         LedEneryA2 = state;
                         break;
                     }
-                    
+                case "LedCloseB1":
+                    {
+                        LedCloseB1 = state;
+                        break;
+                    }
+                case "LedCloseB2":
+                    {
+                        LedCloseB2 = state;
+                        break;
+                    }
+                case "LedOpenB1":
+                    {
+                        LedOpenB1 = state;
+                        break;
+                    }
+                case "LedOpenB2":
+                    {
+                        LedOpenB2 = state;
+                        break;
+                    }
+                case "LedCloseB":
+                    {
+                        LedCloseB = state;
+                        break;
+                    }
+                case "LedOpenB":
+                    {
+                        LedOpenB = state;
+                        break;
+                    }
+                case "LedErrorB":
+                    {
+                        LedErrorB = state;
+                        break;
+                    }
+                case "LedEneryB":
+                    {
+                        LedEneryB = state;
+                        break;
+                    }
+                case "LedEneryB1":
+                    {
+                        LedEneryB1 = state;
+                        break;
+                    }
+                case "LedEneryB2":
+                    {
+                        LedEneryB2 = state;
+                        break;
+                    }
+                case "LedCloseC1":
+                    {
+                        LedCloseC1 = state;
+                        break;
+                    }
+                case "LedCloseC2":
+                    {
+                        LedCloseC2 = state;
+                        break;
+                    }
+                case "LedOpenC1":
+                    {
+                        LedOpenC1 = state;
+                        break;
+                    }
+                case "LedOpenC2":
+                    {
+                        LedOpenC2 = state;
+                        break;
+                    }
+                case "LedCloseC":
+                    {
+                        LedCloseC = state;
+                        break;
+                    }
+                case "LedOpenC":
+                    {
+                        LedOpenC = state;
+                        break;
+                    }
+                case "LedErrorC":
+                    {
+                        LedErrorC = state;
+                        break;
+                    }
+                case "LedEneryC":
+                    {
+                        LedEneryC = state;
+                        break;
+                    }
+                case "LedEneryC1":
+                    {
+                        LedEneryC1 = state;
+                        break;
+                    }
+                case "LedEneryC2":
+                    {
+                        LedEneryC2 = state;
+                        break;
+                    } 
                 default:
                     {
                         throw new Exception("没有指示灯");
@@ -329,7 +499,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         #endregion
 
 
-        #region 状态指示灯
+        #region 状态指示灯 A相
         
          
         private string ledCloseA1 = offLed;
@@ -493,9 +663,335 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
         #endregion
+        #region 状态指示灯 B相
+
+
+        private string ledCloseB1 = offLed;
+        /// <summary>
+        /// 合闸指示B1
+        /// </summary>
+        public String LedCloseB1
+        {
+            get
+            {
+                return ledCloseB1;
+            }
+            set
+            {
+                ledCloseB1 = value;
+                RaisePropertyChanged("LedCloseB1");
+            }
+        }
+        private string ledCloseB2 = offLed;
+        /// <summary>
+        /// 合闸指示B2
+        /// </summary>
+        public String LedCloseB2
+        {
+            get
+            {
+                return ledCloseB2;
+            }
+            set
+            {
+                ledCloseB2 = value;
+                RaisePropertyChanged("LedCloseB2");
+            }
+        }
+
+
+        private string ledOpenB1 = offLed;
+        /// <summary>
+        /// 分闸指示B1
+        /// </summary>
+        public String LedOpenB1
+        {
+            get
+            {
+                return ledOpenB1;
+            }
+            set
+            {
+                ledOpenB1 = value;
+                RaisePropertyChanged("LedOpenB1");
+            }
+        }
+        private string ledOpenB2 = offLed;
+        /// <summary>
+        /// 分闸指示B2
+        /// </summary>
+        public String LedOpenB2
+        {
+            get
+            {
+                return ledOpenB2;
+            }
+            set
+            {
+                ledOpenB2 = value;
+                RaisePropertyChanged("LedOpenB2");
+            }
+        }
 
 
 
+        private string ledCloseB = offLed;
+        /// <summary>
+        /// 总合闸指示
+        /// </summary>
+        public String LedCloseB
+        {
+            get
+            {
+                return ledCloseB;
+            }
+            set
+            {
+                ledCloseB = value;
+                RaisePropertyChanged("LedCloseB");
+            }
+        }
+
+
+        private string ledOpenB = offLed;
+        /// <summary>
+        /// 总分闸指示B1
+        /// </summary>
+        public String LedOpenB
+        {
+            get
+            {
+                return ledOpenB;
+            }
+            set
+            {
+                ledOpenB = value;
+                RaisePropertyChanged("LedOpenB");
+            }
+        }
+
+        private string ledErrorB = offLed;
+        /// <summary>
+        /// 故障指示B
+        /// </summary>
+        public String LedErrorB
+        {
+            get
+            {
+                return ledErrorB;
+            }
+            set
+            {
+                ledErrorB = value;
+                RaisePropertyChanged("LedErrorB");
+            }
+        }
+        private string ledEneryB = offLed;
+        public String LedEneryB
+        {
+            get
+            {
+                return ledEneryB;
+            }
+            set
+            {
+                ledEneryB = value;
+                RaisePropertyChanged("LedEneryB");
+            }
+        }
+        private string ledEneryB1 = offLed;
+        public String LedEneryB1
+        {
+            get
+            {
+                return ledEneryB1;
+            }
+            set
+            {
+                ledEneryB1 = value;
+                RaisePropertyChanged("LedEneryB1");
+            }
+        }
+        private string ledEneryB2 = offLed;
+        public String LedEneryB2
+        {
+            get
+            {
+                return ledEneryB2;
+            }
+            set
+            {
+                ledEneryB2 = value;
+                RaisePropertyChanged("LedEneryB2");
+            }
+        }
+
+        #endregion
+
+        #region 状态指示灯 C相
+
+
+        private string ledCloseC1 = offLed;
+        /// <summary>
+        /// 合闸指示C1
+        /// </summary>
+        public String LedCloseC1
+        {
+            get
+            {
+                return ledCloseC1;
+            }
+            set
+            {
+                ledCloseC1 = value;
+                RaisePropertyChanged("LedCloseC1");
+            }
+        }
+        private string ledCloseC2 = offLed;
+        /// <summary>
+        /// 合闸指示C2
+        /// </summary>
+        public String LedCloseC2
+        {
+            get
+            {
+                return ledCloseC2;
+            }
+            set
+            {
+                ledCloseC2 = value;
+                RaisePropertyChanged("LedCloseC2");
+            }
+        }
+
+
+        private string ledOpenC1 = offLed;
+        /// <summary>
+        /// 分闸指示C1
+        /// </summary>
+        public String LedOpenC1
+        {
+            get
+            {
+                return ledOpenC1;
+            }
+            set
+            {
+                ledOpenC1 = value;
+                RaisePropertyChanged("LedOpenC1");
+            }
+        }
+        private string ledOpenC2 = offLed;
+        /// <summary>
+        /// 分闸指示C2
+        /// </summary>
+        public String LedOpenC2
+        {
+            get
+            {
+                return ledOpenC2;
+            }
+            set
+            {
+                ledOpenC2 = value;
+                RaisePropertyChanged("LedOpenC2");
+            }
+        }
+
+
+
+        private string ledCloseC = offLed;
+        /// <summary>
+        /// 总合闸指示
+        /// </summary>
+        public String LedCloseC
+        {
+            get
+            {
+                return ledCloseC;
+            }
+            set
+            {
+                ledCloseC = value;
+                RaisePropertyChanged("LedCloseC");
+            }
+        }
+
+
+        private string ledOpenC = offLed;
+        /// <summary>
+        /// 总分闸指示C1
+        /// </summary>
+        public String LedOpenC
+        {
+            get
+            {
+                return ledOpenC;
+            }
+            set
+            {
+                ledOpenC = value;
+                RaisePropertyChanged("LedOpenC");
+            }
+        }
+
+        private string ledErrorC = offLed;
+        /// <summary>
+        /// 故障指示C
+        /// </summary>
+        public String LedErrorC
+        {
+            get
+            {
+                return ledErrorC;
+            }
+            set
+            {
+                ledErrorC = value;
+                RaisePropertyChanged("LedErrorC");
+            }
+        }
+        private string ledEneryC = offLed;
+        public String LedEneryC
+        {
+            get
+            {
+                return ledEneryC;
+            }
+            set
+            {
+                ledEneryC = value;
+                RaisePropertyChanged("LedEneryC");
+            }
+        }
+        private string ledEneryC1 = offLed;
+        public String LedEneryC1
+        {
+            get
+            {
+                return ledEneryC1;
+            }
+            set
+            {
+                ledEneryC1 = value;
+                RaisePropertyChanged("LedEneryC1");
+            }
+        }
+        private string ledEneryC2 = offLed;
+        public String LedEneryC2
+        {
+            get
+            {
+                return ledEneryC2;
+            }
+            set
+            {
+                ledEneryC2 = value;
+                RaisePropertyChanged("LedEneryC2");
+            }
+        }
+
+        #endregion
 
         #region 合分闸控制，同步预制
 

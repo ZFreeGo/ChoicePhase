@@ -24,6 +24,9 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
 
         private CodeDictionary _codeDictionary;
 
+        public event EventHandler<StationEventArgs> StationArrived;
+
+
         Thread ThreadWork;
         /// <summary>
         /// 发送委托
@@ -34,8 +37,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
        /// 主站轮询，从站应答服务。 IO报文 GROUP1_POLL_STATUS_CYCLER_ACK
        /// </summary>
         public StationPollingService PollingService;
-
-
+        
 
         /// <summary>
         /// 异常处理委托
@@ -222,18 +224,21 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                         {
                             EstablishConnection(station, (byte)LinkConnectType.VisibleMessage); //建立显示连接 
 
+                           
+
                             break;
                         }
                     case NetStep.Linking:
                         {
                             EstablishConnection(station, (byte)LinkConnectType.StatusChange);
 
+
                             break;
                         }
                     case NetStep.StatusChange:
                         {
                             EstablishConnection(station, (byte)LinkConnectType.CycleInquiry);
-
+                            
                             break;
                         }
                     case NetStep.Cycle:
@@ -241,6 +246,9 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                             break;
                         }
                 }
+
+               
+
             }
             catch(Exception ex)
             {
@@ -508,6 +516,9 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                     {
                         station.Step = NetStep.Cycle;
                         station.Complete = true;
+                        
+                        
+
                     }
                     else if ((station.State & (byte)LinkConnectType.StatusChange) == (byte)LinkConnectType.StatusChange) //建立状态改变连接
                     {
@@ -521,7 +532,11 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                     }
                     else
                     {
-                        //报错
+                        throw new Exception("未识别的建立连接服务");
+                    }
+                    if (StationArrived != null)
+                    {
+                        StationArrived(this, new StationEventArgs(station));
                     }
                 }
                 else if (serverCode == CodeDictionary.ServerCode["SVC_RELEASE_GROUP2_IDENTIFIER_SET"])
@@ -541,7 +556,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             }
             catch(Exception ex)
             {
-                throw ex;
+                ExceptionDelegate(ex);
             }
         }
         #endregion 
@@ -566,6 +581,22 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             }
         }
     }
+
+    /// <summary>
+    /// 站信息
+    /// </summary>
+    public class StationEventArgs: EventArgs
+    {
+        public DefStationInformation Station;
+
+        
+
+        public StationEventArgs(DefStationInformation station)
+        {
+            Station = station;
+        }
+    }
+
 
     /// <summary>
     /// 连接类型
