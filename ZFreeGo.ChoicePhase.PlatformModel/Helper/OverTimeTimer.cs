@@ -9,10 +9,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
     /// <summary>
     /// 超时定时器
     /// </summary>
+    /// 
     public class OverTimeTimer
     {
+
+        private int id = 0;
         private Timer timer;
         private Action delegateAction;
+
+        static int ID= 0;
 
         private int overTime;
         /// <summary>
@@ -25,6 +30,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
             this.overTime = overT;
             delegateAction = action;
             timer = new Timer(overTime);
+            ID++;
+            id = ID;
 
         }
 
@@ -34,6 +41,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
             timer.Stop();
             timer.Close();
             delegateAction();
+          // Console.WriteLine("Stop:" + id.ToString() + ":" + DateTime.Now.ToString("HH:MM:fff"));
+
         }
         /// <summary>
         /// 复位定时器重新开始计时
@@ -44,8 +53,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
             if (timer != null)
             {
                 timer.Enabled = false;
+                timer.Elapsed -= timer_Elapsed;
                 timer.Stop();
                 timer.Close();
+                timer.Dispose();
+                
             }
 
             timer = new Timer(overTime);
@@ -53,6 +65,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
             timer.Elapsed += timer_Elapsed;
             timer.Enabled = true;
             timer.Start();
+           //Console.WriteLine("Start:" + id.ToString() + ":" + DateTime.Now.ToString("HH:MM:fff"));
         }
 
 

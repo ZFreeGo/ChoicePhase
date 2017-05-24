@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ZFreeGo.ChoicePhase.PlatformModel;
@@ -19,6 +20,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     {
         private PlatformModelServer modelServer;
 
+        private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -47,6 +49,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer = PlatformModelServer.GetServer();
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
                 modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;
+
+                modelServer.TaskScheduler = syncContextTaskScheduler;
             }
             
         }

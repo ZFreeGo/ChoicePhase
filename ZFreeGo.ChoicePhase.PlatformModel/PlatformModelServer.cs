@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ZFreeGo.ChoicePhase.DeviceNet;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
@@ -130,6 +131,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         }
 
         private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+        public  TaskScheduler TaskScheduler;
         /// <summary>
         /// 连接信息
         /// </summary>
@@ -139,7 +142,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             Task.Factory.StartNew(() => _monitorViewData.UpdateStationStatus(e.Station),
                     new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
-           ;
+           
         }
         
 
@@ -151,6 +154,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         private void PollingService_SubStationStatusChanged(object sender, StatusChangeMessage e)
         {
             _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data);
+            //if (TaskScheduler != null)
+            //{
+            //    Task.Factory.StartNew(() => _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data),
+            //          new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, TaskScheduler).Wait();
+            //}
         }
 
         /// <summary>

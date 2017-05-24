@@ -26,7 +26,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private PlatformModelServer modelServer;
 
 
-        private static string redLed =  @"../Pictures/red.png";
+        private static string redLed =  @"../Pictures/dp1.png";
         private static string greenLed =  @"../Pictures/green.png";
         private static string yellowLed = @"../Pictures/yellow.png";
         private static string offLed = @"../Pictures/off.jpg";
@@ -128,7 +128,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedErrorA = redLed;
             LedEneryA = offLed;
 
-            modelServer.MonitorData.StatusBar.SetPhaseA(false, "");
+           // modelServer.MonitorData.StatusBar.SetPhaseA(false, "");
             modelServer.MonitorData.UpdateStatus("A相超时离线");
 
         }
@@ -145,8 +145,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedOpenB = offLed;
             LedErrorB = redLed;
             LedEneryB = offLed;
-            modelServer.MonitorData.StatusBar.SetPhaseB(false, "");
-            modelServer.MonitorData.UpdateStatus("B相超时离线");
+          //  modelServer.MonitorData.StatusBar.SetPhaseB(false, "");
+          //  modelServer.MonitorData.UpdateStatus("B相超时离线");
         }
         void OverTimeCycleC()
         {
@@ -161,8 +161,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedOpenC = offLed;
             LedErrorC = redLed;
             LedEneryC = offLed;
-            modelServer.MonitorData.StatusBar.SetPhaseC(false, "");
-            modelServer.MonitorData.UpdateStatus("C相超时离线");
+           // modelServer.MonitorData.StatusBar.SetPhaseC(false, "");
+           // modelServer.MonitorData.UpdateStatus("C相超时离线");
         }
         void UpdatePositionStatus(StatusLoop[] status, string ph)
         {                  

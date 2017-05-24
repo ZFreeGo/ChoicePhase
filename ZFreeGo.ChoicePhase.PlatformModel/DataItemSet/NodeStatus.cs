@@ -187,6 +187,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 CycleOverTimeDelegate();
             }
         }
+
+        /// <summary>
+        /// 频率集合
+        /// </summary>
+        public EnergyStatusLoop[] FrequencyLoopCollect
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 电压集合
+        /// </summary>
+        public EnergyStatusLoop[] VoltageLoopCollect
+        {
+            set;
+            get;
+        }
+
+
+
         /// <summary>
         /// 更新同步状态
         /// </summary>
@@ -194,19 +215,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public void UpdateSynStatus(byte[] statusByte)
         {
             //判断长度
-            if (statusByte.Length != 6)
+            if (statusByte.Length <4)
             {
                 return;
             }
             for (int k = 0; k < 4; k++)
             {
-                StatusLoopCollect[k] = (StatusLoop)((statusByte[1] >> (2 * k)) & (0x03));
+                VoltageLoopCollect[k] = (EnergyStatusLoop)((statusByte[2] >> (2 * k)) & (0x03));
             }
             for (int k = 0; k < 4; k++)
             {
-                EnergyStatusLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
+                FrequencyLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
             }
-
 
 
             if (UpdateViewDelegate != null)
@@ -224,7 +244,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public void UpdateSwitchStatus(byte[] statusByte)
         {
             //判断长度
-            if (statusByte.Length != 6)
+            if (statusByte.Length <6)
             {
                 return;
             }         
@@ -336,6 +356,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             OverTimeMs = overMs;
             overTimerCycle = new OverTimeTimer(OverTimeMs, CycleOverTime);
 
+            VoltageLoopCollect = new EnergyStatusLoop[4];
+            for (int i = 0; i < VoltageLoopCollect.Length; i++)
+            {
+                VoltageLoopCollect[i] = DataItemSet.EnergyStatusLoop.Null;
+            }
+
+            FrequencyLoopCollect = new EnergyStatusLoop[4];
+            for (int i = 0; i < FrequencyLoopCollect.Length; i++)
+            {
+                FrequencyLoopCollect[i] = DataItemSet.EnergyStatusLoop.Null;
+            }
         }
 
         
@@ -365,7 +396,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         Error = 3,
     }
     /// <summary>
-    /// 储能状态
+    /// 储能/电压/频率状态
     /// </summary>
     public enum EnergyStatusLoop
     {

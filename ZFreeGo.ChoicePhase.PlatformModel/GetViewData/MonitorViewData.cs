@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Threading;
 using System.Xml;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
@@ -144,15 +145,34 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
             NodeStatusList = new ObservableCollection<NodeStatus>();
-            NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器", 3000));
+            NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器", 4000));
             NodeStatusList.Add(new NodeStatus(0x10, "A相控制器", 3000));
             NodeStatusList.Add(new NodeStatus(0x12, "B相控制器", 3000));
             NodeStatusList.Add(new NodeStatus(0x14, "C相控制器", 3000));
 
             NodeStatusList[0].CycleOverTimeDelegate = SynControllerOverTime;
-
+            NodeStatusList[0].UpdateViewDelegate = SynControllerUpdateStatus;
 
             StatusBar = new StatusBarMessage("Admin");
+
+        }
+
+        /// <summary>
+        /// 更新同步控制器状态
+        /// </summary>
+        private void SynControllerUpdateStatus()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (NodeStatusList[0].VoltageLoopCollect[i] != EnergyStatusLoop.Normal)
+                {
+                    UpdateStatus("系统电压:" + NodeStatusList[0].VoltageLoopCollect[i].ToString());
+                }
+            }
+            if (NodeStatusList[0].FrequencyLoopCollect[0] != EnergyStatusLoop.Normal)
+            {
+                UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
+            }
 
         }
 
@@ -162,7 +182,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         private void SynControllerOverTime()
         {
             var comment = "同步控制超时离线";
-            StatusBar.SetSyn(false, comment);
+            
+           // StatusBar.SetSyn(false, comment);
             UpdateStatus(comment);
         }
 
@@ -649,37 +670,37 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
 
-        /// <summary>
-        /// 更新属性字节
-        /// </summary>
-        /// <param name="id">ID号</param>
-        /// <param name="data">数据字节</param>
-        public void UpdateYongciAttributeData(int id, byte[] data)
-        {
+        ///// <summary>
+        ///// 更新属性字节
+        ///// </summary>
+        ///// <param name="id">ID号</param>
+        ///// <param name="data">数据字节</param>
+        //public void UpdateYongciAttributeData(int id, byte[] data)
+        //{
 
-            if(id < 0x41)//设置属性
-            {
-                ReadYongciAttribute(false);
-                for(int i = 0; i< _yongciAttribute.Count; i++)
-                {
-                    if(_yongciAttribute[i].ConfigID == id)
-                    {
-                        _yongciAttribute[i].UpdateAttribute(data);
-                    }
-                }
-            }
-            else  //读取属性
-            {
-                ReadYongciMonitorAttribute(false);
-                for (int i = 0; i < _yongciMonitorAttribute.Count; i++)
-                {
-                    if (_yongciMonitorAttribute[i].ConfigID == id)
-                    {
-                        _yongciMonitorAttribute[i].UpdateAttribute(data);
-                    }
-                }
-            }
-        }
+        //    if(id < 0x41)//设置属性
+        //    {
+        //        ReadYongciAttribute(false);
+        //        for(int i = 0; i< _yongciAttribute.Count; i++)
+        //        {
+        //            if(_yongciAttribute[i].ConfigID == id)
+        //            {
+        //                _yongciAttribute[i].UpdateAttribute(data);
+        //            }
+        //        }
+        //    }
+        //    else  //读取属性
+        //    {
+        //        ReadYongciMonitorAttribute(false);
+        //        for (int i = 0; i < _yongciMonitorAttribute.Count; i++)
+        //        {
+        //            if (_yongciMonitorAttribute[i].ConfigID == id)
+        //            {
+        //                _yongciMonitorAttribute[i].UpdateAttribute(data);
+        //            }
+        //        }
+        //    }
+        //}
         /// <summary>
         /// 更新属性字节
         /// </summary>
@@ -827,6 +848,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
            {
                case 0x0D:
                    {
+                       node.UpdateSynStatus(data);
                        break;
                    }
                case 0x10:
@@ -836,6 +858,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                        node.UpdateSwitchStatus(data);
                        break;
                    }
+                  
 
            }
             
