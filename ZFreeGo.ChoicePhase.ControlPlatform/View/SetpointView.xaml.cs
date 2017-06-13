@@ -24,6 +24,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.View
         {
             //this.DataContext = new ProtectSetpointViewModel();
             InitializeComponent();
+           
         }
     }
 }

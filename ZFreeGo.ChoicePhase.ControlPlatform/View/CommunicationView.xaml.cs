@@ -24,6 +24,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.View
         {
             //this.DataContext = new CommunicationViewModel();
             InitializeComponent();
+           
+
         }
     }
 }

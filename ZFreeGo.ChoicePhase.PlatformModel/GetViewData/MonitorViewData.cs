@@ -162,7 +162,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// </summary>
         private void SynControllerUpdateStatus()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 1; i++)
             {
                 if (NodeStatusList[0].VoltageLoopCollect[i] != EnergyStatusLoop.Normal)
                 {

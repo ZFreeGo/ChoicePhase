@@ -1,0 +1,15 @@
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.ChoicePhase.PlatformModel.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.ChoicePhase.PlatformModel.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\GalaSoft.MvvmLight.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\System.Data.SQLite.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.ChoicePhase.DeviceNet.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.ChoicePhase.Modbus.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.Common.LogTrace.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.ChoicePhase.DeviceNet.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.Common.LogTrace.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\ZFreeGo.ChoicePhase.Modbus.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\GalaSoft.MvvmLight.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\bin\Release\GalaSoft.MvvmLight.xml
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\obj\Release\ZFreeGo.ChoicePhase.PlatformModel.csprojResolveAssemblyReference.cache
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\obj\Release\ZFreeGo.ChoicePhase.PlatformModel.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\obj\Release\ZFreeGo.ChoicePhase.PlatformModel.pdb

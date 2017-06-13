@@ -50,9 +50,37 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                     throw new Exception("serverData.Length == 0");
                 }
                 byte ackID = serverData[0];
+
+                //错误信息
+                if (ackID == (byte)CommandIdentify.ErrorACK)
+                {
+                    if (serverData.Length < 4)//错误响应，长度不小于4
+                    {
+                        throw new Exception("错误代码长度小于4");
+                    }
+                   
+                    //是否为定义内
+                    if (Enum.IsDefined(typeof(CommandIdentify), serverData[1]))
+                   {
+
+                       var des = GetIDDescription((CommandIdentify)serverData[1]);
+                       string error1 = "错误代码:" + serverData[2].ToString("X2");
+                       string error2 = "附加错误代码:" + serverData[3].ToString("X2");
+                       throw new Exception(des + " " + error1 + " " + error2);
+
+
+                   }
+                   else
+                   {
+                       throw new Exception("未识别ID");
+                   }
+                    
+                }
+
+
                 if ((ackID & 0x80) != 0x80)
                 {
-                    throw new Exception("不是应答ID|0x80");
+                    throw new Exception(string.Format("不是应答ID|0x80, ID={0:X2}", ackID));
                 }
                 byte id =(byte)(ackID & 0x7F);
 
@@ -141,6 +169,65 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                 ExceptionDelegate(ex);
             }
         }
+        /// <summary>
+        /// 获取ID描述
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>描述词</returns>
+        public string GetIDDescription(CommandIdentify id)
+        {
+            switch(id)
+            {
+                case CommandIdentify.CloseAction:
+                    {
+                        return "合闸执行" + id.ToString("X2");
+                    }
+                case CommandIdentify.MasterParameterRead:
+                    {
+                        return "主站参数读取" + id.ToString("X2");
+                    }
+                case CommandIdentify.MasterParameterSetOne:
+                    {
+                        return "主站参数设置" + id.ToString("X2");
+                    }
+                case CommandIdentify.MutltiFrame:
+                    {
+                        return "多帧" + id.ToString("X2");
+                    }
+                case CommandIdentify.OpenAction:
+                    {
+                        return "分闸执行" + id.ToString("X2");
+                    }
+                case CommandIdentify.ReadyClose:
+                    {
+                        return "合闸预制" + id.ToString("X2");
+                    }
+                case CommandIdentify.ReadyOpen:
+                    {
+                        return "分闸预制" + id.ToString("X2");
+                    }
+                case CommandIdentify.SubstationStatuesChange:
+                    {
+                        return "子站状态上传" + id.ToString("X2");
+                    }
+                case CommandIdentify.SyncOrchestratorCloseAction:
+                    {
+                        return "同步控制器合闸执行" + id.ToString("X2");
+                    }
+                case CommandIdentify.SyncOrchestratorReadyClose:
+                    {
+                        return "同步控制器合闸预制" + id.ToString("X2");
+                    }
+                case CommandIdentify.SyncReadyClose:
+                    {
+                        return "同步合闸预制" + id.ToString("X2");
+                    }
+                default:
+                    {
+                        return "未识别的ID" + id.ToString("X2");
+                    }
+            }
+        }
 
     }
 
@@ -178,6 +265,11 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
             Data = new byte[serverData.Length];
             Array.Copy(serverData, Data, Data.Length);
         }
+
+       
+
+
+
 
     }
 

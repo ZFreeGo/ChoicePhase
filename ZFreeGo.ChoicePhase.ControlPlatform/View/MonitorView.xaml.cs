@@ -23,6 +23,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.View
         public MonitorView()
         {            
             InitializeComponent();
+           
         }
     }
 }

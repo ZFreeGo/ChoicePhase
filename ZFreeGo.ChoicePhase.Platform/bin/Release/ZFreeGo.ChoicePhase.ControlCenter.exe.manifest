@@ -67,26 +67,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ZFreeGo.ChoicePhase.ControlCenter.exe" size="599040">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ZFreeGo.ChoicePhase.ControlCenter.exe" size="600576">
       <assemblyIdentity name="ZFreeGo.ChoicePhase.ControlCenter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>XIoMJanmZZbYbHB3HQiArKOUMAU=</dsig:DigestValue>
+        <dsig:DigestValue>dRJyKUyw+hElXNF17JFQzHRR9OU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ZFreeGo.ChoicePhase.Modbus.dll" size="9216">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ZFreeGo.ChoicePhase.Modbus.dll" size="11264">
       <assemblyIdentity name="ZFreeGo.ChoicePhase.Modbus" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>u2z2DXSZQU7YpF9uv6ueu9CAoHg=</dsig:DigestValue>
+        <dsig:DigestValue>+O/RtYIblpYPy/YEdOOxGo9kvYQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

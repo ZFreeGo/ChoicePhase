@@ -23,11 +23,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
             Closing += (s, e) => ViewModelLocator.Cleanup();
 
             //注册MVVMLight消息
-            Messenger.Default.Register<string>(this, "ShowUserView", ShowUserView);
+          //  Messenger.Default.Register<string>(this, "ShowUserView", ShowUserView);
             Messenger.Default.Register<Exception>(this, "ExceptionMessage", ExceptionMessage);
-      
-          
-           
+            Messenger.Default.Register<string>(this, "MessengerSrcollToEnd", SrcollToEnd);
+                
         }
 
         /// <summary>
@@ -64,6 +63,51 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
             {
                 MessageBox.Show(ex.Message, "ShowUserView");
             }
+        }
+
+        /// <summary>
+        /// 将文本框下拉到最后
+        /// </summary>
+        /// <param name="obj"></param>
+        private void SrcollToEnd(string obj)
+        {
+
+            Action<string> toend = ar =>
+            {
+                switch (ar)
+                {
+                    case "txtLinkMessage":
+                        {
+                            txtLinkMessage.ScrollToEnd();
+                            break;
+                        }
+                    case "txtRawSendMessage":
+                        {
+                            txtRawSendMessage.ScrollToEnd();
+                            break;
+                        }
+                    case "txtRawReciveMessage":
+                        {
+                            txtRawReciveMessage.ScrollToEnd();
+                            break;
+                        }
+                    case "txtExceptionMessage":
+                        {
+                            txtExceptionMessage.ScrollToEnd();
+                            break;
+                        }
+                    case "txtStatusMessage":
+                        {
+                            txtStatusMessage.ScrollToEnd();
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            };
+            Dispatcher.Invoke(toend, obj);
         }
 
 

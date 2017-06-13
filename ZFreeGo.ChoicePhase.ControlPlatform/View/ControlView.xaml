@@ -307,7 +307,7 @@
                 
             <StackPanel>
                 
-                <Grid Margin="5">
+                <Grid Margin="5" Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
@@ -370,12 +370,12 @@
                         <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchActionHe">同步合闸执行</Button>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe">分闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe">分闸执行</Button>
+                        <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe">合闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe">合闸执行</Button>
                 </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen">合闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen">合闸执行</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen">分闸预制</Button>
+                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen">分闸执行</Button>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

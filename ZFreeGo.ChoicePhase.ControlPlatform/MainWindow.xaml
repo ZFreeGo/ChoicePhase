@@ -100,9 +100,9 @@
            
         </DockPanel>
 
-       
 
-        <Frame Grid.Column="3" Grid.Row="2" Name="frame" Source="{Binding ShowUri}"   >
+
+        <Frame Grid.Column="3" Grid.Row="2" Name="frame"  Source="{Binding ShowUri}" >
 
         </Frame>
         <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="LightBlue" Height="5"  HorizontalAlignment="Stretch"
@@ -115,7 +115,7 @@
             
             <TabControl Grid.Column="0"  >                
                 <TabItem Header="链路数据" Height="23" VerticalAlignment="Top" >
-                    <TextBox Margin="0" Background="AliceBlue"    Name="txtLinkMessage" 
+                    <TextBox Margin="0" Background="AliceBlue"    Name="txtLinkMessage"  IsReadOnly="True"
                                   VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding LinkMessage}">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
@@ -127,7 +127,7 @@
                     </TextBox>
                 </TabItem>
                 <TabItem Header="Send">
-                    <TextBox Margin="0" Background="AliceBlue"    
+                    <TextBox Margin="0" Background="AliceBlue"    IsReadOnly="True" Name="txtRawSendMessage"
                                   VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawSendMessage}">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
@@ -138,7 +138,7 @@
                     </TextBox>
                 </TabItem>
                 <TabItem Header="Recive">
-                    <TextBox Margin="0" Background="AliceBlue"    
+                    <TextBox Margin="0" Background="AliceBlue"   IsReadOnly="True"  Name="txtRawReciveMessage"
                                   VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawReciveMessage}">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
@@ -149,7 +149,7 @@
                     </TextBox>
                 </TabItem>
                 <TabItem Header="异常">
-                    <TextBox Margin="0" Background="AliceBlue"    
+                    <TextBox Margin="0" Background="AliceBlue"    IsReadOnly="True" Name="txtExceptionMessage"
                                   VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding ExceptionMessage}" >
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
@@ -158,12 +158,13 @@
 
                             </ContextMenu>
                         </TextBox.ContextMenu>
+                       
                     </TextBox>
                 </TabItem>
             </TabControl>
             <TabControl Grid.Column="1">
                 <TabItem Header="状态信息" >
-                    <TextBox Margin="0" Background="AliceBlue"    Name="txtStatusMessage" 
+                    <TextBox Margin="0" Background="AliceBlue"    Name="txtStatusMessage" IsReadOnly="True" 
                                   VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding StatusMessage}">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">

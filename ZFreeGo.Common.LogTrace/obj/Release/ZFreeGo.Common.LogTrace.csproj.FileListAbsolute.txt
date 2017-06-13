@@ -1,0 +1,4 @@
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Release\ZFreeGo.Common.LogTrace.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Release\ZFreeGo.Common.LogTrace.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Release\ZFreeGo.Common.LogTrace.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Release\ZFreeGo.Common.LogTrace.pdb

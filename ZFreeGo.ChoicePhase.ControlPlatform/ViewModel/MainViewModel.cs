@@ -48,7 +48,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 modelServer = PlatformModelServer.GetServer();
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
-                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;
+                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                
 
                 modelServer.TaskScheduler = syncContextTaskScheduler;
             }
@@ -58,11 +58,13 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         void MonitorData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(e.PropertyName);
+            Messenger.Default.Send<string>("txt" + e.PropertyName, "MessengerSrcollToEnd");
         }
 
         private void ServerInformation_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             RaisePropertyChanged(e.PropertyName);
+            Messenger.Default.Send<string>("txt" + e.PropertyName, "MessengerSrcollToEnd");
         }
         #endregion
 
