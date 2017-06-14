@@ -39,7 +39,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             ToEnd = new RelayCommand<string>(ExecuteToEnd);
 
             SerialCommand = new RelayCommand<string>(ExecuteSerialCommand);
-            SendFrameCommand = new RelayCommand(ExecuteSendFrameCommand);
+            SendFrameCommand = new RelayCommand<string>(ExecuteSendFrameCommand);
         }
 
 
@@ -275,8 +275,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
                             modelServer.MonitorData.StatusBar.SetCom(true);
-
-                            
+                            modelServer.ControlNetServer.RestartLinkServer();                           
                             break;
                         }
                     case "CloseSerial":
@@ -285,7 +284,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
                             modelServer.MonitorData.StatusBar.SetCom(false);
-                            
+                            modelServer.ControlNetServer.StopLinkServer();
+                            modelServer.MonitorData.StatusBar.CloseAll();//关闭所有状态显示
                             break;
                         }
               
@@ -412,19 +412,35 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             return result;
         }
 
-          public RelayCommand SendFrameCommand { get; private set; }
+          public RelayCommand<string> SendFrameCommand { get; private set; }
 
         //加载用户数据
-          private void ExecuteSendFrameCommand()
+          private void ExecuteSendFrameCommand(string param)
           {
               try
               {
-                  if (sendData.Length < sendDataLen)
+                  switch(param)
                   {
-                      throw new ArgumentException("数据长度小于设定的发送长度");
+                      case "SendPure"://单纯的发送
+                          {
+                              if (sendData.Length < sendDataLen)
+                              {
+                                  throw new ArgumentException("数据长度小于设定的发送长度");
+                              }
+                              var frame = new RTUFrame(sendAddr, sendFunction, sendData, sendDataLen);
+                              modelServer.RtuServer.SendFrame(frame);
+                              break;
+                          }
+                      case "CheckCommunicationDevice":
+                          {
+                              byte[] cmd = new byte[] {0xF1, 0, 0x11 };
+
+                              var frame = new RTUFrame(0xA1, 0x55, cmd, 3);
+                              modelServer.RtuServer.SendFrame(frame);
+                              break;
+                          }
                   }
-                  var frame = new RTUFrame(sendAddr, sendFunction, sendData, sendDataLen);
-                  modelServer.RtuServer.SendFrame(frame);
+                  
 
 
               }

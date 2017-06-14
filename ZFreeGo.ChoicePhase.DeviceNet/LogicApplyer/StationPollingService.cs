@@ -176,57 +176,71 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// <returns>描述词</returns>
         public string GetIDDescription(CommandIdentify id)
         {
+            string des = "";
             switch(id)
             {
                 case CommandIdentify.CloseAction:
                     {
-                        return "合闸执行" + id.ToString("X2");
+                        des =  "合闸执行" ;
+                        break;
                     }
                 case CommandIdentify.MasterParameterRead:
                     {
-                        return "主站参数读取" + id.ToString("X2");
+                        des =  "主站参数读取" ;
+                        break;
                     }
                 case CommandIdentify.MasterParameterSetOne:
                     {
-                        return "主站参数设置" + id.ToString("X2");
+                        des =  "主站参数设置" ;
+                        break;
                     }
                 case CommandIdentify.MutltiFrame:
                     {
-                        return "多帧" + id.ToString("X2");
+                        des =  "多帧" ;
+                        break;
                     }
                 case CommandIdentify.OpenAction:
                     {
-                        return "分闸执行" + id.ToString("X2");
+                        des =  "分闸执行" ;
+                        break;
                     }
                 case CommandIdentify.ReadyClose:
                     {
-                        return "合闸预制" + id.ToString("X2");
+                        des =  "合闸预制" ;
+                        break;
                     }
                 case CommandIdentify.ReadyOpen:
                     {
-                        return "分闸预制" + id.ToString("X2");
+                        des =  "分闸预制" ;
+                        break;
                     }
                 case CommandIdentify.SubstationStatuesChange:
                     {
-                        return "子站状态上传" + id.ToString("X2");
+                        des =  "子站状态上传" ;
+                        break;
                     }
                 case CommandIdentify.SyncOrchestratorCloseAction:
                     {
-                        return "同步控制器合闸执行" + id.ToString("X2");
+                        des =  "同步控制器合闸执行" ;
+                        break;
                     }
                 case CommandIdentify.SyncOrchestratorReadyClose:
                     {
-                        return "同步控制器合闸预制" + id.ToString("X2");
+                        des =  "同步控制器合闸预制" ;
+                        break;
                     }
                 case CommandIdentify.SyncReadyClose:
                     {
-                        return "同步合闸预制" + id.ToString("X2");
+                        des =  "同步合闸预制" ;
+                        break;
                     }
                 default:
                     {
-                        return "未识别的ID" + id.ToString("X2");
+                        des =  "未识别的ID" ;
+                        break;
                     }
             }
+            return des + " " + ((byte)id).ToString("X2");
         }
 
     }

@@ -50,7 +50,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
                 modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                
 
-                modelServer.TaskScheduler = syncContextTaskScheduler;
+                modelServer.OutTaskScheduler = syncContextTaskScheduler;
             }
             
         }

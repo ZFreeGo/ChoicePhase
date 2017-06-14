@@ -47,8 +47,8 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         {
             LocalMac = 0x02;
             StationInformation = new List<DefStationInformation>();
-            StationInformation.Add(new DefStationInformation(0x0D, true, "同步控制器"));
-            StationInformation.Add(new DefStationInformation(0x10, true, "A相"));
+            StationInformation.Add(new DefStationInformation(0x0D, false, "同步控制器"));
+            StationInformation.Add(new DefStationInformation(0x10, false, "A相"));
 
             ExceptionDelegate = exceptionDelegate;
             PollingService = new StationPollingService(ExceptionDelegate);
@@ -89,6 +89,38 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
            ThreadWork.Start();
 
         }
+        /// <summary>
+        /// 停止连接轮询服务
+        /// </summary>
+        public void StopLinkServer()
+        {
+            foreach (var m in StationInformation)
+            {
+                m.Enable = false;
+                m.State = 0;
+                m.OldState = 0;
+                m.Online = false;
+                m.Complete = false;
+                m.Step = NetStep.Start;
+            }
+        }
+
+        /// <summary>
+        /// 重启连接服务
+        /// </summary>
+        public void RestartLinkServer()
+        {
+            foreach (var m in StationInformation)
+            {                
+                m.State = 0;
+                m.OldState = 0;
+                m.Online = false;
+                m.Complete = false;
+                m.Step = NetStep.Start;
+                m.Enable = true;
+            }
+        }
+
         /// <summary>
         /// 关闭DeviceNet服务
         /// </summary>
@@ -174,6 +206,8 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         }
 
 
+
+
         /// <summary>
         /// 生成主站IO报文(GROUP2_POLL_STATUS_CYCLE)消息
         /// </summary>
@@ -222,9 +256,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 {
                     case NetStep.Start:
                         {
-                            EstablishConnection(station, (byte)LinkConnectType.VisibleMessage); //建立显示连接 
-
-                           
+                            EstablishConnection(station, (byte)LinkConnectType.VisibleMessage); //建立显示连接                           
 
                             break;
                         }
@@ -312,6 +344,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                             GroupTwoDeal(message, netID);
                             break;
                         }
+                   
                 }
             }
             catch (Exception ex)

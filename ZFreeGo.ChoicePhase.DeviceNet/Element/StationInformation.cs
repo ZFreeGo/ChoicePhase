@@ -158,7 +158,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.Element
             Step = NetStep.Start;
             Comment = comment;
             OverTimeCount = 0;
-            DelayTime = 1000;
+            DelayTime = 500;
             WaitFlag = false;
             Enable = enable;
         }

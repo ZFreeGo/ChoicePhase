@@ -259,9 +259,8 @@
                             <RotateTransform Angle="90" />
                         </Separator.LayoutTransform>
                     </Separator>
-                    <StackPanel Orientation="Horizontal" >
-                        <Ellipse Width="8" Height="8" Fill="{Binding  SynBrush}"></Ellipse>
-                        
+                    <StackPanel Orientation="Horizontal" >                        
+                        <Image Source="{Binding  SynICO}"  ></Image>
                         <TextBlock  Foreground="{Binding  SynBrush}" Text="{Binding Syn}" />
                     </StackPanel>
                     <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >

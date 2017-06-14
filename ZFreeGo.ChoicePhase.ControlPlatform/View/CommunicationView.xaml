@@ -127,6 +127,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition ></RowDefinition>
                             <RowDefinition ></RowDefinition>
+                            <RowDefinition Height="Auto" ></RowDefinition>
                         </Grid.RowDefinitions>
 
                         <WrapPanel  Grid.Row="0">
@@ -136,12 +137,16 @@
                             <TextBox  Width="30" Margin="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding SendFunction}"></TextBox>
                             <Label VerticalAlignment="Center">数据长度：</Label>
                             <TextBox  Width="30" Margin="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  Text="{Binding SendDataLen}"></TextBox>
-                            <Button  Margin="20,3,3,3" Padding="2"  Grid.Column="1" Command="{Binding  SendFrameCommand}" >发送</Button>
+                            <Button  Margin="20,3,3,3" Padding="2"  Grid.Column="1" Command="{Binding  SendFrameCommand}"  CommandParameter="SendPure">发送</Button>
                         </WrapPanel>
                         <DockPanel Grid.Row="1">
                             <Label VerticalAlignment="Center" >数据：</Label>
                             <TextBox Name="dataTxt" Margin="3"  VerticalContentAlignment="Center" Text="{Binding SendDataString}"></TextBox>
                         </DockPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <Button  Margin="3" Padding="2"  Width="100" Command="{Binding  SendFrameCommand}" CommandParameter="CheckCommunicationDevice">测试通讯设备</Button>
+                          
+                        </StackPanel>
                     </Grid>
                 </TabItem>
             </TabControl>

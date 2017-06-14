@@ -34,6 +34,7 @@
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net40\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite">
@@ -71,6 +72,8 @@
     <Compile Include="Secure\XMLAccountOperate.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ICO\off1.png" />
+    <Content Include="ICO\on1.png" />
     <Content Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

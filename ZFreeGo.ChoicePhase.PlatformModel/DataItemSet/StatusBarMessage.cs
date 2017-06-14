@@ -12,6 +12,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
     /// </summary>
     public class StatusBarMessage : ObservableObject
     {
+        private string _icoOff = @"ICO/off1.png";
+        private string _icoOn = @"ICO/on1.png";
+
         private string _userName;
 
         /// <summary>
@@ -49,12 +52,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
 
-        private SolidColorBrush _comBrush;
+        private string  _comBrush;
 
         /// <summary>
         /// 通讯画刷
         /// </summary>
-        public SolidColorBrush ComBrush
+        public string  ComBrush
         {
             get
             {
@@ -87,12 +90,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
         
-        private SolidColorBrush _deviceBrush;
+        private string  _deviceBrush;
 
          /// <summary>
         ///设备画刷
         /// </summary>
-        public SolidColorBrush DeviceBrush
+        public string  DeviceBrush
         {
             get
             {
@@ -107,12 +110,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
 
-        private SolidColorBrush _phaseABrush;
+        private string  _phaseABrush;
 
         /// <summary>
         /// A相 画刷
         /// </summary>
-        public SolidColorBrush PhaseABrush
+        public string  PhaseABrush
         {
             get
             {
@@ -141,12 +144,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("PhaseA");
             }
         }
-        private SolidColorBrush _phaseBBrush;
+        private string  _phaseBBrush;
 
         /// <summary>
         /// B相 画刷
         /// </summary>
-        public SolidColorBrush PhaseBBrush
+        public string  PhaseBBrush
         {
             get
             {
@@ -176,12 +179,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
-        private SolidColorBrush _phaseCBrush;
+        private string  _phaseCBrush;
 
         /// <summary>
         /// C相 画刷
         /// </summary>
-        public SolidColorBrush PhaseCBrush
+        public string  PhaseCBrush
         {
             get
             {
@@ -211,12 +214,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
-        private SolidColorBrush _synBrush;
+        private string  _synBrush;
 
         /// <summary>
         /// A相 画刷
         /// </summary>
-        public SolidColorBrush SynBrush
+        public string  SynBrush
         {
             get
             {
@@ -228,7 +231,26 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("SynBrush");
             }
         }
+        
 
+      
+        private string _synICO;
+
+        /// <summary>
+        /// 同步画刷
+        /// </summary>
+        public string SynICO
+        {
+            get
+            {
+                return _synICO;
+            }
+            set
+            {
+                _synICO = value;
+                RaisePropertyChanged("SynICO");
+            }
+        }
         private String _syn;
         /// <summary>
         /// 同步 描述
@@ -254,13 +276,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             if (state)
             {
-                ComBrush = new SolidColorBrush(Colors.Green);
+                ComBrush = "Green";
                 ComState = "通讯打开";
             }
             else
             {
                 ComState = "通讯关闭";
-                ComBrush = new SolidColorBrush(Colors.Red);
+                ComBrush = "Red";
             }
         }
 
@@ -272,13 +294,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             if (state)
             {
-                DeviceBrush = new SolidColorBrush(Colors.Green);
+                DeviceBrush = "Green";
                 DeviceState = "设备在线";
             }
             else
             {
                 DeviceState = "设备离线";
-                DeviceBrush = new SolidColorBrush(Colors.Red);
+                DeviceBrush = "Red";
             }
         }
         /// <summary>
@@ -290,12 +312,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             if (state)
             {
                 PhaseA = comment;
-                PhaseABrush = new SolidColorBrush(Colors.Green);                
+                PhaseABrush = "Green";                
             }
             else
             {
                 PhaseA = "A相离线";
-                PhaseABrush = new SolidColorBrush(Colors.Red);
+                PhaseABrush = "Red";
             }
         }
         /// <summary>
@@ -307,12 +329,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             if (state)
             {
                 PhaseB = comment;
-                PhaseBBrush = new SolidColorBrush(Colors.Green);
+                PhaseBBrush = "Green";
             }
             else
             {
                 PhaseB = "B相离线";
-                PhaseBBrush = new SolidColorBrush(Colors.Red);
+                PhaseBBrush = "Red";
             }
         }
         /// <summary>
@@ -324,12 +346,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             if (state)
             {
                 PhaseC = comment;
-                PhaseCBrush = new SolidColorBrush(Colors.Green);
+                PhaseCBrush = "Green";
             }
             else
             {
                 PhaseC = "C相离线";
-                PhaseCBrush = new SolidColorBrush(Colors.Red);
+                PhaseCBrush = "Red";
             }
         }
         /// <summary>
@@ -341,14 +363,42 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             if (state)
             {
                 Syn = comment;
-                SynBrush = new SolidColorBrush(Colors.Green);
+                SynICO = _icoOn;
+                SynBrush = "Green";
             }
             else
             {
                 Syn = "同步控制器离线";
-                SynBrush = new SolidColorBrush(Colors.Red);
+                SynICO = _icoOff;
+                SynBrush = "Red";
             }
         }
+
+
+        /// <summary>
+        /// 关闭所有状态
+        /// </summary>
+        public void CloseAll()
+        {
+            ComState = "通讯关闭";
+            ComBrush = "Red";
+
+            DeviceState = "设备离线";
+            DeviceBrush = "Red";
+
+            PhaseA = "A相离线";
+            PhaseABrush = "Red";
+            PhaseB = "B相离线";
+            PhaseBBrush = "Red";
+            PhaseC = "C相离线";
+            PhaseCBrush = "Red";
+            Syn = "同步控制器离线";
+            SynICO = _icoOff;
+            SynBrush = "Red";
+
+        }
+
+
         /// <summary>
         /// 初始化状态栏信息
         /// </summary>
@@ -357,19 +407,20 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             _userName = name;
             _comState = "通讯关闭";
-            _comBrush = new SolidColorBrush(Colors.Red);
+            _comBrush = "Red";
 
             _deviceState = "设备离线";
-            _deviceBrush = new SolidColorBrush(Colors.Red);
+            _deviceBrush = "Red";
 
             _phaseA = "A相离线";
-            _phaseABrush = new SolidColorBrush(Colors.Red);
+            _phaseABrush = "Red";
             _phaseB = "B相离线";
-            _phaseBBrush = new SolidColorBrush(Colors.Red);
+            _phaseBBrush = "Red";
             _phaseC = "C相离线";
-            _phaseCBrush = new SolidColorBrush(Colors.Red);
+            _phaseCBrush = "Red";
             _syn = "同步控制器离线";
-            _synBrush = new SolidColorBrush(Colors.Red);
+            _synICO = _icoOff;
+            _synBrush = "Red";
 
 
         }

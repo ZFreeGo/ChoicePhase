@@ -183,7 +183,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         {
             var comment = "同步控制超时离线";
             
-           // StatusBar.SetSyn(false, comment);
+            StatusBar.SetSyn(false, comment);
             UpdateStatus(comment);
         }
 

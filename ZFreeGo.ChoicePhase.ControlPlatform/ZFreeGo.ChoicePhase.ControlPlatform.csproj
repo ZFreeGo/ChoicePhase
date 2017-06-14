@@ -203,6 +203,14 @@
   <ItemGroup>
     <Resource Include="le.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ICO\off.ico" />
+    <Resource Include="ICO\on.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ICO\off1.png" />
+    <Resource Include="ICO\on1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

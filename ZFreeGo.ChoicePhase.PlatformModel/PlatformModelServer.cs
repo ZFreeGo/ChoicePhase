@@ -10,6 +10,7 @@ using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 using ZFreeGo.Monitor.DASModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel
@@ -21,6 +22,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
     public class PlatformModelServer
     {
         private byte _localAddr;
+
+        private byte _laserCANAddr;
 
         /// <summary>
         /// 监控数据
@@ -81,6 +84,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// </summary>
         private List<byte> _multiFrameBuffer;
         private byte _lastIndex;
+
+
+        /// <summary>
+        /// 超时定时器用于设备离线状态
+        /// </summary>
+        private OverTimeTimer overTimerDevice;
+
         /// <summary>
         /// 初始化控制平台Model服务
         /// </summary>
@@ -89,6 +99,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             try
             {
                 _localAddr = 0x1A;
+                _laserCANAddr = 0xF1;
                 _monitorViewData = new MonitorViewData();
                 CommServer = new CommunicationServer();
                 CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
@@ -111,16 +122,21 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 {
                     if (ar)
                     {
-                       
-                        MonitorData.StatusBar.ComBrush = new System.Windows.Media.SolidColorBrush(Colors.Green);
+
+                        MonitorData.StatusBar.ComBrush = "Green";
                     }
                     else
                     {
                        
-                        MonitorData.StatusBar.ComBrush = new System.Windows.Media.SolidColorBrush(Colors.Red);
+                        MonitorData.StatusBar.ComBrush = "Red";
                     }
                 };
 
+                Action act = ()=>{ MonitorData.StatusBar.SetDevice(false);                                   
+                                    MonitorData.UpdateStatus("设备状态:超时离线");};
+
+                overTimerDevice = new OverTimeTimer(7000, act);
+                
             }
             catch(Exception ex)
             {
@@ -132,7 +148,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
         private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-        public  TaskScheduler TaskScheduler;
+        /// <summary>
+        /// 外部的任务调度器
+        /// </summary>
+        public TaskScheduler OutTaskScheduler
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// 连接信息
         /// </summary>
@@ -153,12 +176,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void PollingService_SubStationStatusChanged(object sender, StatusChangeMessage e)
         {
-            _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data);
-            //if (TaskScheduler != null)
-            //{
-            //    Task.Factory.StartNew(() => _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data),
-            //          new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, TaskScheduler).Wait();
-            //}
+            _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data);            
         }
 
         /// <summary>
@@ -285,7 +303,39 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             var can = GetCanMessage(e.Frame);
             if(can != null)
             {
-                ControlNetServer.ReciveCenter(can);
+                //是否为光纤CAN直接上传信息
+                if (can.ID == _laserCANAddr)
+                {
+                    if (can.DataLen >= 6)
+                    {
+                        switch(can.Data[0])
+                        {
+                                //状态返回
+                            case 0x91:
+                                {
+                                    MonitorData.StatusBar.SetDevice(true);
+                                    var des = GetCANError(can);
+                                    MonitorData.UpdateStatus("设备状态:" + des);
+                                    overTimerDevice.ReStartTimer();
+                                    break;
+                                }
+                            default:
+                                {
+                                    //状态返回
+                                    break;
+                                }
+                        }
+
+                    }
+                    
+
+                }
+                else
+                {
+                    ControlNetServer.ReciveCenter(can);
+                }
+
+                
             }            
             
         }
@@ -375,6 +425,92 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             return strBuild.ToString();
         }
 
+        /// <summary>
+        /// 获取CAN错误状态
+        /// </summary>
+        /// <param name="can"></param>
+        /// <returns></returns>
+        private string GetCANError(CanMessage can)
+        {
+            if (can.DataLen >= 6)
+            {
+                StringBuilder strBuild = new StringBuilder(128);
+                strBuild.AppendLine(ByteToString(can.Data, 0, can.DataLen));
+                if (can.Data[4] != 0)
+                {
+                    strBuild.AppendLine("接收错误计数:" + can.Data[4].ToString());
+                }
+                if (can.Data[5] != 0)
+                {
+                    strBuild.AppendLine("发送错误计数:" + can.Data[5].ToString());
+                }
+                int state = 0;
+                if (can.Data[3] != 0)
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+
+                        state = (can.Data[3] >> i) & 0x01;
+                        //为0--跳过
+                        if (state == 0)
+                        {
+                            continue;
+                        }
+                        switch (i)
+                        {
+                            case 0:
+                                {
+                                    strBuild.AppendLine("EWARN:发送器或接收器处于警告错误状态位");
+                                    break;
+                                }
+                            case 1:
+                                {
+                                    strBuild.AppendLine("RXWAR： 接收器处于警告错误状态位");
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    strBuild.AppendLine("TXWAR： 发送器处于警告错误状态位");
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    strBuild.AppendLine("RXEP： 接收器处于总线被动错误状态位");
+                                    break;
+                                }
+
+                            case 4:
+                                {
+                                    strBuild.AppendLine("TXEP： 发送器处于总线被动错误状态位");
+                                    break;
+                                }
+                            case 5:
+                                {
+                                    strBuild.AppendLine("TXBO： 发送器处于总线关闭错误状态位");
+                                    break;
+                                }
+
+                            case 6:
+                                {
+                                    strBuild.AppendLine("RX1OVR： 接收缓冲区 1 溢出位");
+                                    break;
+                                }
+                            case 7:
+                                {
+                                    strBuild.AppendLine("RX0OVR： 接收缓冲区 0 溢出位");
+                                    break;
+                                }
+                        }
+                    }
+                }
+                return strBuild.ToString();
+
+            }
+            return "不完整的Device信息：" + ByteToString(can.Data, 0, can.DataLen);
+
+
+        }
+        
 
         
 
