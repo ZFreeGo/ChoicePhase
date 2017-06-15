@@ -24642,3 +24642,15 @@ LogTrace Error: 0 :       [2017年6月15日11:19:17]:    在 ZFreeGo.ChoicePhase
    在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
 LogTrace Warning: 0 :     [2017年6月15日11:24:01]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年6月15日11:24:01]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日11:35:16]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日11:35:17]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日13:44:59]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日13:44:59]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日13:45:36]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日13:45:36]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日14:30:14]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日14:30:14]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日14:38:18]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日14:38:18]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日14:41:32]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日14:41:32]: DeviceNet::正在中止线程。

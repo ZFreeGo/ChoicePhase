@@ -305,7 +305,7 @@ namespace ZFreeGo.Monitor.AutoStudio.Secure
         /// 检测密码是否相同
         /// </summary>
         /// <returns>相同返回true</returns>
-        public bool CheckPasswordSame(SecureString passA, SecureString passB)
+        static public bool CheckPasswordSame(SecureString passA, SecureString passB)
         {
             var strA = getSecureString(passA);
             var strB = getSecureString(passB);
@@ -430,7 +430,7 @@ namespace ZFreeGo.Monitor.AutoStudio.Secure
         /// </summary>
         /// <param name="ss">安全字符串</param>
         /// <returns>普通字符串</returns>
-        private string getSecureString(SecureString ss)
+       static  private string getSecureString(SecureString ss)
         {
             IntPtr ptr = System.Runtime.InteropServices.Marshal.SecureStringToBSTR(ss);
 

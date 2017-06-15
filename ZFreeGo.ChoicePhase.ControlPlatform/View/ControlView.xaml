@@ -363,23 +363,40 @@
 
 
             </GroupBox >
-            <GroupBox Header="同步开关" Grid.Row="3" Margin="3"  >
+            <Border BorderThickness="3" BorderBrush="{Binding SecureColor}"  Grid.Row="3" CornerRadius="5" >
+            <GroupBox Header="同步开关" Margin="3"  IsEnabled="{Binding ControlEnable}" >                
                 <StackPanel>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchReadyHe">同步合闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchActionHe">同步合闸执行</Button>
+                    <GroupBox Header="密码认证">
+                        <StackPanel Orientation="Horizontal">
+                            <Label  Margin="3">操作密码:</Label>
+                                <PasswordBox  Margin="3" Width="100"   Name="passWordBox" Password="sd"  PasswordChanged="passWordBox_PasswordChanged"></PasswordBox>
+                                <Button Margin="3" Padding="3" IsEnabled="True" Command="{Binding SecureCheckCommand}" CommandParameter="Check">认证</Button>
+                                <Button Margin="3" Padding="3" Command="{Binding SecureCheckCommand}" CommandParameter="Exit">退出</Button>
+                                <TextBox Margin="30,3,3,3" Text="{Binding SecureTip}" VerticalContentAlignment="Center" IsReadOnly="True" Foreground="{Binding SecureColor}"></TextBox>
+                            
+                        </StackPanel>
+                    </GroupBox>
+                       
+                            <GroupBox Header="开关操作" IsEnabled="{Binding SwitchOperateEnable}" >
+                            <StackPanel>
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
+                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchReadyHe">同步合闸预制</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchActionHe">同步合闸执行</Button>
+                                </StackPanel>
+                                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
+                                    <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe">合闸预制</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe">合闸执行</Button>
+                                </StackPanel>
+                                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
+                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen">分闸预制</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen">分闸执行</Button>
+                                </StackPanel>
+                           </StackPanel>
+                            </GroupBox>
+                       
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe">合闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe">合闸执行</Button>
-                </StackPanel>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen">分闸预制</Button>
-                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen">分闸执行</Button>
-                    </StackPanel>
-                </StackPanel>
             </GroupBox>
-
+            </Border>
         </Grid>
     </ScrollViewer>
 </Page>

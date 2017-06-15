@@ -3,12 +3,14 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.ObjectModel;
+using System.Security;
 using System.Threading;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.Monitor.AutoStudio.Secure;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
@@ -57,9 +59,16 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _phaseSelect.Add("C相");
 
              LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
+             SecureCheckCommand = new RelayCommand<String>(ExecuteSecureCheckCommand);
+
+
+             Messenger.Default.Register<string>(this, "ControlViewPassword", UpdatePassword);
+
              ExecuteLoadDataCommand();
               
         }
+
+      
 
         #region 加载数据命令：LoadDataCommand
         /// <summary>
@@ -94,6 +103,123 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
        
 
         #endregion
+
+        #region 安全认证
+
+
+        /// <summary>
+        /// 开关操作控制使能
+        /// </summary>
+        public bool ControlEnable
+        {
+            get
+            {
+                return modelServer.MonitorData.UserControlEnable.ControlEnable;
+            }
+        }
+
+        /// <summary>
+        /// 开关操作使能
+        /// </summary>
+        public bool SwitchOperateEnable
+        {
+            get
+            {
+                return modelServer.MonitorData.UserControlEnable.SwitchOperateEnable;
+            }
+        }
+
+
+        /// <summary>
+        /// 安全密钥,安全字符串
+        /// </summary>
+        private string _passWord;
+        private void UpdatePassword(string obj)
+        {
+            _passWord = obj;
+        }
+
+        private string _secureTip = "未进行认证";
+        public string SecureTip
+        {
+            get
+            {
+                return _secureTip;
+            }
+            set
+            {
+                _secureTip = value;
+                RaisePropertyChanged("SecureTip");
+            }
+        }
+
+        private string _secureColor = "Red";
+        /// <summary>
+        /// 安全颜色表示
+        /// </summary>
+        public string SecureColor
+        {
+           get
+            {
+                return _secureColor;
+            }
+            set
+            {
+                _secureColor = value;
+                RaisePropertyChanged("SecureColor");
+            }
+            
+        }
+
+
+        /// <summary>
+        /// 安全检测命令
+        /// </summary>
+        public RelayCommand<String> SecureCheckCommand { get; private set; }
+
+
+
+        private void ExecuteSecureCheckCommand(string obj)
+        {
+
+            switch (obj)
+            {
+                case "Check":
+                    {
+                        if ("12345" == _passWord)
+                        {
+                            SecureTip = "认证通过";
+                            SecureColor = "Green";
+                            modelServer.MonitorData.UserControlEnable.SwitchOperateEnable = true;
+                        }
+                        else
+                        {
+                            SecureTip = "认证失败";
+                            modelServer.MonitorData.UserControlEnable.SwitchOperateEnable = false;
+                        }
+                       
+                        break;
+                    }
+                case "Exit":
+                    {
+                        SecureTip = "退出认证";
+                        SecureColor = "Red";
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<string>("", "ControlViewClrPassword");
+                        modelServer.MonitorData.UserControlEnable.SwitchOperateEnable = false;
+                        break;
+                    }
+            }
+
+        }
+
+
+
+
+
+
+        #endregion
+
+
 
 
         #region 指示灯操作
@@ -147,11 +273,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedCloseA = offLed;
             LedOpenA = offLed;
             LedErrorA = redLed;
-            LedEneryA = offLed;
-
-           
-
+            LedEneryA = offLed;          
         }
+
         void OverTimeCycleB()
         {
             LedCloseB1 = offLed;
@@ -510,18 +634,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
 
-        /// <summary>
-        /// 开关操作控制使能
-        /// </summary>
-        //public bool ControlEnable
-        //{           
-        //    get
-        //    {
-        //        return modelServer.MonitorData.UserControlEnable.ControlEnable;
-        //    }
-        //}
-
-
+       
 
 
 
@@ -1025,6 +1138,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         #region 合分闸控制，同步预制
 
 
+        
+       
 
 
         public RelayCommand<string> ActionCommand { get; private set; }

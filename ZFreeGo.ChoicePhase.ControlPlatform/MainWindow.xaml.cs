@@ -38,32 +38,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
             MessageBox.Show(obj.Message, obj.Source);
         }
 
-   
 
-        private void ShowUserView(string obj)
-        {
-            try
-            {
-                if (obj != null)
-                {
-
-                    switch (obj)
-                    {
-                        case "SerialPortConfig":
-                            {
-
-                              
-                                break;
-                            }
-                    }
-
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "ShowUserView");
-            }
-        }
+      
 
         /// <summary>
         /// 将文本框下拉到最后
@@ -107,7 +83,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
                         }
                 }
             };
-            Dispatcher.Invoke(toend, obj);
+           // Dispatcher.Invoke(toend, obj);
         }
 
 

@@ -28,6 +28,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
         /// <summary>
+        /// 开关操作
+        /// </summary>
+        private bool _switchOperateEnable;
+        public bool SwitchOperateEnable
+        {
+            get
+            {
+                return _switchOperateEnable;
+            }
+            set
+            {
+                _switchOperateEnable = value;
+                RaisePropertyChanged("SwitchOperateEnable");
+            }
+        }
+        /// <summary>
         /// 初始化使能控制
         /// </summary>
         public EnableControl()
