@@ -136,7 +136,32 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             set;
         }
 
+        /// <summary>
+        /// 单相的合分位状态
+        /// </summary>
+        public StatusLoop PositStatus
+        {
+            get
+            {
+
+                if (statusLoopCollect != null)
+                {
+                    if (statusLoopCollect[0] == statusLoopCollect[1])
+                    {
+                        return statusLoopCollect[0];
+                    }
+                    else
+                    {
+                        return StatusLoop.Error;
+                    }
+                }
+                return StatusLoop.Error;
+
+            }
+        }
        
+
+
 
 
         private StatusLoop[] statusLoopCollect;
@@ -157,6 +182,35 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
 
         }
+
+        /// <summary>
+        /// 整体储能状态,默认为2个回路.有一个More，整体为More，有一个为Null或Less，认为为Less
+        /// </summary>
+        public EnergyStatusLoop EnergyStatus
+        {
+            get
+            {
+                if (energyStatusLoopCollect != null)
+                {
+                    if (energyStatusLoopCollect[0] == energyStatusLoopCollect[1])
+                    {
+                        return energyStatusLoopCollect[0];
+                    }
+                    else
+                    {
+                        if ((energyStatusLoopCollect[0] == EnergyStatusLoop.More) ||
+                            (energyStatusLoopCollect[1] == EnergyStatusLoop.More))
+                        {
+                            return EnergyStatusLoop.More;
+                        }
+                        return EnergyStatusLoop.Less;
+                    }
+                }
+                return EnergyStatusLoop.Less;
+            }
+        
+        }
+
 
         private EnergyStatusLoop[] energyStatusLoopCollect;
         /// <summary>

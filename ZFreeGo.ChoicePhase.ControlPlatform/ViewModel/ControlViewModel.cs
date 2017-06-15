@@ -159,7 +159,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// </summary>
         public string SecureColor
         {
-           get
+            get
             {
                 return _secureColor;
             }
@@ -169,6 +169,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 RaisePropertyChanged("SecureColor");
             }
             
+        }
+
+        /// <summary>
+        /// 控制集合
+        /// </summary>
+        public EnableControl ControlCollect
+        {
+            get
+            {
+                return modelServer.MonitorData.UserControlEnable;
+            }
         }
 
 
@@ -634,7 +645,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
 
-       
+       void GetWholeState()
+        {
+           //for(int i = 1; i < 4; i++)
+           //{
+           //    modelServer.MonitorData.NodeStatusList[0]. PositStatus
+           //}
+
+
+           //modelServer.MonitorData.NodeStatusList[0].EnergyStatusLoopCollect[0]
+        }
+
 
 
 
