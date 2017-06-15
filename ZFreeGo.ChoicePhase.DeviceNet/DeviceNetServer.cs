@@ -37,8 +37,16 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
        /// 主站轮询，从站应答服务。 IO报文 GROUP1_POLL_STATUS_CYCLER_ACK
        /// </summary>
         public StationPollingService PollingService;
-        
 
+
+        /// <summary>
+        /// 是否为连接激活状态
+        /// </summary>
+        public bool IsActive
+        {
+            get;
+            private set;
+        }
         /// <summary>
         /// 异常处理委托
         /// </summary>
@@ -87,6 +95,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
            ThreadWork.Name = "MainWorkThread";
            ThreadWork.Priority = ThreadPriority.Normal;
            ThreadWork.Start();
+           
 
         }
         /// <summary>
@@ -103,6 +112,8 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 m.Complete = false;
                 m.Step = NetStep.Start;
             }
+            IsActive = false;
+
         }
 
         /// <summary>
@@ -119,6 +130,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 m.Step = NetStep.Start;
                 m.Enable = true;
             }
+            IsActive = true;
         }
 
         /// <summary>

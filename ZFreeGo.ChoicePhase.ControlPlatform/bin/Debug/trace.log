@@ -24586,3 +24586,59 @@ LogTrace Warning: 0 :     [2017年6月14日15:08:31]: 串口接收进程::正在
 LogTrace Warning: 0 :     [2017年6月14日15:08:31]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年6月14日15:14:55]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年6月14日15:14:55]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日16:48:10]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日16:48:10]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日17:01:48]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日17:01:49]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日17:12:07]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日17:12:08]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日17:13:40]: 接收超时，移除第一个重新开始判断。
+LogTrace Warning: 0 :     [2017年6月14日17:13:40]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月14日17:13:40]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日7:00:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日7:00:44]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:12:55]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:12:55]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:14:18]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:14:18]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:15:24]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:15:24]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:16:03]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:16:03]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:18:53]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:18:53]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:19:36]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:19:36]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:22:04]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:22:04]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:22:33]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:22:33]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:40:27]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日9:40:28]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日10:03:03]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日10:03:04]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日10:09:03]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日10:09:04]: DeviceNet::正在中止线程。
+LogTrace Error: 0 :       [2017年6月15日10:52:30]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Error: 0 :       [2017年6月15日10:53:48]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Error: 0 :       [2017年6月15日10:58:23]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Error: 0 :       [2017年6月15日10:59:23]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Error: 0 :       [2017年6月15日11:16:24]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Error: 0 :       [2017年6月15日11:16:55]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Error: 0 :       [2017年6月15日11:19:17]:    在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData.set_OnlineBit(Byte value) 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 103
+   在 ZFreeGo.ChoicePhase.PlatformModel.GetViewData.MonitorViewData..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\MonitorViewData.cs:行号 191
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 103
+LogTrace Warning: 0 :     [2017年6月15日11:24:01]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月15日11:24:01]: DeviceNet::正在中止线程。

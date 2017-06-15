@@ -20,8 +20,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     {
         private PlatformModelServer modelServer;
 
-        private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        /// <summary>
+        
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
@@ -48,9 +47,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 modelServer = PlatformModelServer.GetServer();
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
-                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                
+                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                             
 
-                modelServer.OutTaskScheduler = syncContextTaskScheduler;
             }
             
         }

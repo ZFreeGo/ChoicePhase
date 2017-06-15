@@ -14,6 +14,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
     public class NodeStatus : ObservableObject
     {
         /// <summary>
+        /// 节点状态更新事件
+        /// </summary>
+        public event EventHandler<StatusMessage> StatusUpdateEvent;
+
+
+        /// <summary>
         /// MAC地址
         /// </summary>
         public byte Mac
@@ -113,9 +119,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
         /// <summary>
-        /// 更新视图委托
+        /// 上一次是否在线
         /// </summary>
-        public Action UpdateViewDelegate;
+        public bool LastOnline
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 是否在线
+        /// </summary>
+        public bool IsOnline
+        {
+            get;
+            set;
+        }
+
+       
 
 
         private StatusLoop[] statusLoopCollect;
@@ -170,21 +191,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
         /// <summary>
-        /// 循环接收状态，超时处理委托
-        /// </summary>
-        public Action CycleOverTimeDelegate;
-
-
-        
-
-        /// <summary>
         /// 循环接收状态，超时处理
         /// </summary>
         private void CycleOverTime()
         {
-            if (CycleOverTimeDelegate != null)
+            LastOnline = IsOnline;
+            IsOnline = false;
+            if (StatusUpdateEvent != null)
             {
-                CycleOverTimeDelegate();
+                StatusUpdateEvent(this, new StatusMessage(false, this));
             }
         }
 
@@ -227,13 +242,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 FrequencyLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
             }
-
-
-            if (UpdateViewDelegate != null)
+            LastOnline = IsOnline;
+            IsOnline = true;      
+            
+            if (StatusUpdateEvent != null)
             {
-                UpdateViewDelegate();
+                StatusUpdateEvent(this, new StatusMessage(IsOnline, this));
             }
 
+            
             overTimerCycle.ReStartTimer();
         }
        
@@ -256,13 +273,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 EnergyStatusLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
             }
+            LastOnline = IsOnline;
+
+            IsOnline = true;
 
 
-
-            if (UpdateViewDelegate != null)
+            if (StatusUpdateEvent != null)
             {
-                UpdateViewDelegate();
+                StatusUpdateEvent(this, new StatusMessage(IsOnline, this));
             }
+
+           
 
             overTimerCycle.ReStartTimer();
         }
@@ -320,7 +341,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             SynActionCloseState = false;
 
 
-           
+            LastOnline = true;
+            IsOnline = false;
         }
 
         
@@ -370,6 +392,52 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
         
+
+    }
+
+    /// <summary>
+    /// 节点离线/在线信息
+    /// </summary>
+    public class StatusMessage : EventArgs
+    {
+       
+
+        /// <summary>
+        /// 是否在线
+        /// </summary>
+        public bool IsOnline
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 节点状态
+        /// </summary>
+        public NodeStatus Node
+        {
+            get;
+            set;
+
+        }
+
+
+        /// <summary>
+        /// 预制，执行消息
+        /// </summary>
+        /// <param name="mac">MAC</param>
+        /// <param name="serverData">服务数据</param>
+        public StatusMessage(bool isOnline, NodeStatus node)
+        {
+            IsOnline = isOnline;
+            Node = node;
+
+
+        }
+
+
+
+
+
 
     }
 

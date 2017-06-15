@@ -72,48 +72,69 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             if ( modelServer == null)
             {
-
                 modelServer = PlatformModelServer.GetServer();
-                _downAddress = modelServer.CommServer.DownAddress;
-                modelServer.MonitorData.NodeStatusList[1].UpdateViewDelegate = ControlViewModelPhaseA;
-                modelServer.MonitorData.NodeStatusList[1].CycleOverTimeDelegate = OverTimeCycleA;
-
-
-                modelServer.MonitorData.NodeStatusList[2].UpdateViewDelegate = ControlViewModelPhaseB;
-                modelServer.MonitorData.NodeStatusList[2].CycleOverTimeDelegate = OverTimeCycleB;
-
-                modelServer.MonitorData.NodeStatusList[3].UpdateViewDelegate = ControlViewModelPhaseC;
-                modelServer.MonitorData.NodeStatusList[3].CycleOverTimeDelegate = OverTimeCycleC;
-
-
-            }
-           
+                _downAddress = modelServer.CommServer.DownAddress;             
+                modelServer.MonitorData.NodeStatusList[1].StatusUpdateEvent +=PhaseA_StatusUpdateEvent;
+                modelServer.MonitorData.NodeStatusList[2].StatusUpdateEvent += PhaseB_StatusUpdateEvent;
+                modelServer.MonitorData.NodeStatusList[3].StatusUpdateEvent += PhaseC_StatusUpdateEvent;
+                modelServer.MonitorData.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;              
+            }           
         }
+
+        /// <summary>
+        /// 控件使能属性通知
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void UserControlEnable_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(e.PropertyName);
+        }
+
+       
 
         #endregion
 
 
         #region 指示灯操作
 
-        void ControlViewModelPhaseA()
+        private void PhaseA_StatusUpdateEvent(object sender, StatusMessage e)
         {
-            var  status = modelServer.MonitorData.NodeStatusList[1].StatusLoopCollect;
-            UpdatePositionStatus(status, "A");
-            UpdateEnergyStatus( modelServer.MonitorData.NodeStatusList[1].EnergyStatusLoopCollect, "A");
+            if (e.IsOnline)
+            {
+                UpdatePositionStatus(e.Node.StatusLoopCollect, "A");
+                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "A");
+            }
+            else
+            {
+                OverTimeCycleA();
+            }
         }
-        void ControlViewModelPhaseB()
+        private void PhaseB_StatusUpdateEvent(object sender, StatusMessage e)
         {
-            var status = modelServer.MonitorData.NodeStatusList[2].StatusLoopCollect;
-            UpdatePositionStatus(status, "B");
-            UpdateEnergyStatus(modelServer.MonitorData.NodeStatusList[2].EnergyStatusLoopCollect, "B");
+            if (e.IsOnline)
+            {
+                UpdatePositionStatus(e.Node.StatusLoopCollect, "B");
+                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "B");
+            }
+            else
+            {
+                OverTimeCycleB();
+            }
         }
-        void ControlViewModelPhaseC()
+        private void PhaseC_StatusUpdateEvent(object sender, StatusMessage e)
         {
-            var status = modelServer.MonitorData.NodeStatusList[3].StatusLoopCollect;
-            UpdatePositionStatus(status, "C");
-            UpdateEnergyStatus(modelServer.MonitorData.NodeStatusList[2].EnergyStatusLoopCollect, "C");
+            if (e.IsOnline)
+            {
+                UpdatePositionStatus(e.Node.StatusLoopCollect, "C");
+                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "C");
+            }
+            else
+            {
+                OverTimeCycleC();
+            }
         }
-
+       
         void OverTimeCycleA()
         {
             LedCloseA1 = offLed;
@@ -128,8 +149,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedErrorA = redLed;
             LedEneryA = offLed;
 
-            modelServer.MonitorData.StatusBar.SetPhaseA(false, "");
-            modelServer.MonitorData.UpdateStatus("A相超时离线");
+           
 
         }
         void OverTimeCycleB()
@@ -145,8 +165,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedOpenB = offLed;
             LedErrorB = redLed;
             LedEneryB = offLed;
-            modelServer.MonitorData.StatusBar.SetPhaseB(false, "");
-            modelServer.MonitorData.UpdateStatus("B相超时离线");
+            
         }
         void OverTimeCycleC()
         {
@@ -161,8 +180,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             LedOpenC = offLed;
             LedErrorC = redLed;
             LedEneryC = offLed;
-            modelServer.MonitorData.StatusBar.SetPhaseC(false, "");
-            modelServer.MonitorData.UpdateStatus("C相超时离线");
+            
         }
         void UpdatePositionStatus(StatusLoop[] status, string ph)
         {                  
@@ -491,6 +509,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
+
+        /// <summary>
+        /// 开关操作控制使能
+        /// </summary>
+        //public bool ControlEnable
+        //{           
+        //    get
+        //    {
+        //        return modelServer.MonitorData.UserControlEnable.ControlEnable;
+        //    }
+        //}
 
 
 

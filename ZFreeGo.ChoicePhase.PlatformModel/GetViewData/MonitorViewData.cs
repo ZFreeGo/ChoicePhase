@@ -63,6 +63,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         }
 
+        /// <summary>
+        /// 用户控件使能控制
+        /// </summary>
+        public EnableControl UserControlEnable
+        {
+            set;
+            get;
+        }
 
         /// <summary>
         /// 节点状态
@@ -72,7 +80,30 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             private set;
             get;
         }
-       
+
+        private byte _onlineBit;
+        /// <summary>
+        /// 在线位 bit0-同步控制器 bit1-A相 bit2-B相 bit3-C相
+        /// </summary>
+        public byte OnlineBit
+        {
+            get
+            {
+                return _onlineBit;
+            }
+            private set
+            {
+                _onlineBit = value;
+                if (_onlineBit == 0x03)//使能控制
+                {
+                    UserControlEnable.ControlEnable = true;
+                }
+                else
+                {
+                    UserControlEnable.ControlEnable = false;
+                }
+            }
+        }
 
         /// <summary>
         /// 数据库操作
@@ -81,112 +112,211 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         public MonitorViewData()
         {
-            dataBase = new SQLliteDatabase(CommonPath.DataBase);
-            _AttributeCollect = new List<ObservableCollection<AttributeItem>>();
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
-            _AttributeCollect.Add(null);
+            try
+            {
+                dataBase = new SQLliteDatabase(CommonPath.DataBase);
+                _AttributeCollect = new List<ObservableCollection<AttributeItem>>();
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
+                _AttributeCollect.Add(null);
 
 
-            _tableAttributeName = new List<string>();
+                _tableAttributeName = new List<string>();
 
-            _tableAttributeName.Add("AttributeSetYongciA");
-            _tableAttributeName.Add("AttributeReadYongciA");
-            _tableAttributeName.Add("AttributeSetYongciB");
-            _tableAttributeName.Add("AttributeReadYongciB");
-            _tableAttributeName.Add("AttributeSetYongciC");
-            _tableAttributeName.Add("AttributeReadYongciC");
-            _tableAttributeName.Add("AttributeSetDSP");
-            _tableAttributeName.Add("AttributeReadDSP");
-            _tableAttributeName.Add("AttributeSetARM");
-            _tableAttributeName.Add("AttributeReadARM");
-            _tableAttributeName.Add("AttributeSetMonitorA");
-            _tableAttributeName.Add("AttributeReadMonitorA");
-            _tableAttributeName.Add("AttributeSetMonitorB");
-            _tableAttributeName.Add("AttributeReadMonitorB");
-            _tableAttributeName.Add("AttributeSetMonitorC");
-            _tableAttributeName.Add("AttributeReadMonitorC");
-
-
-            //站点名称
-            StationNameList = new ObservableCollection<string>();
-            StationNameList.Add("A相控制器");
-            StationNameList.Add("B相控制器");
-            StationNameList.Add("C相控制器");
-            StationNameList.Add("同步控制器");
-            StationNameList.Add("网络控制器");
-            StationNameList.Add("A相监测");
-            StationNameList.Add("B相监测");
-            StationNameList.Add("C相监测");
-
-            _macList = new List<byte>();
-            _macList.Add(0x10);
-            _macList.Add(0x12);
-            _macList.Add(0x14);
-            _macList.Add(0x0D);
-            _macList.Add(0x02);
-            _macList.Add(0x16);
-            _macList.Add(0x18);
-            _macList.Add(0x1A);
+                _tableAttributeName.Add("AttributeSetYongciA");
+                _tableAttributeName.Add("AttributeReadYongciA");
+                _tableAttributeName.Add("AttributeSetYongciB");
+                _tableAttributeName.Add("AttributeReadYongciB");
+                _tableAttributeName.Add("AttributeSetYongciC");
+                _tableAttributeName.Add("AttributeReadYongciC");
+                _tableAttributeName.Add("AttributeSetDSP");
+                _tableAttributeName.Add("AttributeReadDSP");
+                _tableAttributeName.Add("AttributeSetARM");
+                _tableAttributeName.Add("AttributeReadARM");
+                _tableAttributeName.Add("AttributeSetMonitorA");
+                _tableAttributeName.Add("AttributeReadMonitorA");
+                _tableAttributeName.Add("AttributeSetMonitorB");
+                _tableAttributeName.Add("AttributeReadMonitorB");
+                _tableAttributeName.Add("AttributeSetMonitorC");
+                _tableAttributeName.Add("AttributeReadMonitorC");
 
 
+                //站点名称
+                StationNameList = new ObservableCollection<string>();
+                StationNameList.Add("A相控制器");
+                StationNameList.Add("B相控制器");
+                StationNameList.Add("C相控制器");
+                StationNameList.Add("同步控制器");
+                StationNameList.Add("网络控制器");
+                StationNameList.Add("A相监测");
+                StationNameList.Add("B相监测");
+                StationNameList.Add("C相监测");
 
-            NodeStatusList = new ObservableCollection<NodeStatus>();
-            NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器", 4000));
-            NodeStatusList.Add(new NodeStatus(0x10, "A相控制器", 3000));
-            NodeStatusList.Add(new NodeStatus(0x12, "B相控制器", 3000));
-            NodeStatusList.Add(new NodeStatus(0x14, "C相控制器", 3000));
+                _macList = new List<byte>();
+                _macList.Add(0x10);
+                _macList.Add(0x12);
+                _macList.Add(0x14);
+                _macList.Add(0x0D);
+                _macList.Add(0x02);
+                _macList.Add(0x16);
+                _macList.Add(0x18);
+                _macList.Add(0x1A);
 
-            NodeStatusList[0].CycleOverTimeDelegate = SynControllerOverTime;
-            NodeStatusList[0].UpdateViewDelegate = SynControllerUpdateStatus;
 
-            StatusBar = new StatusBarMessage("Admin");
+
+                NodeStatusList = new ObservableCollection<NodeStatus>();
+                NodeStatusList.Add(new NodeStatus(0x0D, "同步控制器", 7000));
+                NodeStatusList.Add(new NodeStatus(0x10, "A相控制器", 7000));
+                NodeStatusList.Add(new NodeStatus(0x12, "B相控制器", 7000));
+                NodeStatusList.Add(new NodeStatus(0x14, "C相控制器", 7000));
+
+                NodeStatusList[0].StatusUpdateEvent += SynController_StatusUpdateEvent;
+                NodeStatusList[1].StatusUpdateEvent += PhaseA_StatusUpdateEvent;
+                NodeStatusList[2].StatusUpdateEvent += PhaseB_StatusUpdateEvent;
+                NodeStatusList[3].StatusUpdateEvent += PhaseC_StatusUpdateEvent;
+
+                StatusBar = new StatusBarMessage("Admin");
+
+                _onlineBit = 0;
+
+                UserControlEnable = new EnableControl();
+            }
+            catch(Exception ex)
+            {
+
+            }
 
         }
-
         /// <summary>
-        /// 更新同步控制器状态
+        /// 同步控制器 离线/在线
         /// </summary>
-        private void SynControllerUpdateStatus()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SynController_StatusUpdateEvent(object sender, DataItemSet.StatusMessage e)
         {
-            for (int i = 0; i < 1; i++)
+            if (e.IsOnline)
             {
-                if (NodeStatusList[0].VoltageLoopCollect[i] != EnergyStatusLoop.Normal)
+                for (int i = 0; i < 1; i++)
                 {
-                    UpdateStatus("系统电压:" + NodeStatusList[0].VoltageLoopCollect[i].ToString());
+                    if (NodeStatusList[0].VoltageLoopCollect[i] != EnergyStatusLoop.Normal)
+                    {
+                        UpdateStatus("系统电压:" + NodeStatusList[0].VoltageLoopCollect[i].ToString());
+                    }
                 }
+                if (NodeStatusList[0].FrequencyLoopCollect[0] != EnergyStatusLoop.Normal)
+                {
+                    UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
+                }
+                //说明最后一次为非在线状态
+                if(!e.Node.LastOnline)
+                {
+                    StatusBar.SetSyn(true, "同步控制器在线");
+                    UpdateStatus("同步控制器恢复在线");
+                }
+                OnlineBit = SetBit(OnlineBit, 0);
             }
-            if (NodeStatusList[0].FrequencyLoopCollect[0] != EnergyStatusLoop.Normal)
+            else
             {
-                UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
-            }
+                var comment = "同步控制超时离线";
 
+                StatusBar.SetSyn(false, comment);
+                UpdateStatus(comment);
+                OnlineBit = ClearBit(OnlineBit, 0);
+               
+            }
         }
 
         /// <summary>
-        /// 同步控制器超时处理
+        /// A相状态更新事件 离线/在线
         /// </summary>
-        private void SynControllerOverTime()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PhaseA_StatusUpdateEvent(object sender, StatusMessage e)
         {
-            var comment = "同步控制超时离线";
+            if(e.IsOnline)
+            {
+                //说明最后一次为非在线状态
+                if (!e.Node.LastOnline)
+                {
+                    StatusBar.SetPhaseA(true, "A相在线");
+                    UpdateStatus("A相恢复在线");
+                }
+                OnlineBit = SetBit(OnlineBit, 1);
+            }
+            else
+            {
+                StatusBar.SetPhaseA(false, "");
+                UpdateStatus("A相超时离线");
+                OnlineBit = ClearBit(OnlineBit, 1);
+            }
             
-            StatusBar.SetSyn(false, comment);
-            UpdateStatus(comment);
         }
 
+        /// <summary>
+        /// B相状态更新事件 离线/在线
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PhaseB_StatusUpdateEvent(object sender, StatusMessage e)
+        {
+            if (e.IsOnline)
+            {
+                //说明最后一次为非在线状态
+                if (!e.Node.LastOnline)
+                {
+                    StatusBar.SetPhaseB(true, "B相在线");
+                    UpdateStatus("B相恢复在线");
+                }
+                OnlineBit = SetBit(OnlineBit, 2);
+            }
+            else
+            {
+                StatusBar.SetPhaseB(false, "");
+                UpdateStatus("B相超时离线");
+                OnlineBit = ClearBit(OnlineBit, 2);
+            }
+        }
+
+        /// <summary>
+        /// C相状态更新事件 离线/在线
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PhaseC_StatusUpdateEvent(object sender, StatusMessage e)
+        {
+            if (e.IsOnline)
+            {
+                //说明最后一次为非在线状态
+                if (!e.Node.LastOnline)
+                {
+                    StatusBar.SetPhaseC(true, "C相在线");
+                    UpdateStatus("C相恢复在线");
+                }
+                OnlineBit = SetBit(OnlineBit, 3);
+            }
+            else
+            {
+                StatusBar.SetPhaseC(false, "");
+                UpdateStatus("C相超时离线");
+                OnlineBit = ClearBit(OnlineBit, 3);
+            }
+        }
+       
+
+       
 
 
         private string statusMessage = "";
@@ -860,10 +990,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                    }
                   
 
-           }
-            
-
-
+           }                     
 
         }
 
@@ -947,7 +1074,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
         }
-        
+
+        /// <summary>
+        /// 将其中deq位设置1，[0,7]
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="seq">位数</param>
+        /// <returns>置位后的数据</returns>
+        private byte SetBit(byte value, byte seq)
+        {
+            return (byte)(value | (1 << seq));
+        }
+        /// <summary>
+        /// 将其中deq位设清0，[0,7]
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <param name="seq">位数</param>
+        /// <returns>清除相应位后的数据</returns>
+        private byte ClearBit(byte value, byte seq)
+        {
+            return (byte)(value & (~(1 << seq)));
+        }
 
 
     }

@@ -132,8 +132,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                     }
                 };
 
-                Action act = ()=>{ MonitorData.StatusBar.SetDevice(false);                                   
-                                    MonitorData.UpdateStatus("设备状态:超时离线");};
+                Action act = ()=>{ MonitorData.StatusBar.SetDevice(false);
+                MonitorData.StatusBar.SetDevice(false);
+                ControlNetServer.StopLinkServer(); //停止所有连接
+                };
 
                 overTimerDevice = new OverTimeTimer(7000, act);
                 
@@ -148,14 +150,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
         private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-        /// <summary>
-        /// 外部的任务调度器
-        /// </summary>
-        public TaskScheduler OutTaskScheduler
-        {
-            get;
-            set;
-        }
+      
         /// <summary>
         /// 连接信息
         /// </summary>
@@ -317,6 +312,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                                     var des = GetCANError(can);
                                     MonitorData.UpdateStatus("设备状态:" + des);
                                     overTimerDevice.ReStartTimer();
+                                    //如果不是激活状态，则在收到连接后重新建立连接
+                                    if (!ControlNetServer.IsActive)
+                                    {
+                                        ControlNetServer.RestartLinkServer();
+                                    }
                                     break;
                                 }
                             default:

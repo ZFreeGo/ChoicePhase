@@ -363,7 +363,7 @@
 
 
             </GroupBox >
-            <GroupBox Header="同步开关" Grid.Row="3" Margin="3" >
+            <GroupBox Header="同步开关" Grid.Row="3" Margin="3"  >
                 <StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
                         <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchReadyHe">同步合闸预制</Button>
