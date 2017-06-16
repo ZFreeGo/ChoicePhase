@@ -55,8 +55,12 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         {
             LocalMac = 0x02;
             StationInformation = new List<DefStationInformation>();
+            
             StationInformation.Add(new DefStationInformation(0x0D, false, "同步控制器"));
             StationInformation.Add(new DefStationInformation(0x10, false, "A相"));
+            StationInformation.Add(new DefStationInformation(0x12, false, "B相"));
+            StationInformation.Add(new DefStationInformation(0x14, false, "C相"));
+
 
             ExceptionDelegate = exceptionDelegate;
             PollingService = new StationPollingService(ExceptionDelegate);

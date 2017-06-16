@@ -372,41 +372,40 @@
                                 <PasswordBox  Margin="3" Width="100"   Name="passWordBox" Password="sd"  PasswordChanged="passWordBox_PasswordChanged"></PasswordBox>
                                 <Button Margin="3" Padding="3" IsEnabled="True" Command="{Binding SecureCheckCommand}" CommandParameter="Check">认证</Button>
                                 <Button Margin="3" Padding="3" Command="{Binding SecureCheckCommand}" CommandParameter="Exit">退出</Button>
-                                <TextBox Margin="30,3,3,3" Text="{Binding SecureTip}" VerticalContentAlignment="Center" IsReadOnly="True" Foreground="{Binding SecureColor}"></TextBox>
-                            
+                                <TextBox Margin="30,3,3,3" Text="{Binding SecureTip}" VerticalContentAlignment="Center" IsReadOnly="True" Foreground="{Binding SecureColor}"></TextBox>                            
                         </StackPanel>
                     </GroupBox>
                        
                             <GroupBox Header="开关操作" IsEnabled="{Binding SwitchOperateEnable}"  DataContext="{Binding ControlCollect}">
                             <StackPanel >
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchReadyHe" IsEnabled="{Binding SynCloseReady}">同步合闸预制</Button>
-                                    <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="SynSwitchActionHe" IsEnabled="{Binding SynCloseAction}">同步合闸执行</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="SynSwitchReadyHe" IsEnabled="{Binding SynCloseReady}">同步合闸预制</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="SynSwitchActionHe" IsEnabled="{Binding SynCloseAction}">同步合闸执行</Button>
                                 </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
                                     <GroupBox Header="开关整体合闸">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe"  IsEnabled="{Binding CloseReady}" >合闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe" IsEnabled="{Binding CloseAction}">合闸执行</Button>
+                                            <Button Margin="3"  Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="ReadyAllHe"  IsEnabled="{Binding CloseReady}" >合闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="ActionAllHe" IsEnabled="{Binding CloseAction}">合闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                     <GroupBox Header="A相合闸">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe"  IsEnabled="{Binding CloseReady}" >A相合闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe" IsEnabled="{Binding CloseAction}">A相合闸执行</Button>
+                                            <Button Margin="3"  Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseReadyA"  IsEnabled="{Binding CloseReadyA}" >A相合闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseActionA" IsEnabled="{Binding CloseActionA}">A相合闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
 
                                     <GroupBox Header="B相合闸">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe"  IsEnabled="{Binding CloseReady}" >B相合闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe" IsEnabled="{Binding CloseAction}">B相合闸执行</Button>
+                                            <Button Margin="3"  Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseReadyB"  IsEnabled="{Binding CloseReadyB}" >B相合闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseActionB" IsEnabled="{Binding CloseActionB}">B相合闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                     <GroupBox Header="C相合闸">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Margin="3"  Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllHe"  IsEnabled="{Binding CloseReady}" >C相合闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllHe" IsEnabled="{Binding CloseAction}">C相合闸执行</Button>
+                                            <Button Margin="3"  Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseReadyC"  IsEnabled="{Binding CloseReadyC}" >C相合闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseActionC" IsEnabled="{Binding CloseActionC}">C相合闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                 </StackPanel>
@@ -414,29 +413,29 @@
                                 <GroupBox Header="开关整体分闸">
                                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
 
-                                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen" IsEnabled="{Binding OpenReady}">分闸预制</Button>
-                                        <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen" IsEnabled="{Binding OpenAction}">分闸执行</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenReady" IsEnabled="{Binding OpenReady}">分闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenAction" IsEnabled="{Binding OpenAction}">分闸执行</Button>
                                     </StackPanel>
                                 </GroupBox>
                                     <GroupBox Header="A相分闸">
                                         <StackPanel  Orientation="Horizontal" >
 
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen" IsEnabled="{Binding OpenReady}">A相分闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen" IsEnabled="{Binding OpenAction}">A相分闸执行</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenReadyA" IsEnabled="{Binding OpenReadyA}">A相分闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenActionA" IsEnabled="{Binding OpenActionA}">A相分闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                     <GroupBox Header="B相分闸">
                                         <StackPanel Orientation="Horizontal" >
 
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen" IsEnabled="{Binding OpenReady}">B相分闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen" IsEnabled="{Binding OpenAction}">B相分闸执行</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenReadyB" IsEnabled="{Binding OpenReadyB}">B相分闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenActionB" IsEnabled="{Binding OpenActionB}">B相分闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                     <GroupBox Header="C相分闸">
                                         <StackPanel  Orientation="Horizontal" >
 
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ReadyAllFen" IsEnabled="{Binding OpenReady}">C相分闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ActionCommand}" CommandParameter="ActionAllFen" IsEnabled="{Binding OpenAction}">C相分闸执行</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenReadyC" IsEnabled="{Binding OpenReadyC}">C相分闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="OpenActionC" IsEnabled="{Binding OpenActionC}">C相分闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                 </StackPanel>

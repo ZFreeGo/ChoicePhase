@@ -94,7 +94,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             private set
             {
                 _onlineBit = value;
-                if (_onlineBit == 0x03)//使能控制
+                if (_onlineBit == 0x0F)//A,B,C使能控制
                 {
                     UserControlEnable.ControlEnable = true;
                 }
@@ -397,16 +397,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             {
                 case 0x10:
                     {
+
                         UpdateStatus("A相:" + des);
                         break;
                     }
                 case 0x12:
                     {
+
                         UpdateStatus("B相:" + des);
                         break;
                     }
                 case 0x14:
                     {
+
                         UpdateStatus("C相:" + des);
                         break;
                     }
@@ -855,6 +858,185 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
         /// <summary>
+        /// 设置用户控件使能
+        /// </summary>
+        /// <param name="mac">mac地址</param>
+        /// <param name="cmd">应答命令</param>
+        private void SetUserControlEnable(byte mac, CommandIdentify cmd)
+        {
+            switch (mac)
+            {
+                case 0x0D://同步控制器                    
+                    {
+                        switch (cmd)
+                        {
+                            //执行合闸
+                            case CommandIdentify.SyncOrchestratorCloseAction:
+                                {
+                                    
+                                    break;
+                                }
+                            //预备合闸
+                            case CommandIdentify.SyncOrchestratorReadyClose:
+                                {
+                                    
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case 0x10: //A相  
+                    {
+                        switch (cmd)
+                        {
+                            case CommandIdentify.CloseAction://合闸执行
+                                {
+                                    UserControlEnable.CloseReadyA = true;
+                                    UserControlEnable.CloseActionA = false; 
+                                    break;
+                                }                          
+                            case CommandIdentify.ReadyClose: // 合闸预制
+                                {
+                                    UserControlEnable.CloseReadyA = false;
+                                    UserControlEnable.CloseActionA = true;
+                                    
+                                    break;
+                                }
+                            case CommandIdentify.ReadyOpen:  //分闸预制                   
+                                {
+                                    UserControlEnable.OpenReadyA = false;
+                                    UserControlEnable.OpenActionA = true;
+                                    break;
+                                }
+                            case CommandIdentify.OpenAction: //分闸执行
+                                {
+                                    UserControlEnable.OpenReadyA = true;
+                                    UserControlEnable.OpenActionA = false;
+                                    break;
+                                }
+                            
+                            case CommandIdentify.SyncReadyClose:  //同步合闸预制 
+                                {
+
+                                    break;
+                                }
+
+                        }
+                       
+                        break;
+                    }
+                case 0x12://B相 
+                    {
+                        switch (cmd)
+                        {
+                            case CommandIdentify.CloseAction://合闸执行
+                                {
+                                    UserControlEnable.CloseReadyB = true;
+                                    UserControlEnable.CloseActionB = false;
+                                    break;
+                                }
+                            case CommandIdentify.ReadyClose: // 合闸预制
+                                {
+                                    UserControlEnable.CloseReadyB = false;
+                                    UserControlEnable.CloseActionB = true;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                    }
+                                    UserControlEnable.OperateB = false;
+                                    break;
+                                }
+                            case CommandIdentify.ReadyOpen:  //分闸预制                   
+                                {
+                                    UserControlEnable.OpenReadyB = false;
+                                    UserControlEnable.OpenActionB = true;
+                                    break;
+                                }
+                            case CommandIdentify.OpenAction: //分闸执行
+                                {
+                                    UserControlEnable.OpenReadyB = true;
+                                    UserControlEnable.OpenActionB = false;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                    }
+                                    UserControlEnable.OperateB = false;
+
+                                    break;
+                                }
+
+                            case CommandIdentify.SyncReadyClose:  //同步合闸预制 
+                                {
+
+                                    break;
+                                }
+
+                        }
+                        break;
+                    }
+                case 0x14: //C相
+                    {
+
+                        switch (cmd)
+                        {
+                            case CommandIdentify.CloseAction://合闸执行
+                                {
+                                    UserControlEnable.CloseReadyC = true;
+                                    UserControlEnable.CloseActionC = false;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                    }
+                                    UserControlEnable.OperateC = false;
+                                    break;
+                                }
+                            case CommandIdentify.ReadyClose: // 合闸预制
+                                {
+                                    UserControlEnable.CloseReadyC = false;
+                                    UserControlEnable.CloseActionC = true;
+                                    break;
+                                }
+                            case CommandIdentify.ReadyOpen:  //分闸预制                   
+                                {
+                                    UserControlEnable.OpenReadyC = false;
+                                    UserControlEnable.OpenActionC = true;
+                                    break;
+                                }
+                            case CommandIdentify.OpenAction: //分闸执行
+                                {
+                                    UserControlEnable.OpenReadyC = true;
+                                    UserControlEnable.OpenActionC = false;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                    }
+                                    UserControlEnable.OperateC = false;
+                                    break;
+                                }
+
+                            case CommandIdentify.SyncReadyClose:  //同步合闸预制 
+                                {
+
+                                    break;
+                                }
+
+                        }
+                        
+                        break;
+                    }
+
+            }
+        }
+
+        /// <summary>
         /// 合闸预制状态
         /// </summary>
         /// <param name="mac"></param>
@@ -866,8 +1048,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             {
                 return;
             }
-            node.IsValid(data);
-
+            
+            //if (!node.IsValid(data))
+            //{
+            //    UpdateStatus(node.Mac.ToString("X2") + "应答数据无效！");
+            //    return;
+            //}
             var cmd = (CommandIdentify)(data[0] & 0x7F);
 
             node.ResetState();
@@ -902,7 +1088,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                         switch (cmd)
                         {
                             case CommandIdentify.CloseAction://合闸执行
-                                {
+                                {                                    
                                     node.ActionCloseState = true;
                                     UpdateStatus(mac, "合闸执行");
                                     break;
@@ -917,6 +1103,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     node.ReadyCloseState = true;
                                     UpdateStatus(mac, "合闸预制");
+                                    
                                     break;
                                 }
                             case CommandIdentify.ReadyOpen:  //分闸预制                   
@@ -937,6 +1124,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     }
 
             }
+            //设置用户控件使能状态
+            SetUserControlEnable(mac, cmd);
         }       
 
        

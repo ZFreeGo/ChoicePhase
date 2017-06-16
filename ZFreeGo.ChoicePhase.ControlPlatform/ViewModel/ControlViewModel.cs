@@ -10,6 +10,7 @@ using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 using ZFreeGo.Monitor.AutoStudio.Secure;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -86,7 +87,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer.MonitorData.NodeStatusList[1].StatusUpdateEvent +=PhaseA_StatusUpdateEvent;
                 modelServer.MonitorData.NodeStatusList[2].StatusUpdateEvent += PhaseB_StatusUpdateEvent;
                 modelServer.MonitorData.NodeStatusList[3].StatusUpdateEvent += PhaseC_StatusUpdateEvent;
-                modelServer.MonitorData.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;              
+                modelServer.MonitorData.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;
+                ///幅值委托
+                modelServer.MonitorData.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;
             }           
         }
 
@@ -642,20 +645,27 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     }
 
             }
+
+            SetControlButtonState();                       
         }
-
-
-       void GetWholeState()
+        public void SetControlButtonState()
         {
-           //for(int i = 1; i < 4; i++)
-           //{
-           //    modelServer.MonitorData.NodeStatusList[0]. PositStatus
-           //}
-
-
-           //modelServer.MonitorData.NodeStatusList[0].EnergyStatusLoopCollect[0]
+            for(int i = 1; i < 4; i++)
+            {
+                //电能正常，且属于合位，使能分闸按钮
+                if(modelServer.MonitorData.NodeStatusList[i].EnergyStatus == EnergyStatusLoop.Normal )
+                {
+                    modelServer.MonitorData.UserControlEnable.ChooiceEnableButton((UInt16)((i << 8) | ((byte)modelServer.MonitorData.NodeStatusList[i].PositStatus)));
+                }
+                else
+                {
+                     modelServer.MonitorData.UserControlEnable.ChooiceEnableButton((UInt16)((i<< 8)));//关闭所有
+                }
+            }
         }
+       
 
+      
 
 
 
@@ -1269,39 +1279,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                            
                             break;
                         }
-                    case "ReadyAllHe":                   
-                        {
-                            //0x03 -- I,II同时动作
-                            var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
-                            //此处发送控制命令   
-                            SendToABC(command);
-
-                            break;
-                        }
-                    case "ActionAllHe":
-                        {
-                            //0x03 -- I,II同时动作
-                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
-                            //此处发送控制命令                     
-                            SendToABC(command);
-                            break;
-                        }
-                    case "ReadyAllFen":
-                        {
-                            //0x03 -- I,II同时动作
-                            var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)_actionTime };
-                            //此处发送控制命令                     
-                            SendToABC(command);
-                            break;
-                        }
-                    case "ActionAllFen":
-                        {
-                            //0x03 -- I,II同时动作
-                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)_actionTime };
-                            //此处发送控制命令                     
-                            SendToABC(command);
-                            break;
-                        }
+               
                     default:
                         {
                             break;
@@ -1314,9 +1292,197 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
         }
-        
 
-       
+        /// <summary>
+        /// 显示提示信息
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool ShowMessageBox(string message, string caption)
+        {
+            var resutlt = System.Windows.MessageBox.Show(message, caption, System.Windows.MessageBoxButton.OKCancel);
+            if (resutlt == System.Windows.MessageBoxResult.OK)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        
+        
+        
+        /// <summary>
+        /// 执行面向用户的合分闸命令
+        /// </summary>
+        /// <param name="str">参数</param>
+        void ExecuteUserReadyActionCommand(string str)
+        {
+            try
+            {
+                
+                switch (str)
+                {
+                    case "CloseReady":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
+                            //此处发送控制命令   
+                            SendToABC(command);
+                            break;
+                        }
+                    case "CloseAction":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            SendToABC(command);
+                            break;
+                        }
+                    case "CloseReadyA":
+                        {
+                            break;
+                        }
+                    case "CloseActionA":
+                        {
+                            break;
+                        }
+                    case "CloseReadyB":
+                        {
+                            if (modelServer.MonitorData.UserControlEnable.OperateState && 
+                                (!modelServer.MonitorData.UserControlEnable.OperateB))
+                            {
+                                ShowMessageBox("有正在处理的其它相操作", "单相操作");
+                            }
+
+
+                            if (ShowMessageBox("是否确认 B相分闸预制？", "单相操作"))
+                            {
+                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
+                                SendCMD(0x12, command);
+                                modelServer.MonitorData.UserControlEnable.OperateB = true;
+                                modelServer.MonitorData.UserControlEnable.OverTimerReadyAction =
+                                    new OverTimeTimer(10000, () =>
+                                    {
+                                        ShowMessageBox("B相分闸预制超时！", "单相操作");
+                                        modelServer.MonitorData.UpdateStatus("B相合闸操作超时！");
+                                        modelServer.MonitorData.UserControlEnable.OperateB = false;
+
+                                    });
+                                modelServer.MonitorData.UserControlEnable.OverTimerReadyAction.ReStartTimer();
+                            }
+                            break;
+                        }
+                    case "CloseActionB":
+                        {
+                            if (modelServer.MonitorData.UserControlEnable.OperateState &&
+                                (!modelServer.MonitorData.UserControlEnable.OperateB))
+                            {
+                                ShowMessageBox("有正在处理的其它相操作", "单相操作");
+                            }
+
+                            if (ShowMessageBox("是否确认 B相执行合闸？", "单相操作"))
+                            {
+                                var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
+                                SendCMD(0x12, command);
+                                modelServer.MonitorData.UserControlEnable.OperateB = true;                               
+                            }
+                            break;
+                        }
+                    case "CloseReadyC":
+                        {
+
+                            if (modelServer.MonitorData.UserControlEnable.OperateState &&
+                                (!modelServer.MonitorData.UserControlEnable.OperateC))
+                            {
+                                ShowMessageBox("有正在处理的其它相操作", "单相操作");
+                            }
+
+                            if (ShowMessageBox("是否确认 C相分闸预制？", "单相操作"))
+                            {
+                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
+                                SendCMD(0x14, command);
+                                modelServer.MonitorData.UserControlEnable.OperateC = true;
+                                modelServer.MonitorData.UserControlEnable.OverTimerReadyAction =
+                                    new OverTimeTimer(10000, () => { ShowMessageBox("C相分闸预制超时！", "单相操作");
+                                    modelServer.MonitorData.UpdateStatus("C相分闸预制超时！");
+                                    modelServer.MonitorData.UserControlEnable.OperateC = false;
+
+                                    });
+                                modelServer.MonitorData.UserControlEnable.OverTimerReadyAction.ReStartTimer();
+                            }
+                            break;
+                        }
+                    case "CloseActionC":
+                        {
+                            if (modelServer.MonitorData.UserControlEnable.OperateState &&
+                                (!modelServer.MonitorData.UserControlEnable.OperateC))
+                            {
+                                ShowMessageBox("有正在处理的其它相操作", "单相操作");
+                            }
+
+                            if (ShowMessageBox("是否确认 C相执行合闸？", "单相操作"))
+                            {
+                                var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
+                                SendCMD(0x14, command);
+                                modelServer.MonitorData.UserControlEnable.OperateC = true;
+                               
+                            }
+                            break;
+                        }
+                    case "OpenReady":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            SendToABC(command);
+                            break;
+                        }
+                    case "OpenAction":
+                        {
+                            //0x03 -- I,II同时动作
+                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)_actionTime };
+                            //此处发送控制命令                     
+                            SendToABC(command);
+                            break;
+                        }
+                    case "OpenReadyA":
+                        {
+                            break;
+                        }
+                    case "OpenActionA":
+                        {
+                            break;
+                        }
+                    case "OpenReadyB":
+                        {
+                            break;
+                        }
+                    case "OpenActionB":
+                        {
+                            break;
+                        }
+                    case "OpenReadyC":
+                        {
+                            break;
+                        }
+                    case "OpenActionC":
+                        {
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO:错误处理
+            }
+        }
 
 
         /// <summary>
@@ -1371,7 +1537,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             modelServer.MonitorData.GetNdoe(0x14).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
         }
-     
+        /// <summary>
+        /// 发送命令状态到子站
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <param name="command"></param>
+        private void SendCMD(byte mac, byte[] command)
+        {          
+            modelServer.MonitorData.GetNdoe(mac).ResetState();//复位状态 
+            modelServer.MonitorData.GetNdoe(mac).LastSendData = command;
+            modelServer.ControlNetServer.MasterSendCommand(mac, command, 0, command.Length);
+        }
+
 
         #endregion
 

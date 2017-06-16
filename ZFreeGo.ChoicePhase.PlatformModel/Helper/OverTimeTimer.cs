@@ -67,7 +67,20 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
             timer.Start();
            //Console.WriteLine("Start:" + id.ToString() + ":" + DateTime.Now.ToString("HH:MM:fff"));
         }
-
+        /// <summary>
+        /// 停止定时器
+        /// </summary>
+        public void StopTimer()
+        {
+            if (timer.Enabled)
+            {
+                timer.Enabled = false;
+                timer.Elapsed -= timer_Elapsed;
+                timer.Stop();
+                timer.Close();
+                timer.Dispose();
+            }
+        }
 
     }
 }
