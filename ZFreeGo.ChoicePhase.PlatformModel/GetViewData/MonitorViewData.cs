@@ -183,6 +183,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 NodeStatusList.Add(new NodeStatus(0x12, "B相控制器", 7000));
                 NodeStatusList.Add(new NodeStatus(0x14, "C相控制器", 7000));
 
+
+
+
                 NodeStatusList[0].StatusUpdateEvent += SynController_StatusUpdateEvent;
                 NodeStatusList[1].StatusUpdateEvent += PhaseA_StatusUpdateEvent;
                 NodeStatusList[2].StatusUpdateEvent += PhaseB_StatusUpdateEvent;
@@ -864,6 +867,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// <param name="cmd">应答命令</param>
         private void SetUserControlEnable(byte mac, CommandIdentify cmd)
         {
+
             switch (mac)
             {
                 case 0x0D://同步控制器                    
@@ -892,14 +896,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.CloseAction://合闸执行
                                 {
                                     UserControlEnable.CloseReadyA = true;
-                                    UserControlEnable.CloseActionA = false; 
+                                    UserControlEnable.CloseActionA = false;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyActionA != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyActionA.StopTimer();
+                                    }
+                                    UserControlEnable.OperateA = false;
                                     break;
                                 }                          
                             case CommandIdentify.ReadyClose: // 合闸预制
                                 {
                                     UserControlEnable.CloseReadyA = false;
                                     UserControlEnable.CloseActionA = true;
-                                    
+
+                                   
                                     break;
                                 }
                             case CommandIdentify.ReadyOpen:  //分闸预制                   
@@ -912,6 +924,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     UserControlEnable.OpenReadyA = true;
                                     UserControlEnable.OpenActionA = false;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyActionA != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyActionA.StopTimer();
+                                    }
+                                    UserControlEnable.OperateA = false;
                                     break;
                                 }
                             
@@ -933,6 +952,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     UserControlEnable.CloseReadyB = true;
                                     UserControlEnable.CloseActionB = false;
+
+                                    //停止响应的超时定时器
+                                    if (UserControlEnable.OverTimerReadyActionB != null)
+                                    {
+                                        UserControlEnable.OverTimerReadyActionB.StopTimer();
+                                    }
+                                    UserControlEnable.OperateB = false;
                                     break;
                                 }
                             case CommandIdentify.ReadyClose: // 合闸预制
@@ -940,12 +966,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                     UserControlEnable.CloseReadyB = false;
                                     UserControlEnable.CloseActionB = true;
 
-                                    //停止响应的超时定时器
-                                    if (UserControlEnable.OverTimerReadyAction != null)
-                                    {
-                                        UserControlEnable.OverTimerReadyAction.StopTimer();
-                                    }
-                                    UserControlEnable.OperateB = false;
+                                  
                                     break;
                                 }
                             case CommandIdentify.ReadyOpen:  //分闸预制                   
@@ -960,9 +981,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                     UserControlEnable.OpenActionB = false;
 
                                     //停止响应的超时定时器
-                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    if (UserControlEnable.OverTimerReadyActionB != null)
                                     {
-                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                        UserControlEnable.OverTimerReadyActionB.StopTimer();
                                     }
                                     UserControlEnable.OperateB = false;
 
@@ -989,9 +1010,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                     UserControlEnable.CloseActionC = false;
 
                                     //停止响应的超时定时器
-                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    if (UserControlEnable.OverTimerReadyActionC != null)
                                     {
-                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                        UserControlEnable.OverTimerReadyActionC.StopTimer();
                                     }
                                     UserControlEnable.OperateC = false;
                                     break;
@@ -1014,9 +1035,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                     UserControlEnable.OpenActionC = false;
 
                                     //停止响应的超时定时器
-                                    if (UserControlEnable.OverTimerReadyAction != null)
+                                    if (UserControlEnable.OverTimerReadyActionC != null)
                                     {
-                                        UserControlEnable.OverTimerReadyAction.StopTimer();
+                                        UserControlEnable.OverTimerReadyActionC.StopTimer();
                                     }
                                     UserControlEnable.OperateC = false;
                                     break;
@@ -1067,6 +1088,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.SyncOrchestratorCloseAction:
                                 {
                                     node.SynActionCloseState = true;
+                                    node.SynReadyCloseState = false;
                                     UpdateStatus("同步控制器，执行合闸");
                                     break;
                                 }
@@ -1074,6 +1096,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.SyncOrchestratorReadyClose:
                                 {
                                     node.SynReadyCloseState = true;
+                                    node.SynActionCloseState = false;
                                     UpdateStatus("同步控制器，预制合闸");
                                     break;
                                 }
@@ -1090,18 +1113,21 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.CloseAction://合闸执行
                                 {                                    
                                     node.ActionCloseState = true;
+                                    node.ReadyCloseState = false;
                                     UpdateStatus(mac, "合闸执行");
                                     break;
                                 }
                             case CommandIdentify.OpenAction: //分闸执行
                                 {
                                     node.ActionOpenState = true;
+                                    node.ReadyOpenState = false;
                                     UpdateStatus(mac, "分闸预制");
                                     break;
                                 }
                             case CommandIdentify.ReadyClose: // 合闸预制
                                 {
                                     node.ReadyCloseState = true;
+                                    node.ActionCloseState = false;
                                     UpdateStatus(mac, "合闸预制");
                                     
                                     break;
@@ -1109,6 +1135,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             case CommandIdentify.ReadyOpen:  //分闸预制                   
                                 {
                                     node.ReadyOpenState = true;
+                                    node.ActionOpenState = false;
                                     UpdateStatus(mac, "分闸预制");
                                     break;
                                 }
@@ -1116,6 +1143,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     UpdateStatus(mac, "同步合闸预制");
                                     node.SynReadyCloseState = true;
+
                                     break;
                                 }
                            
@@ -1125,11 +1153,67 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
             }
             //设置用户控件使能状态
-            SetUserControlEnable(mac, cmd);
+
+            //不是ABC 一起动模式
+
+            if (!UserControlEnable.OperateABC)
+            {
+                SetUserControlEnable(mac, cmd);
+            }
+            else
+            {
+                //ABC一起动模式
+                //均为合闸预制模式
+                if (NodeStatusList[1].ReadyCloseState && NodeStatusList[2].ReadyCloseState && NodeStatusList[3].ReadyCloseState)
+                {
+                    UserControlEnable.CloseReady = false;
+                    UserControlEnable.CloseAction = true;
+                }
+                if (NodeStatusList[1].ActionCloseState && NodeStatusList[2].ActionCloseState && NodeStatusList[3].ActionCloseState)
+                {
+                    UserControlEnable.CloseReady = true;
+                    UserControlEnable.CloseAction = false;
+                    UserControlEnable.OverTimerReadyActionABC.StopTimer();
+                    UserControlEnable.OperateABC = false;
+                }
+
+                //均为分闸预制模式
+                if (NodeStatusList[1].ReadyOpenState && NodeStatusList[2].ReadyOpenState && NodeStatusList[3].ReadyOpenState)
+                {
+                    UserControlEnable.OpenReady = false;
+                    UserControlEnable.OpenAction = true;
+                }
+                if (NodeStatusList[1].ActionOpenState && NodeStatusList[2].ActionOpenState && NodeStatusList[3].ActionOpenState)
+                {
+                    UserControlEnable.OpenReady = true;
+                    UserControlEnable.OpenAction = false;
+                    UserControlEnable.OverTimerReadyActionABC.StopTimer();
+                    UserControlEnable.OperateABC = false;
+                }
+
+            }
+            //同步合闸模式
+            if (UserControlEnable.OperateSyn)
+            {
+                if(NodeStatusList[0].SynReadyCloseState && NodeStatusList[1].SynReadyCloseState && 
+                    NodeStatusList[2].SynReadyCloseState&& NodeStatusList[3].SynReadyCloseState)
+                {
+                    UserControlEnable.SynCloseAction = true;
+                    UserControlEnable.SynCloseReady = false;
+                }
+                if (NodeStatusList[0].SynActionCloseState)
+                {
+                    UserControlEnable.SynCloseAction = false;
+                    UserControlEnable.SynCloseReady = true;
+
+                    UserControlEnable.OverTimerReadyActionSyn.StopTimer();
+                    UserControlEnable.OperateSyn = false;
+                }
+
+            }
         }       
 
-       
-
+     
 
 
 

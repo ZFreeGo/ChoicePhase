@@ -59,7 +59,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             set
             {
-                SynCloseReady = value;
+                _synCloseReady = value;
                 RaisePropertyChanged("SynCloseReady");
             }
         }
@@ -76,7 +76,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             set
             {
-                SynCloseAction = value;
+                _synCloseAction = value;
                 RaisePropertyChanged("SynCloseAction");
             }
         }
@@ -390,7 +390,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             get;
             set;
         }
-        
+        /// <summary>
+        /// 同步操作
+        /// </summary>
+        public bool OperateSyn
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// 返回当前是否有正在操作的状态
         /// </summary>
@@ -514,25 +522,38 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             //全是合闸则使能总合闸
             if (CloseReadyA && CloseReadyB && CloseReadyC)
             {
-                if (OperateABC)
+                if (!OperateABC)
                 {
                     CloseReady = true;
                     CloseAction = false;
                 }
                 OpenReady = false;
                 OpenAction = false;
+
+
+                //同步按钮
+                if (!OperateSyn)
+                {
+                    SynCloseReady = true;
+                    SynCloseAction = false;
+                }
+                
                 
             }
             //全是分闸则使能总分闸
             if (OpenReadyA && OpenReadyB && OpenReadyC)
             {
-                if (OperateABC)
+                if (!OperateABC)
                 {
                     OpenReady = true;
                     OpenAction = false;
                 }
                 CloseReady = false;
                 CloseAction = false;
+                //同步按钮
+                SynCloseReady = false;
+                SynCloseAction = false;
+                
             }
         }
         public Action<string> ExecuteReadyCommandDelegate;
@@ -556,16 +577,45 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
         /// <summary>
-        /// 超时状态定时器
+        /// 超时状态定时器 A相
         /// </summary>
-        public OverTimeTimer OverTimerReadyAction
+        public OverTimeTimer OverTimerReadyActionA
         {
             get;
             set;
         }
-
-
-
+        /// <summary>
+        /// 超时状态定时器 B相
+        /// </summary>
+        public OverTimeTimer OverTimerReadyActionB
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 超时状态定时器 C相
+        /// </summary>
+        public OverTimeTimer OverTimerReadyActionC
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 超时状态定时器 C相
+        /// </summary>
+        public OverTimeTimer OverTimerReadyActionABC
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 同步超时定时器
+        /// </summary>
+        public OverTimeTimer OverTimerReadyActionSyn
+        {
+            get;
+            set;
+        }
 
        
 
@@ -586,6 +636,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             OperateB = false;
             OperateC = false;
             OperateABC = false;
+            OperateSyn = false;
             
 
             ReadyActionCommand = new RelayCommand<string>(ExecuteReadyCommand);

@@ -379,14 +379,14 @@
                             <GroupBox Header="开关操作" IsEnabled="{Binding SwitchOperateEnable}"  DataContext="{Binding ControlCollect}">
                             <StackPanel >
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
-                                    <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="SynSwitchReadyHe" IsEnabled="{Binding SynCloseReady}">同步合闸预制</Button>
-                                    <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="SynSwitchActionHe" IsEnabled="{Binding SynCloseAction}">同步合闸执行</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="SynCloseReady" IsEnabled="{Binding SynCloseReady}">同步合闸预制</Button>
+                                    <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="SynCloseAction" IsEnabled="{Binding SynCloseAction}">同步合闸执行</Button>
                                 </StackPanel>
                                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="3">
                                     <GroupBox Header="开关整体合闸">
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Margin="3"  Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="ReadyAllHe"  IsEnabled="{Binding CloseReady}" >合闸预制</Button>
-                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="ActionAllHe" IsEnabled="{Binding CloseAction}">合闸执行</Button>
+                                            <Button Margin="3"  Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseReady"  IsEnabled="{Binding CloseReady}" >合闸预制</Button>
+                                            <Button Margin="3" Padding="3" Command="{Binding ReadyActionCommand}" CommandParameter="CloseAction" IsEnabled="{Binding CloseAction}">合闸执行</Button>
                                         </StackPanel>
                                     </GroupBox>
                                     <GroupBox Header="A相合闸">

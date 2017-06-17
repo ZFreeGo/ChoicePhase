@@ -443,6 +443,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 FrequencyLoopCollect[i] = DataItemSet.EnergyStatusLoop.Null;
             }
+
+            SynConfigByte = 0x04;
+            DelayTime1 = 50;
         }
 
         

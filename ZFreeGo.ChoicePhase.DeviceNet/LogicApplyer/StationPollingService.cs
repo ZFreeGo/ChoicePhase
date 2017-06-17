@@ -11,11 +11,26 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
     {
         public event EventHandler<ArrtributesEventArgs> ArrtributesArrived;
         
+
+        /// <summary>
+        /// 多帧数据
+        /// </summary>
         public event EventHandler<MultiFrameEventArgs> MultiFrameArrived;
 
+        /// <summary>
+        /// 合分闸操作预制与执行
+        /// </summary>
         public event EventHandler<StatusChangeMessage> ReadyActionArrived;
 
+        /// <summary>
+        /// 子站状态主动上传
+        /// </summary>
         public event EventHandler<StatusChangeMessage> SubStationStatusChanged;
+
+        /// <summary>
+        /// 错误应答
+        /// </summary>
+        public event EventHandler<StatusChangeMessage> ErrorAckChanged;
 
         /// <summary>
         /// 异常处理委托
@@ -63,16 +78,15 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                     if (Enum.IsDefined(typeof(CommandIdentify), serverData[1]))
                    {
 
-                       var des = GetIDDescription((CommandIdentify)serverData[1]);
-                       string error1 = "错误代码:" + serverData[2].ToString("X2");
-                       string error2 = "附加错误代码:" + serverData[3].ToString("X2");
-                       throw new Exception(des + " " + error1 + " " + error2);
-
-
+                        if (ErrorAckChanged!=null)
+                        {
+                            ErrorAckChanged(this, new StatusChangeMessage(mac, serverData));
+                            return;
+                        }                     
                    }
                    else
                    {
-                       throw new Exception("未识别ID");
+                       throw new Exception("子站主动错误应答,未识别ID");
                    }
                     
                 }
@@ -169,79 +183,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                 ExceptionDelegate(ex);
             }
         }
-        /// <summary>
-        /// 获取ID描述
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <returns>描述词</returns>
-        public string GetIDDescription(CommandIdentify id)
-        {
-            string des = "";
-            switch(id)
-            {
-                case CommandIdentify.CloseAction:
-                    {
-                        des =  "合闸执行" ;
-                        break;
-                    }
-                case CommandIdentify.MasterParameterRead:
-                    {
-                        des =  "主站参数读取" ;
-                        break;
-                    }
-                case CommandIdentify.MasterParameterSetOne:
-                    {
-                        des =  "主站参数设置" ;
-                        break;
-                    }
-                case CommandIdentify.MutltiFrame:
-                    {
-                        des =  "多帧" ;
-                        break;
-                    }
-                case CommandIdentify.OpenAction:
-                    {
-                        des =  "分闸执行" ;
-                        break;
-                    }
-                case CommandIdentify.ReadyClose:
-                    {
-                        des =  "合闸预制" ;
-                        break;
-                    }
-                case CommandIdentify.ReadyOpen:
-                    {
-                        des =  "分闸预制" ;
-                        break;
-                    }
-                case CommandIdentify.SubstationStatuesChange:
-                    {
-                        des =  "子站状态上传" ;
-                        break;
-                    }
-                case CommandIdentify.SyncOrchestratorCloseAction:
-                    {
-                        des =  "同步控制器合闸执行" ;
-                        break;
-                    }
-                case CommandIdentify.SyncOrchestratorReadyClose:
-                    {
-                        des =  "同步控制器合闸预制" ;
-                        break;
-                    }
-                case CommandIdentify.SyncReadyClose:
-                    {
-                        des =  "同步合闸预制" ;
-                        break;
-                    }
-                default:
-                    {
-                        des =  "未识别的ID" ;
-                        break;
-                    }
-            }
-            return des + " " + ((byte)id).ToString("X2");
-        }
+        
 
     }
 

@@ -114,7 +114,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
                 ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
                 ControlNetServer.PollingService.SubStationStatusChanged +=PollingService_SubStationStatusChanged;
-
+                ControlNetServer.PollingService.ErrorAckChanged += PollingService_ErrorAckChanged;
                 ControlNetServer.StationArrived +=ControlNetServer_StationArrived;
 
 
@@ -145,6 +145,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 //CommServer.LinkMessage += ex.StackTrace;
                 ZFreeGo.Common.LogTrace.CLog.LogError(ex.StackTrace);
             }
+
+        }
+
+        /// <summary>
+        /// 子站主动错误应答事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PollingService_ErrorAckChanged(object sender, StatusChangeMessage e)
+        {
+            var serverData = e.Data;
+            var des = GetIDDescription((CommandIdentify)serverData[1]);
+            string error1 = "错误代码:" + serverData[2].ToString("X2");
+            string error2 = "附加错误代码:" + serverData[3].ToString("X2");
+            MonitorData.ExceptionMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
+            MonitorData.ExceptionMessage += des + " " + error1 + " " + error2 + "\n"; 
+           
+
 
         }
 
@@ -309,8 +327,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                             case 0x91:
                                 {
                                     MonitorData.StatusBar.SetDevice(true);
+
                                     var des = GetCANError(can);
-                                    MonitorData.UpdateStatus("设备状态:" + des);
+                                    //为空正常状态则不进行更新
+                                    if (des != "")
+                                    {
+                                        MonitorData.UpdateStatus("设备状态:" + des);
+                                    }
+
                                     overTimerDevice.ReStartTimer();
                                     //如果不是激活状态，则在收到连接后重新建立连接
                                     if (!ControlNetServer.IsActive)
@@ -434,8 +458,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
             if (can.DataLen >= 6)
             {
+                StringBuilder strBuildA = new StringBuilder(128);
                 StringBuilder strBuild = new StringBuilder(128);
-                strBuild.AppendLine(ByteToString(can.Data, 0, can.DataLen));
                 if (can.Data[4] != 0)
                 {
                     strBuild.AppendLine("接收错误计数:" + can.Data[4].ToString());
@@ -502,13 +526,94 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                                 }
                         }
                     }
+                    //当有信息时进行显示
+                    if (strBuild.Length != 0)
+                    {
+                        
+                        strBuildA.AppendLine(ByteToString(can.Data, 0, can.DataLen));
+                        strBuildA.Append(strBuild);
+
+                    }
                 }
-                return strBuild.ToString();
+                return strBuildA.ToString();
 
             }
             return "不完整的Device信息：" + ByteToString(can.Data, 0, can.DataLen);
 
 
+        }
+        /// <summary>
+        /// 获取ID描述
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>描述词</returns>
+        public string GetIDDescription(CommandIdentify id)
+        {
+            string des = "";
+            switch (id)
+            {
+                case CommandIdentify.CloseAction:
+                    {
+                        des = "合闸执行";
+                        break;
+                    }
+                case CommandIdentify.MasterParameterRead:
+                    {
+                        des = "主站参数读取";
+                        break;
+                    }
+                case CommandIdentify.MasterParameterSetOne:
+                    {
+                        des = "主站参数设置";
+                        break;
+                    }
+                case CommandIdentify.MutltiFrame:
+                    {
+                        des = "多帧";
+                        break;
+                    }
+                case CommandIdentify.OpenAction:
+                    {
+                        des = "分闸执行";
+                        break;
+                    }
+                case CommandIdentify.ReadyClose:
+                    {
+                        des = "合闸预制";
+                        break;
+                    }
+                case CommandIdentify.ReadyOpen:
+                    {
+                        des = "分闸预制";
+                        break;
+                    }
+                case CommandIdentify.SubstationStatuesChange:
+                    {
+                        des = "子站状态上传";
+                        break;
+                    }
+                case CommandIdentify.SyncOrchestratorCloseAction:
+                    {
+                        des = "同步控制器合闸执行";
+                        break;
+                    }
+                case CommandIdentify.SyncOrchestratorReadyClose:
+                    {
+                        des = "同步控制器合闸预制";
+                        break;
+                    }
+                case CommandIdentify.SyncReadyClose:
+                    {
+                        des = "同步合闸预制";
+                        break;
+                    }
+                default:
+                    {
+                        des = "未识别的ID";
+                        break;
+                    }
+            }
+            return des + " " + ((byte)id).ToString("X2");
         }
         
 
