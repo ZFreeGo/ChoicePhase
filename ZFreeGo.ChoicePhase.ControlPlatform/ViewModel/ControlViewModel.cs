@@ -29,11 +29,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private PlatformModelServer modelServer;
 
 
-        private static string redLed =  @"../Pictures/dp1.png";
-        private static string greenLed =  @"../Pictures/green.png";
-        private static string yellowLed = @"../Pictures/yellow.png";
-        private static string offLed = @"../Pictures/off.jpg";
-
         
 
         /// <summary>
@@ -83,17 +78,27 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             if ( modelServer == null)
             {
                 modelServer = PlatformModelServer.GetServer();
-                _downAddress = modelServer.CommServer.DownAddress;             
-                modelServer.MonitorData.NodeStatusList[1].StatusUpdateEvent +=PhaseA_StatusUpdateEvent;
-                modelServer.MonitorData.NodeStatusList[2].StatusUpdateEvent += PhaseB_StatusUpdateEvent;
-                modelServer.MonitorData.NodeStatusList[3].StatusUpdateEvent += PhaseC_StatusUpdateEvent;
-                modelServer.MonitorData.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;
+                _downAddress = modelServer.CommServer.DownAddress;     
+      
+
+                modelServer.LogicalUI.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;
                 ///幅值委托
-                modelServer.MonitorData.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;
+                modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;
                 modelServer.ControlNetServer.PollingService.ErrorAckChanged += PollingService_ErrorAckChanged;
             }           
         }
 
+
+        /// <summary>
+        /// 指示灯
+        /// </summary>
+        public IndicatorLight IndicatorLightABC
+        {
+            get
+            {
+                return modelServer.LogicalUI.IndicatorLightABC;
+            }
+        }
      
 
         /// <summary>
@@ -120,7 +125,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             get
             {
-                return modelServer.MonitorData.UserControlEnable.ControlEnable;
+                return modelServer.LogicalUI.UserControlEnable.ControlEnable;
             }
         }
 
@@ -131,7 +136,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             get
             {
-                return modelServer.MonitorData.UserControlEnable.SwitchOperateEnable;
+                return modelServer.LogicalUI.UserControlEnable.SwitchOperateEnable;
             }
         }
 
@@ -184,7 +189,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             get
             {
-                return modelServer.MonitorData.UserControlEnable;
+                return modelServer.LogicalUI.UserControlEnable;
             }
         }
 
@@ -207,12 +212,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                             SecureTip = "认证通过";
                             SecureColor = "Green";
-                            modelServer.MonitorData.UserControlEnable.SwitchOperateEnable = true;
+                            modelServer.LogicalUI.UserControlEnable.SwitchOperateEnable = true;
                         }
                         else
                         {
                             SecureTip = "认证失败";
-                            modelServer.MonitorData.UserControlEnable.SwitchOperateEnable = false;
+                            modelServer.LogicalUI.UserControlEnable.SwitchOperateEnable = false;
                         }
                        
                         break;
@@ -222,7 +227,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         SecureTip = "退出认证";
                         SecureColor = "Red";
                         GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<string>("", "ControlViewClrPassword");
-                        modelServer.MonitorData.UserControlEnable.SwitchOperateEnable = false;
+                        modelServer.LogicalUI.UserControlEnable.SwitchOperateEnable = false;
                         break;
                     }
             }
@@ -238,936 +243,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
 
-
-        #region 指示灯操作
-
-        private void PhaseA_StatusUpdateEvent(object sender, StatusMessage e)
-        {
-            if (e.IsOnline)
-            {
-                UpdatePositionStatus(e.Node.StatusLoopCollect, "A");
-                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "A");
-            }
-            else
-            {
-                OverTimeCycleA();
-            }
-        }
-        private void PhaseB_StatusUpdateEvent(object sender, StatusMessage e)
-        {
-            if (e.IsOnline)
-            {
-                UpdatePositionStatus(e.Node.StatusLoopCollect, "B");
-                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "B");
-            }
-            else
-            {
-                OverTimeCycleB();
-            }
-        }
-        private void PhaseC_StatusUpdateEvent(object sender, StatusMessage e)
-        {
-            if (e.IsOnline)
-            {
-                UpdatePositionStatus(e.Node.StatusLoopCollect, "C");
-                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "C");
-            }
-            else
-            {
-                OverTimeCycleC();
-            }
-        }
-       
-        void OverTimeCycleA()
-        {
-            LedCloseA1 = offLed;
-            LedOpenA1 = offLed;            
-            LedEneryA1 = offLed;
-            LedCloseA2 = offLed;
-            LedOpenA2 = offLed;
-            LedEneryA2 = offLed;
-
-            LedCloseA = offLed;
-            LedOpenA = offLed;
-            LedErrorA = redLed;
-            LedEneryA = offLed;          
-        }
-
-        void OverTimeCycleB()
-        {
-            LedCloseB1 = offLed;
-            LedOpenB1 = offLed;
-            LedEneryB1 = offLed;
-            LedCloseB2 = offLed;
-            LedOpenB2 = offLed;
-            LedEneryB2 = offLed;
-
-            LedCloseB = offLed;
-            LedOpenB = offLed;
-            LedErrorB = redLed;
-            LedEneryB = offLed;
-            
-        }
-        void OverTimeCycleC()
-        {
-            LedCloseC1 = offLed;
-            LedOpenC1 = offLed;
-            LedEneryC1 = offLed;
-            LedCloseC2 = offLed;
-            LedOpenC2 = offLed;
-            LedEneryC2 = offLed;
-
-            LedCloseC = offLed;
-            LedOpenC = offLed;
-            LedErrorC = redLed;
-            LedEneryC = offLed;
-            
-        }
-        void UpdatePositionStatus(StatusLoop[] status, string ph)
-        {                  
-          
-            var statusLoop = status[0];
-
-            //针对双路
-            if(status[0] == status[1])
-            {
-                UpdateWholeLedStatus(status[0], ph);                
-            }
-            else
-            {
-                //认为为故障状态
-               // LedCloseA = offLed;
-                //LedOpenA = offLed;
-                //LedErrorA = redLed;
-                SetLed("LedClose" + ph, offLed);
-                SetLed("LedOpen" + ph, offLed);
-                SetLed("LedError" + ph, offLed);
-
-            }
-            statusLoop = status[0];
-            UpdateLedStatus(status[0], ph + "1");
-
-            statusLoop = status[1];
-            UpdateLedStatus(status[1], ph + "2");
-                     
-        }
-        void UpdateEnergyStatus(EnergyStatusLoop[] status, string ph)
-        {
-           
-           if (status[0] == status[1])
-           {
-               UpdateEnerggLedStatus(status[0], ph);
-                        
-           }
-           else
-           {
-               SetLed("LedEnery" + ph, offLed);              
-           }
-
-           UpdateEnerggLedStatus(status[0], ph + "1");
-           UpdateEnerggLedStatus(status[1], ph + "2");  
-
-
-
-
-
-        }
-        /// <summary>
-        /// 更新单只 储能LED状态
-        /// </summary>
-        /// <param name="status"></param>
-        /// <param name="ph"></param>
-        void UpdateEnerggLedStatus(EnergyStatusLoop status, string ph)
-        {
-            string led = "LedEnery" + ph;
-
-            switch (status)
-            {
-                case EnergyStatusLoop.Less: //欠压
-                    {
-                        SetLed(led, yellowLed);
-                        break;
-                    }
-                case EnergyStatusLoop.Normal: //正常范围
-                    {
-                        SetLed(led, greenLed);
-                        break;
-                    }
-                case EnergyStatusLoop.More: //过压或为空
-                    {
-                        SetLed(led, redLed);
-                        break;
-                    }
-                case EnergyStatusLoop.Null:
-                    {
-                        SetLed(led, offLed);
-                        break;
-                    }
-            }
-                         
-        }
-        /// <summary>
-        /// 针对多个机构，更新整体的合位状态
-        /// </summary>
-        /// <param name="status"></param>
-        /// <param name="ph"></param>
-        void UpdateWholeLedStatus(StatusLoop status, string ph)
-        {
-            string close = "LedClose" + ph;
-            string open = "LedOpen" + ph;
-            string error = "LedError" + ph;
-
-            switch (status)
-            {
-                case StatusLoop.Null:
-                case StatusLoop.Error:
-                    {
-                        SetLed(close, offLed);
-                        SetLed(open, offLed);
-                        SetLed(error, redLed);
-                        break;
-                    }
-                case StatusLoop.Close:
-                    {
-                        SetLed(close, redLed);
-                        SetLed(open, offLed);
-                        SetLed(error, offLed);
-                        break;
-                    }
-                case StatusLoop.Open:
-                    {
-                        SetLed(close, offLed);
-                        SetLed(open, greenLed);
-                        SetLed(error, offLed);
-                        break;
-                    }
-
-            }
-        }
-        /// <summary>
-        /// 更新合分位状态
-        /// </summary>
-        /// <param name="status"></param>
-        /// <param name="ph"></param>
-        void UpdateLedStatus(StatusLoop status, string ph)
-        {
-            string close = "LedClose" + ph;
-            string open = "LedOpen" + ph;
-          
-
-            switch (status)
-            {
-                case StatusLoop.Null:
-                case StatusLoop.Error:
-                    {
-                        SetLed(close, offLed);
-                        SetLed(open, offLed);
-                        
-                        break;
-                    }
-                case StatusLoop.Close:
-                    {
-                        SetLed(close, redLed);
-                        SetLed(open, offLed);
-                       
-                        break;
-                    }
-                case StatusLoop.Open:
-                    {
-                        SetLed(close, offLed);
-                        SetLed(open, greenLed);
-                        
-                        break;
-                    }
-
-            }
-        }
-
-        /// <summary>
-        /// 设置LED
-        /// </summary>
-        /// <param name="led">指定等号</param>
-        /// <param name="state">led状态</param>
-        void SetLed(string led, string state)
-        {
-            switch(led)
-            {
-                case "LedCloseA1":
-                    {
-                        LedCloseA1 = state;
-                        break;
-                    }
-                case "LedCloseA2":
-                    {
-                        LedCloseA2 = state;
-                        break;
-                    }
-                case "LedOpenA1":
-                    {
-                        LedOpenA1 = state;
-                        break;
-                    }
-                case "LedOpenA2":
-                    {
-                        LedOpenA2 = state;
-                        break;
-                    }
-                case "LedCloseA":
-                    {
-                        LedCloseA= state;
-                        break;
-                    }
-                case "LedOpenA":
-                    {
-                        LedOpenA = state;
-                        break;
-                    }
-                case "LedErrorA":
-                    {
-                        LedErrorA = state;
-                        break;
-                    }
-                case "LedEneryA":
-                    {
-                        LedEneryA = state;
-                        break;
-                    }
-                case "LedEneryA1":
-                    {
-                        LedEneryA1 = state;
-                        break;
-                    }
-                case "LedEneryA2":
-                    {
-                        LedEneryA2 = state;
-                        break;
-                    }
-                case "LedCloseB1":
-                    {
-                        LedCloseB1 = state;
-                        break;
-                    }
-                case "LedCloseB2":
-                    {
-                        LedCloseB2 = state;
-                        break;
-                    }
-                case "LedOpenB1":
-                    {
-                        LedOpenB1 = state;
-                        break;
-                    }
-                case "LedOpenB2":
-                    {
-                        LedOpenB2 = state;
-                        break;
-                    }
-                case "LedCloseB":
-                    {
-                        LedCloseB = state;
-                        break;
-                    }
-                case "LedOpenB":
-                    {
-                        LedOpenB = state;
-                        break;
-                    }
-                case "LedErrorB":
-                    {
-                        LedErrorB = state;
-                        break;
-                    }
-                case "LedEneryB":
-                    {
-                        LedEneryB = state;
-                        break;
-                    }
-                case "LedEneryB1":
-                    {
-                        LedEneryB1 = state;
-                        break;
-                    }
-                case "LedEneryB2":
-                    {
-                        LedEneryB2 = state;
-                        break;
-                    }
-                case "LedCloseC1":
-                    {
-                        LedCloseC1 = state;
-                        break;
-                    }
-                case "LedCloseC2":
-                    {
-                        LedCloseC2 = state;
-                        break;
-                    }
-                case "LedOpenC1":
-                    {
-                        LedOpenC1 = state;
-                        break;
-                    }
-                case "LedOpenC2":
-                    {
-                        LedOpenC2 = state;
-                        break;
-                    }
-                case "LedCloseC":
-                    {
-                        LedCloseC = state;
-                        break;
-                    }
-                case "LedOpenC":
-                    {
-                        LedOpenC = state;
-                        break;
-                    }
-                case "LedErrorC":
-                    {
-                        LedErrorC = state;
-                        break;
-                    }
-                case "LedEneryC":
-                    {
-                        LedEneryC = state;
-                        break;
-                    }
-                case "LedEneryC1":
-                    {
-                        LedEneryC1 = state;
-                        break;
-                    }
-                case "LedEneryC2":
-                    {
-                        LedEneryC2 = state;
-                        break;
-                    } 
-                default:
-                    {
-                        throw new Exception("没有指示灯");
-                    }
-
-            }
-
-            SetControlButtonState();                       
-        }
-        public void SetControlButtonState()
-        {
-            for(int i = 1; i < 4; i++)
-            {
-                //电能正常，且属于合位，使能分闸按钮
-                if(modelServer.MonitorData.NodeStatusList[i].EnergyStatus == EnergyStatusLoop.Normal )
-                {
-                    modelServer.MonitorData.UserControlEnable.ChooiceEnableButton((UInt16)((i << 8) | ((byte)modelServer.MonitorData.NodeStatusList[i].PositStatus)));
-                }
-                else
-                {
-                     modelServer.MonitorData.UserControlEnable.ChooiceEnableButton((UInt16)((i<< 8)));//关闭所有
-                }
-            }
-        }
 
         
-      
-
-
-
-        #endregion
-
-
-        #region 状态指示灯 A相
-        
-         
-        private string ledCloseA1 = offLed;
-        /// <summary>
-        /// 合闸指示A1
-        /// </summary>
-        public String LedCloseA1
-        {
-            get
-            {
-                return ledCloseA1;
-            }
-            set
-            {
-                ledCloseA1 = value;
-                RaisePropertyChanged("LedCloseA1");
-            }
-        }
-        private string ledCloseA2 = offLed;
-        /// <summary>
-        /// 合闸指示A2
-        /// </summary>
-        public String LedCloseA2
-        {
-            get
-            {
-                return ledCloseA2;
-            }
-            set
-            {
-                ledCloseA2 = value;
-                RaisePropertyChanged("LedCloseA2");
-            }
-        }
-
-
-        private string ledOpenA1 = offLed;
-        /// <summary>
-        /// 分闸指示A1
-        /// </summary>
-        public String LedOpenA1
-        {
-            get
-            {
-                return ledOpenA1;
-            }
-            set
-            {
-                ledOpenA1 = value;
-                RaisePropertyChanged("LedOpenA1");
-            }
-        }
-        private string ledOpenA2 = offLed;
-        /// <summary>
-        /// 分闸指示A2
-        /// </summary>
-        public String LedOpenA2
-        {
-            get
-            {
-                return ledOpenA2;
-            }
-            set
-            {
-                ledOpenA2 = value;
-                RaisePropertyChanged("LedOpenA2");
-            }
-        }
-
-
-
-        private string ledCloseA = offLed;
-        /// <summary>
-        /// 总合闸指示
-        /// </summary>
-        public String LedCloseA
-        {
-            get
-            {
-                return ledCloseA;
-            }
-            set
-            {
-                ledCloseA = value;
-                RaisePropertyChanged("LedCloseA");
-            }
-        }
-
-
-        private string ledOpenA = offLed;
-        /// <summary>
-        /// 总分闸指示A1
-        /// </summary>
-        public String LedOpenA
-        {
-            get
-            {
-                return ledOpenA;
-            }
-            set
-            {
-                ledOpenA = value;
-                RaisePropertyChanged("LedOpenA");
-            }
-        }
-
-        private string ledErrorA = offLed;
-        /// <summary>
-        /// 故障指示A
-        /// </summary>
-        public String LedErrorA 
-        {
-            get
-            {
-                return ledErrorA;
-            }
-            set
-            {
-                ledErrorA = value;
-                RaisePropertyChanged("LedErrorA");
-            }
-        }
-        private string ledEneryA = offLed;
-        public String LedEneryA
-        {
-            get
-            {
-                return ledEneryA;
-            }
-            set
-            {
-                ledEneryA = value;
-                RaisePropertyChanged("LedEneryA");
-            }
-        }
-        private string ledEneryA1 = offLed;
-        public String LedEneryA1
-        {
-            get
-            {
-                return ledEneryA1;
-            }
-            set
-            {
-                ledEneryA1 = value;
-                RaisePropertyChanged("LedEneryA1");
-            }
-        }
-        private string ledEneryA2 = offLed;
-        public String LedEneryA2
-        {
-            get
-            {
-                return ledEneryA2;
-            }
-            set
-            {
-                ledEneryA2 = value;
-                RaisePropertyChanged("LedEneryA2");
-            }
-        }
-
-        #endregion
-        #region 状态指示灯 B相
-
-
-        private string ledCloseB1 = offLed;
-        /// <summary>
-        /// 合闸指示B1
-        /// </summary>
-        public String LedCloseB1
-        {
-            get
-            {
-                return ledCloseB1;
-            }
-            set
-            {
-                ledCloseB1 = value;
-                RaisePropertyChanged("LedCloseB1");
-            }
-        }
-        private string ledCloseB2 = offLed;
-        /// <summary>
-        /// 合闸指示B2
-        /// </summary>
-        public String LedCloseB2
-        {
-            get
-            {
-                return ledCloseB2;
-            }
-            set
-            {
-                ledCloseB2 = value;
-                RaisePropertyChanged("LedCloseB2");
-            }
-        }
-
-
-        private string ledOpenB1 = offLed;
-        /// <summary>
-        /// 分闸指示B1
-        /// </summary>
-        public String LedOpenB1
-        {
-            get
-            {
-                return ledOpenB1;
-            }
-            set
-            {
-                ledOpenB1 = value;
-                RaisePropertyChanged("LedOpenB1");
-            }
-        }
-        private string ledOpenB2 = offLed;
-        /// <summary>
-        /// 分闸指示B2
-        /// </summary>
-        public String LedOpenB2
-        {
-            get
-            {
-                return ledOpenB2;
-            }
-            set
-            {
-                ledOpenB2 = value;
-                RaisePropertyChanged("LedOpenB2");
-            }
-        }
-
-
-
-        private string ledCloseB = offLed;
-        /// <summary>
-        /// 总合闸指示
-        /// </summary>
-        public String LedCloseB
-        {
-            get
-            {
-                return ledCloseB;
-            }
-            set
-            {
-                ledCloseB = value;
-                RaisePropertyChanged("LedCloseB");
-            }
-        }
-
-
-        private string ledOpenB = offLed;
-        /// <summary>
-        /// 总分闸指示B1
-        /// </summary>
-        public String LedOpenB
-        {
-            get
-            {
-                return ledOpenB;
-            }
-            set
-            {
-                ledOpenB = value;
-                RaisePropertyChanged("LedOpenB");
-            }
-        }
-
-        private string ledErrorB = offLed;
-        /// <summary>
-        /// 故障指示B
-        /// </summary>
-        public String LedErrorB
-        {
-            get
-            {
-                return ledErrorB;
-            }
-            set
-            {
-                ledErrorB = value;
-                RaisePropertyChanged("LedErrorB");
-            }
-        }
-        private string ledEneryB = offLed;
-        public String LedEneryB
-        {
-            get
-            {
-                return ledEneryB;
-            }
-            set
-            {
-                ledEneryB = value;
-                RaisePropertyChanged("LedEneryB");
-            }
-        }
-        private string ledEneryB1 = offLed;
-        public String LedEneryB1
-        {
-            get
-            {
-                return ledEneryB1;
-            }
-            set
-            {
-                ledEneryB1 = value;
-                RaisePropertyChanged("LedEneryB1");
-            }
-        }
-        private string ledEneryB2 = offLed;
-        public String LedEneryB2
-        {
-            get
-            {
-                return ledEneryB2;
-            }
-            set
-            {
-                ledEneryB2 = value;
-                RaisePropertyChanged("LedEneryB2");
-            }
-        }
-
-        #endregion
-
-        #region 状态指示灯 C相
-
-
-        private string ledCloseC1 = offLed;
-        /// <summary>
-        /// 合闸指示C1
-        /// </summary>
-        public String LedCloseC1
-        {
-            get
-            {
-                return ledCloseC1;
-            }
-            set
-            {
-                ledCloseC1 = value;
-                RaisePropertyChanged("LedCloseC1");
-            }
-        }
-        private string ledCloseC2 = offLed;
-        /// <summary>
-        /// 合闸指示C2
-        /// </summary>
-        public String LedCloseC2
-        {
-            get
-            {
-                return ledCloseC2;
-            }
-            set
-            {
-                ledCloseC2 = value;
-                RaisePropertyChanged("LedCloseC2");
-            }
-        }
-
-
-        private string ledOpenC1 = offLed;
-        /// <summary>
-        /// 分闸指示C1
-        /// </summary>
-        public String LedOpenC1
-        {
-            get
-            {
-                return ledOpenC1;
-            }
-            set
-            {
-                ledOpenC1 = value;
-                RaisePropertyChanged("LedOpenC1");
-            }
-        }
-        private string ledOpenC2 = offLed;
-        /// <summary>
-        /// 分闸指示C2
-        /// </summary>
-        public String LedOpenC2
-        {
-            get
-            {
-                return ledOpenC2;
-            }
-            set
-            {
-                ledOpenC2 = value;
-                RaisePropertyChanged("LedOpenC2");
-            }
-        }
-
-
-
-        private string ledCloseC = offLed;
-        /// <summary>
-        /// 总合闸指示
-        /// </summary>
-        public String LedCloseC
-        {
-            get
-            {
-                return ledCloseC;
-            }
-            set
-            {
-                ledCloseC = value;
-                RaisePropertyChanged("LedCloseC");
-            }
-        }
-
-
-        private string ledOpenC = offLed;
-        /// <summary>
-        /// 总分闸指示C1
-        /// </summary>
-        public String LedOpenC
-        {
-            get
-            {
-                return ledOpenC;
-            }
-            set
-            {
-                ledOpenC = value;
-                RaisePropertyChanged("LedOpenC");
-            }
-        }
-
-        private string ledErrorC = offLed;
-        /// <summary>
-        /// 故障指示C
-        /// </summary>
-        public String LedErrorC
-        {
-            get
-            {
-                return ledErrorC;
-            }
-            set
-            {
-                ledErrorC = value;
-                RaisePropertyChanged("LedErrorC");
-            }
-        }
-        private string ledEneryC = offLed;
-        public String LedEneryC
-        {
-            get
-            {
-                return ledEneryC;
-            }
-            set
-            {
-                ledEneryC = value;
-                RaisePropertyChanged("LedEneryC");
-            }
-        }
-        private string ledEneryC1 = offLed;
-        public String LedEneryC1
-        {
-            get
-            {
-                return ledEneryC1;
-            }
-            set
-            {
-                ledEneryC1 = value;
-                RaisePropertyChanged("LedEneryC1");
-            }
-        }
-        private string ledEneryC2 = offLed;
-        public String LedEneryC2
-        {
-            get
-            {
-                return ledEneryC2;
-            }
-            set
-            {
-                ledEneryC2 = value;
-                RaisePropertyChanged("LedEneryC2");
-            }
-        }
-
-        #endregion
 
         #region 合分闸控制，同步预制
 
@@ -1207,8 +284,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
 
                             //复位状态
-                            modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
-                            modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command;
+                            modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
+                            modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command;
                             //此处发送控制命令                     
                             modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);                          
 
@@ -1231,9 +308,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 return;
                             }
                             //复位状态
-                            modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
+                            modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
                             var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
-                            modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command;
+                            modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command;
                             //此处发送控制命令                     
                             modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);  
 
@@ -1253,7 +330,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         //以下为总控
                     case "SynSwitchReadyHe":
                         {
-                            modelServer.MonitorData.GetNdoe(0x0D).ResetState();//复位状态
+                            modelServer.LogicalUI.GetNdoe(0x0D).ResetState();//复位状态
                             ExecuteSynCommand_DSP("SynReadyHeDSP"); //首先发送命令到同步控制器，置为同步合闸预制状态
                             Thread.Sleep(20);
                             SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
@@ -1262,19 +339,19 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "SynSwitchActionHe":
                         {
-                            if (modelServer.MonitorData.GetNdoe(0x0D).SynReadyCloseState)
+                            if (modelServer.LogicalUI.GetNdoe(0x0D).SynReadyCloseState)
                             {
                                 throw new Exception("同步控制器未就绪");
                             }
-                            if (modelServer.MonitorData.GetNdoe(0x10).SynReadyCloseState)
+                            if (modelServer.LogicalUI.GetNdoe(0x10).SynReadyCloseState)
                             {
                                 throw new Exception("A相未就绪");
                             }
-                            if (modelServer.MonitorData.GetNdoe(0x12).SynReadyCloseState)
+                            if (modelServer.LogicalUI.GetNdoe(0x12).SynReadyCloseState)
                             {
                                 throw new Exception("B相未就绪");
                             }
-                            if (modelServer.MonitorData.GetNdoe(0x14).SynReadyCloseState)
+                            if (modelServer.LogicalUI.GetNdoe(0x14).SynReadyCloseState)
                             {
                                 throw new Exception("C相未就绪");
                             }
@@ -1331,29 +408,29 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                     case "SynCloseReady"://同步合闸预制
                         {
-                            if (modelServer.MonitorData.UserControlEnable.OperateState &&
-                               (!modelServer.MonitorData.UserControlEnable.OperateABC))
+                            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它操作", "预制操作");
                             }
 
-                            modelServer.MonitorData.GetNdoe(0x0D).ResetState();//复位状态
+                            modelServer.LogicalUI.GetNdoe(0x0D).ResetState();//复位状态
                             ExecuteSynCommand_DSP("SynReadyHeDSP"); //首先发送命令到同步控制器，置为同步合闸预制状态
                             Thread.Sleep(200);
 
                             SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
 
-                            modelServer.MonitorData.UserControlEnable.OperateSyn = true;
-                            modelServer.MonitorData.UserControlEnable.OverTimerReadyActionSyn =
+                            modelServer.LogicalUI.UserControlEnable.OperateSyn = true;
+                            modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn =
                                    new OverTimeTimer(10000, () =>
                                    {
                                        ShowMessageBox("同步合闸操作超时", "单相操作");
                                        modelServer.MonitorData.UpdateStatus("同步合闸操作超时");
-                                       modelServer.MonitorData.UserControlEnable.OperateSyn = false;
-                                       modelServer.MonitorData.UserControlEnable.SynCloseReady = true;
-                                       modelServer.MonitorData.UserControlEnable.SynCloseAction = false;
+                                       modelServer.LogicalUI.UserControlEnable.OperateSyn = false;
+                                       modelServer.LogicalUI.UserControlEnable.SynCloseReady = true;
+                                       modelServer.LogicalUI.UserControlEnable.SynCloseAction = false;
                                    });
-                            modelServer.MonitorData.UserControlEnable.OverTimerReadyActionSyn.ReStartTimer();
+                            modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn.ReStartTimer();
                             
                             break;
                         }
@@ -1367,8 +444,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "CloseReady":
                         {
 
-                            if (modelServer.MonitorData.UserControlEnable.OperateState &&
-                               (!modelServer.MonitorData.UserControlEnable.OperateABC))
+                            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
                             }
@@ -1383,20 +460,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 Thread.Sleep(10);
                                 SendCMD(0x14, command);
 
-                                modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态 
-                                modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态 
-                                modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
-                                modelServer.MonitorData.UserControlEnable.OperateABC = true;
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionABC =
+                                modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+                                modelServer.LogicalUI.UserControlEnable.OperateABC = true;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
                                     new OverTimeTimer(10000, () =>
                                     {
                                           ShowMessageBox("三相合闸操作超时", "单相操作");
                                         modelServer.MonitorData.UpdateStatus("三相合闸操作超时");
-                                        modelServer.MonitorData.UserControlEnable.OperateABC = false;
-                                        modelServer.MonitorData.UserControlEnable.CloseReady = true;
-                                        modelServer.MonitorData.UserControlEnable.CloseAction = false;
+                                        modelServer.LogicalUI.UserControlEnable.OperateABC = false;
+                                        modelServer.LogicalUI.UserControlEnable.CloseReady = true;
+                                        modelServer.LogicalUI.UserControlEnable.CloseAction = false;
                                     });
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
                             }
                             
 
@@ -1447,8 +524,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "OpenReady":
                         {
-                            if (modelServer.MonitorData.UserControlEnable.OperateState &&
-                               (!modelServer.MonitorData.UserControlEnable.OperateABC))
+                            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
                             }
@@ -1463,20 +540,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 Thread.Sleep(10);
                                 SendCMD(0x14, command);
 
-                                modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态 
-                                modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态 
-                                modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
-                                modelServer.MonitorData.UserControlEnable.OperateABC = true;
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionABC =
+                                modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+                                modelServer.LogicalUI.UserControlEnable.OperateABC = true;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
                                     new OverTimeTimer(10000, () =>
                                     {
                                         ShowMessageBox("三相分闸操作超时", "单相操作");
                                         modelServer.MonitorData.UpdateStatus("三相分闸操作超时");
-                                        modelServer.MonitorData.UserControlEnable.OperateABC = false;
-                                        modelServer.MonitorData.UserControlEnable.OpenReady = true;
-                                        modelServer.MonitorData.UserControlEnable.OpenAction = false;
+                                        modelServer.LogicalUI.UserControlEnable.OperateABC = false;
+                                        modelServer.LogicalUI.UserControlEnable.OpenReady = true;
+                                        modelServer.LogicalUI.UserControlEnable.OpenAction = false;
                                     });
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
                             }
                             break;
                         }
@@ -1546,24 +623,24 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 case 0x10:
                     {
-                        actDelegate = ar => { modelServer.MonitorData.UserControlEnable.OperateA = ar; };
-                        opetate = modelServer.MonitorData.UserControlEnable.OperateA;
+                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateA = ar; };
+                        opetate = modelServer.LogicalUI.UserControlEnable.OperateA;
                         des = "A";
                        
                         break;
                     }
                 case 0x12:
                     {
-                        actDelegate = ar => { modelServer.MonitorData.UserControlEnable.OperateB = ar; };
-                        opetate = modelServer.MonitorData.UserControlEnable.OperateB;
+                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateB = ar; };
+                        opetate = modelServer.LogicalUI.UserControlEnable.OperateB;
                         des = "B";
                         
                         break;
                     }
                 case 0x14:
                     {
-                        actDelegate = ar => { modelServer.MonitorData.UserControlEnable.OperateC = ar; };
-                        opetate = modelServer.MonitorData.UserControlEnable.OperateC;
+                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateC = ar; };
+                        opetate = modelServer.LogicalUI.UserControlEnable.OperateC;
                         des = "C";
                        
                         break;
@@ -1578,7 +655,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
 
-            if (modelServer.MonitorData.UserControlEnable.OperateState &&
+            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
                                (!opetate))
             {
                 ShowMessageBox("有正在处理的其它相操作", "单相操作");
@@ -1594,7 +671,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     (cmd == CommandIdentify.ReadyClose) ||
                     (cmd == CommandIdentify.ReadyOpen))
                 {
-                    modelServer.MonitorData.GetNdoe(mac).ResetState();//复位状态 
+                    modelServer.LogicalUI.GetNdoe(mac).ResetState();//复位状态 
                     actDelegate(true);
 
                     var timer = new OverTimeTimer(10000, () =>
@@ -1607,17 +684,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     {
                         case 0x10:
                             {
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionA =  timer;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA =  timer;
                                 break;                            
                             }
                         case 0x12:
                             {
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionB =  timer;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB =  timer;
                                 break;
                             }
                         case 0x14:
                             {
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionC = timer;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC = timer;
                                 break;
                             }
                         default:
@@ -1638,7 +715,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                var node = modelServer.MonitorData.GetNdoe(e.MAC);
+                var node = modelServer.LogicalUI.GetNdoe(e.MAC);
                 if (node == null)
                 {
                     return;
@@ -1658,22 +735,22 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             {
                                 case 0x0D:
                                     {
-                                        timer = modelServer.MonitorData.UserControlEnable.OverTimerReadyActionSyn;
+                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn;
                                         break;
                                     }
                                 case 0x10:
                                     {
-                                        timer = modelServer.MonitorData.UserControlEnable.OverTimerReadyActionA;
+                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA;
                                         break;
                                     }
                                 case 0x12:
                                     {
-                                        timer = modelServer.MonitorData.UserControlEnable.OverTimerReadyActionB;
+                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB;
                                         break;
                                     }
                                 case 0x14:
                                     {
-                                        timer = modelServer.MonitorData.UserControlEnable.OverTimerReadyActionC;
+                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC;
                                         break;
                                     }
                                 default:
@@ -1688,21 +765,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             {
                                 timer.StopTimer();
                             }
-                            if(modelServer.MonitorData.UserControlEnable.OverTimerReadyActionABC !=null)
+                            if(modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC !=null)
                             {
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionABC.StopTimer();
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.StopTimer();
                             }
-                            if (modelServer.MonitorData.UserControlEnable.OverTimerReadyActionSyn != null)
+                            if (modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn != null)
                             {
-                                modelServer.MonitorData.UserControlEnable.OverTimerReadyActionSyn.StopTimer();
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn.StopTimer();
                             }
 
 
-                            modelServer.MonitorData.UserControlEnable.OperateA = false;
-                            modelServer.MonitorData.UserControlEnable.OperateB = false;
-                            modelServer.MonitorData.UserControlEnable.OperateC = false;
-                            modelServer.MonitorData.UserControlEnable.OperateABC = false;
-                            modelServer.MonitorData.UserControlEnable.OperateSyn = false;
+                            modelServer.LogicalUI.UserControlEnable.OperateA = false;
+                            modelServer.LogicalUI.UserControlEnable.OperateB = false;
+                            modelServer.LogicalUI.UserControlEnable.OperateC = false;
+                            modelServer.LogicalUI.UserControlEnable.OperateABC = false;
+                            modelServer.LogicalUI.UserControlEnable.OperateSyn = false;
 
                             var serverData = e.Data;
                             var des = modelServer.GetIDDescription((CommandIdentify)serverData[1]);
@@ -1727,31 +804,31 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <param name="command"></param>
         private void SendSynCMDToABC(CommandIdentify cmd)
         {
-            var cb = modelServer.MonitorData.GetNdoe(0x10).SynConfigByte;
-            byte t1 = (byte)(modelServer.MonitorData.GetNdoe(0x10).DelayTime1 & 0x00FF);
-            byte t2 = (byte)(modelServer.MonitorData.GetNdoe(0x10).DelayTime1 >> 8);
+            var cb = modelServer.LogicalUI.GetNdoe(0x10).SynConfigByte;
+            byte t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 & 0x00FF);
+            byte t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 >> 8);
             var command = new byte[] { (byte)cmd, cb, t1, t2};
-            modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态
-            modelServer.MonitorData.GetNdoe(0x10).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态
+            modelServer.LogicalUI.GetNdoe(0x10).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
             Thread.Sleep(20);
 
 
-            cb = modelServer.MonitorData.GetNdoe(0x12).SynConfigByte;
-            t1 = (byte)(modelServer.MonitorData.GetNdoe(0x12).DelayTime1 & 0x00FF);
-            t2 = (byte)(modelServer.MonitorData.GetNdoe(0x12).DelayTime1 >> 8);
+            cb = modelServer.LogicalUI.GetNdoe(0x12).SynConfigByte;
+            t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 & 0x00FF);
+            t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 >> 8);
             command = new byte[] { (byte)cmd, cb, t1, t2 };            
-            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态  
-            modelServer.MonitorData.GetNdoe(0x12).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态  
+            modelServer.LogicalUI.GetNdoe(0x12).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
             Thread.Sleep(20);
 
-            cb = modelServer.MonitorData.GetNdoe(0x14).SynConfigByte;
-            t1 = (byte)(modelServer.MonitorData.GetNdoe(0x14).DelayTime1 & 0x00FF);
-            t2 = (byte)(modelServer.MonitorData.GetNdoe(0x14).DelayTime1 >> 8);
+            cb = modelServer.LogicalUI.GetNdoe(0x14).SynConfigByte;
+            t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 & 0x00FF);
+            t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 >> 8);
             command = new byte[] { (byte)cmd, cb, t1, t2 };      
-            modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
-            modelServer.MonitorData.GetNdoe(0x14).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+            modelServer.LogicalUI.GetNdoe(0x14).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
         }
       
@@ -1761,16 +838,16 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <param name="command"></param>
         private void SendToABC(byte[] command)
         {
-            modelServer.MonitorData.GetNdoe(0x10).ResetState();//复位状态
-            modelServer.MonitorData.GetNdoe(0x10).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态
+            modelServer.LogicalUI.GetNdoe(0x10).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
             Thread.Sleep(20);
-            modelServer.MonitorData.GetNdoe(0x12).ResetState();//复位状态        
-            modelServer.MonitorData.GetNdoe(0x12).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态        
+            modelServer.LogicalUI.GetNdoe(0x12).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
             Thread.Sleep(20);
-            modelServer.MonitorData.GetNdoe(0x14).ResetState();//复位状态 
-            modelServer.MonitorData.GetNdoe(0x14).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+            modelServer.LogicalUI.GetNdoe(0x14).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
         }
         /// <summary>
@@ -1780,8 +857,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <param name="command"></param>
         private void SendCMD(byte mac, byte[] command)
         {          
-            modelServer.MonitorData.GetNdoe(mac).ResetState();//复位状态 
-            modelServer.MonitorData.GetNdoe(mac).LastSendData = command;
+            modelServer.LogicalUI.GetNdoe(mac).ResetState();//复位状态 
+            modelServer.LogicalUI.GetNdoe(mac).LastSendData = command;
             modelServer.ControlNetServer.MasterSendCommand(mac, command, 0, command.Length);
         }
 
@@ -2163,8 +1240,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 Array.Copy(byteArray, 0, command, 2, 2 * i);
 
                 //复位状态
-                modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
-                modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command;
+                modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
+                modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command;
                 //此处发送控制命令                     
                 modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, 2 + 2*i);  
 
@@ -2407,8 +1484,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                  }
                  //此处发送控制命令
 
-                 modelServer.MonitorData.GetNdoe(_macAddress).ResetState();//复位状态
-                 modelServer.MonitorData.GetNdoe(_macAddress).LastSendData = command.Item1;
+                 modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
+                 modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command.Item1;
                  modelServer.ControlNetServer.MasterSendCommand(0x0D, command.Item1, 0, command.Item2);  
 
 

@@ -41,6 +41,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             }
         }
 
+        private LogicalPresentation _logicalUI;
+
+        /// <summary>
+        /// 逻辑呈现UI
+        /// </summary>
+        public LogicalPresentation LogicalUI
+        {
+            get
+            {
+                return _logicalUI;
+            }
+        }
+
 
         /// <summary>
         /// 通讯服务
@@ -117,23 +130,28 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ControlNetServer.PollingService.ErrorAckChanged += PollingService_ErrorAckChanged;
                 ControlNetServer.StationArrived +=ControlNetServer_StationArrived;
 
+                _logicalUI = new LogicalPresentation(MonitorData.UpdateStatus);
+
+
 
                 FlashDelegate = ar =>
                 {
                     if (ar)
                     {
 
-                        MonitorData.StatusBar.ComBrush = "Green";
+                        _logicalUI.StatusBar.ComBrush = "Green";
                     }
                     else
                     {
-                       
-                        MonitorData.StatusBar.ComBrush = "Red";
+
+                        _logicalUI.StatusBar.ComBrush = "Red";
                     }
                 };
 
-                Action act = ()=>{ MonitorData.StatusBar.SetDevice(false);
-                MonitorData.StatusBar.SetDevice(false);
+                Action act = () =>
+                {
+                    _logicalUI.StatusBar.SetDevice(false);
+                _logicalUI.StatusBar.SetDevice(false);
                 ControlNetServer.StopLinkServer(); //停止所有连接
                 };
 
@@ -176,7 +194,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void ControlNetServer_StationArrived(object sender, StationEventArgs e)
         {
-            Task.Factory.StartNew(() => _monitorViewData.UpdateStationStatus(e.Station),
+            Task.Factory.StartNew(() => _logicalUI.UpdateStationStatus(e.Station),
                     new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
            
         }
@@ -189,7 +207,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void PollingService_SubStationStatusChanged(object sender, StatusChangeMessage e)
         {
-            _monitorViewData.UpdateNodeStatusChange(e.MAC, e.Data);            
+            _logicalUI.UpdateNodeStatusChange(e.MAC, e.Data);            
         }
 
         /// <summary>
@@ -199,7 +217,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         void PollingService_ReadyActionArrived(object sender, StatusChangeMessage e)
         {
-            _monitorViewData.UpdateNodeStatus(e.MAC,  e.Data);
+            _logicalUI.UpdateNodeStatus(e.MAC, e.Data);
         }
 
 
@@ -326,7 +344,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                                 //状态返回
                             case 0x91:
                                 {
-                                    MonitorData.StatusBar.SetDevice(true);
+                                    _logicalUI.StatusBar.SetDevice(true);
 
                                     var des = GetCANError(can);
                                     //为空正常状态则不进行更新

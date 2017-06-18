@@ -22,8 +22,8 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0">                
-                    <Grid Grid.Column="0" Grid.Row="2"  Width="660" >
+            <StackPanel Grid.Row="0">
+                <Grid Grid.Column="0" Grid.Row="2"  Width="660" DataContext="{Binding IndicatorLightABC}">
                         <StackPanel>
                             <Grid>
                                 <Grid.ColumnDefinitions>

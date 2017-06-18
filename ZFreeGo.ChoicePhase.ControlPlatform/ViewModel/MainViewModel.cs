@@ -284,11 +284,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             get
             {
-                return modelServer.MonitorData.StatusBar;
+                return modelServer.LogicalUI.StatusBar;
             }
             set
             {
-                modelServer.MonitorData.StatusBar = value;
+                modelServer.LogicalUI.StatusBar = value;
                 RaisePropertyChanged("StatusBar");
             }
         }

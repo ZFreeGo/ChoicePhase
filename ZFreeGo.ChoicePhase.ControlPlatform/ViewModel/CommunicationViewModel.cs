@@ -274,7 +274,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ParityBit[SelectedIndexParity].Paramer, StopBit[SelectedIndexStopBit].Paramer);
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
-                            modelServer.MonitorData.StatusBar.SetCom(true);
+                            modelServer.LogicalUI.StatusBar.SetCom(true);
                             modelServer.ControlNetServer.RestartLinkServer();                           
                             break;
                         }
@@ -283,9 +283,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             modelServer.CommServer.CommonServer.Close();
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
-                            modelServer.MonitorData.StatusBar.SetCom(false);
+                            modelServer.LogicalUI.StatusBar.SetCom(false);
                             modelServer.ControlNetServer.StopLinkServer();
-                            modelServer.MonitorData.StatusBar.CloseAll();//关闭所有状态显示
+                            modelServer.LogicalUI.StatusBar.CloseAll();//关闭所有状态显示
                             break;
                         }
               
