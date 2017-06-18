@@ -56,6 +56,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             get;
         }
 
+        /// <summary>
+        /// 同步相角选择
+        /// </summary>
+        public PhaseChoice SynPhaseChoice
+        {
+            private set;
+            get;
+        }
+
         private byte _onlineBit;
         /// <summary>
         /// 在线位 bit0-同步控制器 bit1-A相 bit2-B相 bit3-C相
@@ -81,6 +90,58 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
+        #region 同步控制器 A/B/C 离线/在线
+
+        /// <summary>
+        /// 更新节点在线状态
+        /// </summary>
+        /// <param name="index"></param>
+        private void UpdateNodeOnlineState(byte mac)
+        {
+            byte index = 0;
+            string des = "";
+            switch (mac)
+            {
+                case 0x0D:
+                    {
+                        index = 0;
+                        des = "同步控制器在线";
+                        break;
+                    }
+                case 0x10:
+                    {
+                        index = 1;
+                        des = "A相在线";
+                        break;
+                    }
+                case 0x12:
+                    {
+                        index = 2;
+                        des = "B相在线";
+                        break;
+                    }
+                case 0x14:
+                    {
+                        index = 3;
+                        des = "C相在线";
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+
+            //重新启动超时定时器
+            var node = GetNdoe(mac);
+            node.ReStartOverTimer();
+            node.IsOnline = true;
+            OnlineBit = SetBit(OnlineBit, index);
+            StatusBar.SetSyn(true, des);
+           
+        }
+      
+
         /// <summary>
         /// 同步控制器 离线/在线
         /// </summary>
@@ -101,7 +162,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 {
                     UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
                 }
-                //说明最后一次为非在线状态
+
                 if (!e.Node.LastOnline)
                 {
                     StatusBar.SetSyn(true, "同步控制器在线");
@@ -112,7 +173,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             else
             {
                 var comment = "同步控制超时离线";
-
                 StatusBar.SetSyn(false, comment);
                 UpdateStatus(comment);
                 OnlineBit = ClearBit(OnlineBit, 0);
@@ -200,9 +260,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
             SetControlButtonState();
         }
+        #endregion
 
 
-
+        #region 操作按钮
         /// <summary>
         /// 设置用户控件使能
         /// </summary>
@@ -418,6 +479,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
         }
+        #endregion
+
+
+        #region 合分闸预制执行状态
         /// <summary>
         /// 合闸预制状态
         /// </summary>
@@ -430,7 +495,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             {
                 return;
             }
-
+            UpdateNodeOnlineState(mac);
             //if (!node.IsValid(data))
             //{
             //    UpdateStatus(node.Mac.ToString("X2") + "应答数据无效！");
@@ -574,10 +639,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
         }
 
+        #endregion
 
 
 
 
+        /// <summary>
+        /// 获根据MAC地址获取节点状态
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <returns></returns>
         public NodeStatus GetNdoe(byte mac)
         {
             foreach (var m in NodeStatusList)
@@ -628,6 +699,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         }
 
+
+        #region 更新状态栏信息
         /// <summary>
         /// 更新站点信息
         /// </summary>
@@ -708,6 +781,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
         }
+        #endregion
 
 
         private Action<string> UpdateStatusDelegate;
@@ -812,7 +886,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
                 UpdateStatusDelegate = updateDelegate;
 
-
+                SynPhaseChoice = new PhaseChoice();
 
                 
             }

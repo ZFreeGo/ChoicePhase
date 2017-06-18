@@ -102,6 +102,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
      
 
         /// <summary>
+        /// 同步相角选择
+        /// </summary>
+         public PhaseChoice SynPhaseChoice
+        {
+             get
+            {
+                return modelServer.LogicalUI.SynPhaseChoice;
+            }
+        }
+
+        /// <summary>
         /// 控件使能属性通知
         /// </summary>
         /// <param name="sender"></param>

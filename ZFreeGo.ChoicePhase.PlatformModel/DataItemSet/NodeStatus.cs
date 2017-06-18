@@ -243,7 +243,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         /// </summary>
         private OverTimeTimer overTimerCycle;
 
-
+        /// <summary>
+        /// 重新启动超时定时器
+        /// </summary>
+        public void ReStartOverTimer()
+        {
+            overTimerCycle.ReStartTimer();
+        }
         /// <summary>
         /// 循环接收状态，超时处理
         /// </summary>

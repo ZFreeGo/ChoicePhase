@@ -1,0 +1,452 @@
+﻿using GalaSoft.MvvmLight;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+
+namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
+{
+    public class PhaseChoice : ObservableObject
+    {
+        public const string PhaseNull = "未选择"; 
+        /// <summary>
+        /// A相
+        /// </summary>
+        public  const string PhaseA = "A相";  
+        /// <summary>
+        /// B相
+        /// </summary>
+        public const string PhaseB= "B相"; 
+        /// <summary>
+        /// C相
+        /// </summary>
+        public const string PhaseC = "C相";
+
+
+        //Visibility="Collapsed" Visibility="Collapsed" Visibility="Hidden" Visibility="Visible"
+
+        private const string Hidden = "Hidden";
+        private const string Collapsed = "Collapsed";
+        private const string Visible = "Visible";
+
+        private List<ObservableCollection<string>> _phaseSelectList;
+
+        private ObservableCollection<string> _phaseSelectI;
+
+        public ObservableCollection<string> PhaseSelectI
+        {
+            get
+            {
+                return _phaseSelectI;
+            }
+        }
+
+        private ObservableCollection<string> _phaseSelectII;
+
+        public ObservableCollection<string> PhaseSelectII
+        {
+            get
+            {
+                return _phaseSelectII;
+            }
+        }
+        private ObservableCollection<string> _phaseSelectIII;
+
+        public ObservableCollection<string> PhaseSelectIII
+        {
+            get
+            {
+                return _phaseSelectIII;
+            }
+        }
+
+        private string _phaseItemI ;
+
+        public string PhaseItemI
+        {
+            get
+            {
+                if (_phaseItemI == null)
+                {
+                    _phaseItemI = PhaseNull;
+                }
+                return _phaseItemI;
+            }
+            set
+            {
+                _phaseItemI = value;
+                SelectedItemChanged(_phaseItemI, 0);
+                RaisePropertyChanged("PhaseItemI");
+                UpdateAngleVisble();
+            }
+        }
+        private string _phaseItemII ;
+
+        public string PhaseItemII
+        {
+            get
+            {
+                if (_phaseItemII == null)
+                {
+                    _phaseItemII = PhaseNull;
+                }
+                return _phaseItemII;
+            }
+            set
+            {
+                _phaseItemII = value;
+                SelectedItemChanged(_phaseItemII, 1);
+                RaisePropertyChanged("PhaseItemII");
+                UpdateAngleVisble();
+            }
+        }
+        private string _phaseItemIII;
+
+        public string PhaseItemIII
+        {
+            get
+            {
+                if (_phaseItemIII == null)
+                {
+                    _phaseItemIII = PhaseNull;
+                }
+                return _phaseItemIII;
+            }
+            set
+            {
+                _phaseItemIII = value;
+                RaisePropertyChanged("PhaseItemIII");
+                UpdateAngleVisble();
+            }
+        }
+
+        /// <summary>
+        /// 角度 I
+        /// </summary>
+        private double _angleI = 0;
+
+        public string AngleI
+        {
+            set
+            {
+                CalAngle(value, out _angleI);
+                RaisePropertyChanged("AngleI");
+            }
+            get
+            {
+                return _angleI.ToString("f1");
+            }
+        }
+        /// <summary>
+        /// 角度 II
+        /// </summary>
+        private double _angleII = 0;
+        public string AngleII
+        {
+            set
+            {
+                CalAngle(value, out _angleII);
+                RaisePropertyChanged("AngleII");
+            }
+            get
+            {
+                return _angleII.ToString("f1");
+            }
+        }
+        /// <summary>
+        /// 角度 III
+        /// </summary>
+        private double _angleIII = 0;
+
+        public string AngleIII
+        {
+            set
+            {
+                CalAngle(value, out _angleIII);
+                RaisePropertyChanged("AngleIII");
+            }
+            get
+            {
+                return _angleIII.ToString("f1");
+            }
+        }
+
+        //Visibility="Collapsed" Visibility="Collapsed" Visibility="Hidden" Visibility="Visible"
+
+        private string _angleVisibleI;
+        /// <summary>
+        /// 相角一的可见性
+        /// </summary>
+        public string AngleVisibleI
+        {
+            get
+            {
+                return _angleVisibleI;
+            }
+            set
+            {
+                _angleVisibleI = value;
+                RaisePropertyChanged("AngleVisibleI");
+            }
+        }
+
+        private string _angleVisibleII;
+        /// <summary>
+        /// 相角二的可见性
+        /// </summary>
+        public string AngleVisibleII
+        {
+            get
+            {
+                return _angleVisibleII;
+            }
+            set
+            {
+                _angleVisibleII = value;
+                RaisePropertyChanged("AngleVisibleII");
+            }
+        }
+        private string _angleVisibleIII;
+        /// <summary>
+        /// 相角三的可见性
+        /// </summary>
+        public string AngleVisibleIII
+        {
+            get
+            {
+                return _angleVisibleIII;
+            }
+            set
+            {
+                _angleVisibleIII = value;
+                RaisePropertyChanged("AngleVisibleIII");
+            }
+        }
+        /// <summary>
+        /// 更新相角可见性
+        /// </summary>
+        public void UpdateAngleVisble()
+        {
+            if ((PhaseItemI != null ) && (PhaseItemI != PhaseNull ))
+            {
+                AngleVisibleI = Visible;
+            }
+            else
+            {
+                AngleVisibleI = Hidden;
+            }
+            if ((PhaseItemII != null) && (PhaseItemII != PhaseNull))
+            {
+                AngleVisibleII = Visible;
+            }
+            else
+            {
+                AngleVisibleII = Hidden;
+            }
+            if ((PhaseItemIII != null) && (PhaseItemIII != PhaseNull))
+            {
+                AngleVisibleIII = Visible;
+            }
+            else
+            {
+                AngleVisibleIII = Hidden;
+            }
+        }
+
+        private void SelectedItemChanged(string item, int index)
+        {
+            switch(index)
+            {
+                case 0:
+                    {
+                        switch (item)
+                        {
+                            case PhaseNull:
+                                {
+                                    InitphaseSelect(_phaseSelectList[1]);
+                                    InitphaseSelect(_phaseSelectList[2]);                                    
+                                    RemoveItem(PhaseA, 1);
+                                    RemoveItem(PhaseB, 1);
+                                    RemoveItem(PhaseC, 1);
+                                    PhaseItemII = PhaseNull;
+                                    PhaseItemIII = PhaseNull;
+                                    break;
+                                }
+                            case PhaseA:
+                            case PhaseB:
+                            case PhaseC:
+                                {
+                                    InitphaseSelect(_phaseSelectList[1]);
+                                    InitphaseSelect(_phaseSelectList[2]);
+                                    RemoveItem(item, 1);
+                                    break;
+                                }                                
+                        }
+                        break;
+                    }
+                case 1:
+                    {
+                        switch (item)
+                        {
+                            case PhaseNull:
+                                {
+                                    InitphaseSelect(_phaseSelectList[2]);
+                                    RemoveItem(PhaseA, 2);
+                                    RemoveItem(PhaseB, 2);
+                                    RemoveItem(PhaseC, 2);                                  
+                                    PhaseItemIII = PhaseNull;                                    
+                                    break;  
+                                }
+                            case PhaseA:
+                            case PhaseB:
+                            case PhaseC:
+                                {
+                                    InitphaseSelect(_phaseSelectList[2]);//重新初始化
+                                    RemoveItem(PhaseItemI, 2);//删去I组选择的
+                                    RemoveItem(item, 2);//删去II组选择的
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+            
+            }
+            RaisePropertyChanged("PhaseItemI");
+            RaisePropertyChanged("PhaseItemII");
+            RaisePropertyChanged("PhaseItemIII");
+            
+        }
+
+        /// <summary>
+        /// 移除开始索引后，具有的Item项目
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="start"></param>
+        private void RemoveItem(string item, int start)
+        {
+            for(int i = start; i <  _phaseSelectList.Count; i++)
+            {               
+                _phaseSelectList[i].Remove(item);
+            }
+
+        }
+
+        /// <summary>
+        /// 获取相代号
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private byte GetByteCode(string item)
+        {
+            if (item == null)
+            {
+                return 0;
+            }
+            switch(item)
+            {
+                case PhaseA:
+                    {
+                        return 1;
+                    }
+                case PhaseB:
+                    {
+                        return 2;
+                    }
+                case PhaseC:
+                    {
+                        return 3;
+                    }
+                default:
+                    {
+                        return 0;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// 获取配置字
+        /// </summary>
+        /// <returns></returns>
+        private byte ConfigByte
+        {
+            get
+            {
+                byte byte1 =  (byte)(0x03 & GetByteCode(PhaseItemI));
+                byte byte2 =  (byte)(0x03 & GetByteCode(PhaseItemII));
+                byte byte3 =  (byte)(0x03 & GetByteCode(PhaseItemIII));
+                return (byte)((byte3<<4)|(byte2<<2)|(byte1));
+            }
+        }
+
+
+
+        /// <summary>
+        /// 将字符串转化为，浮点数分辨率为0.5
+        /// "1.23"转化为1，"1.43"转化为1.5,"1.83"转化为2.0
+        /// </summary>
+        /// <param name="str">字符串</param>
+
+        void CalAngle(string str, out double angle)
+        {
+
+            if (double.TryParse(str, out angle))
+            {
+                angle = (angle + 360) % 360;
+                double remain = angle - (UInt32)angle;
+                if (remain <= 0.3)
+                {
+                    angle = (double)((UInt32)angle);
+                }
+                else if (remain < 0.7)
+                {
+                    angle = (double)((UInt32)angle) + 0.5;
+                }
+                else
+                {
+                    angle = (double)((UInt32)angle) + 1;
+                }
+            }
+        }
+
+        public void InitphaseSelect(ObservableCollection<string> select)
+        {
+            select.Clear();
+            select.Add(PhaseNull);
+            select.Add(PhaseA);
+            select.Add(PhaseB);
+            select.Add(PhaseC);
+        }
+        /// <summary>
+        /// 初始化同步相角选择
+        /// </summary>
+        public PhaseChoice()
+        {
+            try
+            {
+                _phaseSelectI = new ObservableCollection<string>();
+                InitphaseSelect(_phaseSelectI);
+
+                _phaseSelectII = new ObservableCollection<string>();
+                InitphaseSelect(_phaseSelectII);
+
+                _phaseSelectIII = new ObservableCollection<string>();
+                InitphaseSelect(_phaseSelectIII);
+
+                _phaseSelectList = new List<ObservableCollection<string>>();
+                _phaseSelectList.Add(_phaseSelectI);
+                _phaseSelectList.Add(_phaseSelectII);
+                _phaseSelectList.Add(_phaseSelectIII);
+
+
+
+
+                UpdateAngleVisble();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}
