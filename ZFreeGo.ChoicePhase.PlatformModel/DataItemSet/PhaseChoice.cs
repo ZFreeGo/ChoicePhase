@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -132,12 +134,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 CalAngle(value, out _angleI);
                 RaisePropertyChanged("AngleI");
+                AdjusetAngle(_angleI, 1);
             }
             get
             {
                 return _angleI.ToString("f1");
             }
         }
+
         /// <summary>
         /// 角度 II
         /// </summary>
@@ -148,6 +152,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 CalAngle(value, out _angleII);
                 RaisePropertyChanged("AngleII");
+                AdjusetAngle(_angleII, 2);
             }
             get
             {
@@ -165,6 +170,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 CalAngle(value, out _angleIII);
                 RaisePropertyChanged("AngleIII");
+                AdjusetAngle(_angleIII, 3);
             }
             get
             {
@@ -314,8 +320,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             RaisePropertyChanged("PhaseItemI");
             RaisePropertyChanged("PhaseItemII");
-            RaisePropertyChanged("PhaseItemIII");
-            
+            RaisePropertyChanged("PhaseItemIII");            
         }
 
         /// <summary>
@@ -379,6 +384,72 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
+        /// <summary>
+        /// 获取角度参数集合
+        /// </summary>
+        public double[] GetAngleSet()
+        {        
+                var collect = new List<double>();
+                byte byte1 = (byte)(0x03 & GetByteCode(PhaseItemI));
+                if (byte1 != 0)
+                {
+                    collect.Add(_angleI);
+                }
+                else
+                {
+                    return collect.ToArray();
+                }
+
+
+                byte byte2 = (byte)(0x03 & GetByteCode(PhaseItemII));
+                if (byte2 != 0)
+                {
+                    collect.Add(_angleII);
+                }
+                else
+                {
+                    return collect.ToArray();
+                }
+
+                byte byte3 = (byte)(0x03 & GetByteCode(PhaseItemIII));
+                if (byte3 != 0)
+                {
+                    collect.Add(_angleIII);
+                }
+                else
+                {
+                    return collect.ToArray();
+                }
+                return collect.ToArray();
+            
+        }
+
+        /// <summary>
+        /// 获取同步命令控制字
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetSynCommand(CommandIdentify cmdID)
+        {
+            
+            if (ConfigByte != 0)
+            {
+                var angle = GetAngleSet();
+                var cmd = new byte[2 + 2*angle.Length];
+
+                cmd[0] = (byte)cmdID;
+                cmd[1] = ConfigByte;
+                for (int i = 0; i < angle.Length; i++)
+                {
+                     UInt16 tris = (ushort)(angle[i] / 360 * 65536);//转化为以65536为为基准的归一化值
+                     cmd[2 * i + 2] = (byte)(tris & 0x00FF);
+                     cmd[2 * i + 3] = (byte)(tris >> 8);
+                }
+                return cmd;
+            }
+            return null;
+        }
+
+
 
 
         /// <summary>
@@ -387,12 +458,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         /// </summary>
         /// <param name="str">字符串</param>
 
-        void CalAngle(string str, out double angle)
+        private void CalAngle(string str, out double angle)
         {
 
             if (double.TryParse(str, out angle))
             {
-                angle = (angle + 360) % 360;
+                angle = (angle + 360) % 360; //必须在360度之内
                 double remain = angle - (UInt32)angle;
                 if (remain <= 0.3)
                 {
@@ -408,6 +479,85 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 }
             }
         }
+
+        /// <summary>
+        /// 调整角度，其他设置的角度
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="index"></param>
+        private void AdjusetAngle(double value, int index)
+        {
+            
+            switch (index)
+            {
+                case 1:
+                    {
+                        if(value > _angleII)//大于调整为相等
+                        {
+                            AngleII = AngleI;
+                            if (value > _angleIII)//大于调整为相等
+                            {
+                                AngleIII = AngleI;
+                            }                            
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+
+                        if (value < _angleI) //小于调整为相等
+                        {
+                            AngleI = AngleII;
+                        }
+                        else if (value > _angleIII) //大于调整为相等
+                        {
+                            AngleIII = AngleII;
+                        }
+                        break;
+                    }
+                case 3:
+                    {
+                        if (value < _angleI)
+                        {
+                            AngleI = AngleIII;
+                            AngleII = AngleIII;
+                        }
+                        else if (value < _angleII)
+                        {
+                            AngleII = AngleIII;
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+        }
+
+
+
+
+        /// <summary>
+        ///  ActionCommand委托
+        /// </summary>
+        public Action<string> SynCommandDelegate
+        {
+            get;
+            set;
+        }
+
+
+        public RelayCommand<string> SynCommand { get; private set; }
+
+        void ExecuteSynCommand(string str)
+         {
+             if (SynCommandDelegate != null)
+            {
+                SynCommandDelegate(str);
+            }
+         }
+
 
         public void InitphaseSelect(ObservableCollection<string> select)
         {
@@ -438,7 +588,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 _phaseSelectList.Add(_phaseSelectII);
                 _phaseSelectList.Add(_phaseSelectIII);
 
-
+                SynCommand = new RelayCommand<string>(ExecuteSynCommand);
 
 
                 UpdateAngleVisble();

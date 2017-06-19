@@ -365,7 +365,7 @@
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleI}" Visibility="{Binding AngleVisibleI}"></TextBox>
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleII}" Visibility="{Binding AngleVisibleII}"></TextBox>
                             <TextBox MinWidth="60" Margin="3" Text="{Binding AngleIII}" Visibility="{Binding AngleVisibleIII}"></TextBox>
-                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="SynReadyHeDSP">同步合闸预制</Button>
+                            <Button Margin="30,3,3,3" Command="{Binding SynCommand}" CommandParameter="SynReadyHeDSP">同步合闸预制</Button>
                             <Button Margin="3" Command="{Binding ActionCommand}" CommandParameter="SynActionHeDSP">同步合闸执行</Button>
                         </StackPanel>
                     </StackPanel>

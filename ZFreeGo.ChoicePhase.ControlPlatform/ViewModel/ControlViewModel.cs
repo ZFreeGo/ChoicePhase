@@ -82,9 +82,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
       
 
                 modelServer.LogicalUI.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;
-                ///幅值委托
-                modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;
+                ///执行代码委托
+                modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;               
                 modelServer.ControlNetServer.PollingService.ErrorAckChanged += PollingService_ErrorAckChanged;
+
+                  ///执行同步命令委托
+                modelServer.LogicalUI.SynPhaseChoice.SynCommandDelegate = ExecuteSynCommand;
+
+
+
             }           
         }
 
@@ -382,6 +388,42 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
+        }
+
+
+        /// <summary>
+        /// 执行同步命令委托
+        /// </summary>
+        /// <param name="str"></param>
+        private void ExecuteSynCommand(string str)
+        {
+            try
+            {
+                switch (str)
+                {
+                    case "SynReadyHeDSP":
+                        {
+                            var command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommand(CommandIdentify.SyncOrchestratorReadyClose);
+                            if (command != null)
+                           {
+                            SendCMD(0x0D, command);
+                           }
+                            break;
+                        }
+                    case "SynActionHeDSP":
+                        {
+                            
+                            break;
+                        }
+                }
+
+            }
+            catch(Exception ex)
+            {
+                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+            }
+
+
         }
 
         /// <summary>

@@ -65,6 +65,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             get;
         }
 
+
+        private byte _enabitSelect;
+        /// <summary>
+        /// 使能bit bit0-同步控制器 bit1-A相 bit2-B相 bit3-C相
+        /// </summary>
+        private byte EnabitSelect
+        {
+            get
+            {
+                return _enabitSelect;
+            }
+            set
+            {
+                _enabitSelect = value; 
+            }
+        }
+
+
         private byte _onlineBit;
         /// <summary>
         /// 在线位 bit0-同步控制器 bit1-A相 bit2-B相 bit3-C相
@@ -78,7 +96,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             private set
             {
                 _onlineBit = value;
-                if (_onlineBit == 0x0F)//A,B,C使能控制
+                if (_onlineBit == _enabitSelect)//A,B,C使能控制
                 {
                     UserControlEnable.ControlEnable = true;
                 }
@@ -880,6 +898,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
                 StatusBar = new StatusBarMessage("Admin");
 
+                _enabitSelect = 0x07;//使能选择bit 
                 _onlineBit = 0;
 
                 UserControlEnable = new EnableControl();
