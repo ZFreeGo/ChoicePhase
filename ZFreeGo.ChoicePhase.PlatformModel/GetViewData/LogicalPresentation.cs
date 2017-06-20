@@ -490,10 +490,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 if (NodeStatusList[i].EnergyStatus == EnergyStatusLoop.Normal)
                 {
                     UserControlEnable.ChooiceEnableButton((UInt16)((i << 8) | ((byte)NodeStatusList[i].PositStatus)));
+                    UserControlEnable.SetSynControlButtonState(SynPhaseChoice.ConfigByte);
                 }
                 else
                 {
                     UserControlEnable.ChooiceEnableButton((UInt16)((i << 8)));//关闭所有
+                    UserControlEnable.SetSynControlButtonState(SynPhaseChoice.ConfigByte);
                 }
             }
         }
@@ -639,12 +641,29 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             //同步合闸模式
             if (UserControlEnable.OperateSyn)
             {
-                if (NodeStatusList[0].SynReadyCloseState && NodeStatusList[1].SynReadyCloseState &&
-                    NodeStatusList[2].SynReadyCloseState && NodeStatusList[3].SynReadyCloseState)
+
+                bool state = true;
+                //根据选择的
+                if (SynPhaseChoice.GetPhaseEnable(1))
+                {
+                    state = state && NodeStatusList[0].SynReadyCloseState;
+                }
+                if (SynPhaseChoice.GetPhaseEnable(2))
+                {
+                    state = state && NodeStatusList[1].SynReadyCloseState;
+                }
+                if (SynPhaseChoice.GetPhaseEnable(3))
+                {
+                    state = state && NodeStatusList[3].SynReadyCloseState;
+                }
+                if (state)
                 {
                     UserControlEnable.SynCloseAction = true;
                     UserControlEnable.SynCloseReady = false;
                 }
+
+
+
                 if (NodeStatusList[0].SynActionCloseState)
                 {
                     UserControlEnable.SynCloseAction = false;
@@ -653,6 +672,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     UserControlEnable.OverTimerReadyActionSyn.StopTimer();
                     UserControlEnable.OperateSyn = false;
                 }
+
+                //if (NodeStatusList[0].SynReadyCloseState && NodeStatusList[1].SynReadyCloseState &&
+                //    NodeStatusList[2].SynReadyCloseState && NodeStatusList[3].SynReadyCloseState)
+                //{
+                //    UserControlEnable.SynCloseAction = true;
+                //    UserControlEnable.SynCloseReady = false;
+                //}
+
+
+
+                //if (NodeStatusList[0].SynActionCloseState)
+                //{
+                //    UserControlEnable.SynCloseAction = false;
+                //    UserControlEnable.SynCloseReady = true;
+
+                //    UserControlEnable.OverTimerReadyActionSyn.StopTimer();
+                //    UserControlEnable.OperateSyn = false;
+                //}
 
             }
         }

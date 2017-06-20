@@ -26,6 +26,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public const string PhaseC = "C相";
 
 
+        
         //Visibility="Collapsed" Visibility="Collapsed" Visibility="Hidden" Visibility="Visible"
 
         private const string Hidden = "Hidden";
@@ -368,12 +369,36 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                     }
             }
         }
+        /// <summary>
+        /// 获取选择项是否使能 1-A相 2-B 3-C。。。。
+        /// </summary>
+        public bool GetPhaseEnable(int phase)
+        {
+            
+                var configByte = ConfigByte;
+                if (configByte == 0)
+                {
+                    return false;
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    var byteBit = (byte)((configByte >> (2 * i)) & 0x03);
+                    if (byteBit == phase)
+                    {
+                        return true;
+                    }
+                }
+                return false;            
+        }
+
+
+
 
         /// <summary>
         /// 获取配置字
         /// </summary>
         /// <returns></returns>
-        private byte ConfigByte
+        public byte ConfigByte
         {
             get
             {
@@ -557,6 +582,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 SynCommandDelegate(str);
             }
          }
+
+        
 
 
         public void InitphaseSelect(ObservableCollection<string> select)

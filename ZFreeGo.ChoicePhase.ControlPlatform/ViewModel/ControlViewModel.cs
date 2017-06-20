@@ -29,7 +29,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private PlatformModelServer modelServer;
 
 
-        
+        /// <summary>
+        /// DSP同步合命令
+        /// </summary>
+        private const string SynActionHeDSP = "SynActionHeDSP";
+        private const string SynReadyHeDSP = "SynReadyHeDSP";
 
         /// <summary>
         /// Initializes a new instance of the ControlViewModel class.
@@ -47,12 +51,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              _loopSelect.Add("回路I");
              _loopSelect.Add("回路II");
              _loopSelect.Add("回路III");
-
-             _phaseSelect = new ObservableCollection<string>();
-             _phaseSelect.Add("未选择");
-             _phaseSelect.Add("A相");
-             _phaseSelect.Add("B相");
-             _phaseSelect.Add("C相");
+            
 
              LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
              SecureCheckCommand = new RelayCommand<String>(ExecuteSecureCheckCommand);
@@ -337,45 +336,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                             ExecuteSynReadyCommand("Synchronization");
                             break;
-                        }
-                    case "SynReadyHeDSP":
-                    case "SynActionHeDSP":
-                        {
-                            ExecuteSynCommand_DSP(str);
-                            break;
-                        }
-                        //以下为总控
-                    case "SynSwitchReadyHe":
-                        {
-                            modelServer.LogicalUI.GetNdoe(0x0D).ResetState();//复位状态
-                            ExecuteSynCommand_DSP("SynReadyHeDSP"); //首先发送命令到同步控制器，置为同步合闸预制状态
-                            Thread.Sleep(20);
-                            SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
-                            
-                            break;
-                        }
-                    case "SynSwitchActionHe":
-                        {
-                            if (modelServer.LogicalUI.GetNdoe(0x0D).SynReadyCloseState)
-                            {
-                                throw new Exception("同步控制器未就绪");
-                            }
-                            if (modelServer.LogicalUI.GetNdoe(0x10).SynReadyCloseState)
-                            {
-                                throw new Exception("A相未就绪");
-                            }
-                            if (modelServer.LogicalUI.GetNdoe(0x12).SynReadyCloseState)
-                            {
-                                throw new Exception("B相未就绪");
-                            }
-                            if (modelServer.LogicalUI.GetNdoe(0x14).SynReadyCloseState)
-                            {
-                                throw new Exception("C相未就绪");
-                            }
-                            ExecuteSynCommand_DSP("SynActionHeDSP");
-                           
-                            break;
-                        }
+                        }                    
+                       
                
                     default:
                         {
@@ -389,7 +351,45 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
         }
+        /// <summary>
+        /// 发送同步命令
+        /// </summary>
+        /// <param name="str">命令字符</param>
+        private void SendSynCommand(string str)
+        {
+            byte[] command;
+            switch (str)
+            {
+                case SynReadyHeDSP:
+                    {
+                        command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommand(CommandIdentify.SyncOrchestratorReadyClose);                        
+                        break;
+                    }
+                case SynActionHeDSP:
+                    {
+                        
+                        command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommand(CommandIdentify.SyncOrchestratorCloseAction);
+                        break;
+                    }
+               
+                default:
+                    {
+                        command = null;
+                        throw new Exception("同步命令,未识别！");                        
+                    }
+            }
+            if (command != null)
+            {
+                
+                SendCMD(0x0D, command);
+                
+            }
+            else
+            {
+                throw new Exception("同步合闸相角设置错误,未选择任何相角！");
+            }
 
+        }
 
         /// <summary>
         /// 执行同步命令委托
@@ -399,23 +399,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                switch (str)
-                {
-                    case "SynReadyHeDSP":
-                        {
-                            var command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommand(CommandIdentify.SyncOrchestratorReadyClose);
-                            if (command != null)
-                           {
-                            SendCMD(0x0D, command);
-                           }
-                            break;
-                        }
-                    case "SynActionHeDSP":
-                        {
-                            
-                            break;
-                        }
-                }
+                SendSynCommand(str);
 
             }
             catch(Exception ex)
@@ -467,8 +451,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ShowMessageBox("有正在处理的其它操作", "预制操作");
                             }
 
-                            modelServer.LogicalUI.GetNdoe(0x0D).ResetState();//复位状态
-                            ExecuteSynCommand_DSP("SynReadyHeDSP"); //首先发送命令到同步控制器，置为同步合闸预制状态
+                            modelServer.LogicalUI.GetNdoe(0x0D).ResetState();//复位状态                           
+
+                            SendSynCommand(SynReadyHeDSP);//首先发送命令到同步控制器，置为同步合闸预制状态
                             Thread.Sleep(200);
 
                             SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
@@ -489,8 +474,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "SynCloseAction"://同步合闸执行
                         {
-
-                            ExecuteSynCommand_DSP("SynActionHeDSP");
+                            SendSynCommand(SynActionHeDSP);
                             break;
                         }    
 
@@ -663,7 +647,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-        
+        /// <summary>
+        /// 单相合闸预制
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <param name="cmd"></param>
         private void SinglePhaseReadyAction(byte mac, CommandIdentify cmd)
         {
 
@@ -703,9 +691,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         return;
                     }
             }
-
-
-
 
 
             if (modelServer.LogicalUI.UserControlEnable.OperateState &&
@@ -852,37 +837,43 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
         /// <summary>
-        /// 发送同步命令发送到A,B,C
+        /// 根据使能情况，发送同步命令发送到A,B,C
         /// </summary>
         /// <param name="command"></param>
         private void SendSynCMDToABC(CommandIdentify cmd)
         {
-            var cb = modelServer.LogicalUI.GetNdoe(0x10).SynConfigByte;
-            byte t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 & 0x00FF);
-            byte t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 >> 8);
-            var command = new byte[] { (byte)cmd, cb, t1, t2};
-            modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态
-            modelServer.LogicalUI.GetNdoe(0x10).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
-            Thread.Sleep(20);
-
-
-            cb = modelServer.LogicalUI.GetNdoe(0x12).SynConfigByte;
-            t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 & 0x00FF);
-            t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 >> 8);
-            command = new byte[] { (byte)cmd, cb, t1, t2 };            
-            modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态  
-            modelServer.LogicalUI.GetNdoe(0x12).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
-            Thread.Sleep(20);
-
-            cb = modelServer.LogicalUI.GetNdoe(0x14).SynConfigByte;
-            t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 & 0x00FF);
-            t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 >> 8);
-            command = new byte[] { (byte)cmd, cb, t1, t2 };      
-            modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
-            modelServer.LogicalUI.GetNdoe(0x14).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
+            if (modelServer.LogicalUI.SynPhaseChoice.GetPhaseEnable(1))
+            {
+                var cb = modelServer.LogicalUI.GetNdoe(0x10).SynConfigByte;
+                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 & 0x00FF);
+                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 >> 8);
+                var command = new byte[] { (byte)cmd, cb, t1, t2 };
+                modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态
+                modelServer.LogicalUI.GetNdoe(0x10).LastSendData = command;
+                modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
+                Thread.Sleep(20);
+            }
+            if (modelServer.LogicalUI.SynPhaseChoice.GetPhaseEnable(2))
+            {
+                var cb = modelServer.LogicalUI.GetNdoe(0x12).SynConfigByte;
+                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 & 0x00FF);
+                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 >> 8);
+                var command = new byte[] { (byte)cmd, cb, t1, t2 };
+                modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态  
+                modelServer.LogicalUI.GetNdoe(0x12).LastSendData = command;
+                modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
+                Thread.Sleep(20);
+            }
+            if (modelServer.LogicalUI.SynPhaseChoice.GetPhaseEnable(3))
+            {
+                var cb = modelServer.LogicalUI.GetNdoe(0x14).SynConfigByte;
+                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 & 0x00FF);
+                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 >> 8);
+                var command = new byte[] { (byte)cmd, cb, t1, t2 };
+                modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+                modelServer.LogicalUI.GetNdoe(0x14).LastSendData = command;
+                modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
+            }
         }
       
         /// <summary>
@@ -1309,246 +1300,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #endregion
 
-        #region DSP控制
-         /// <summary>
-         /// 三相选择字
-         /// </summary>       
-
-         private ObservableCollection<string> _phaseSelect;
-
-         public ObservableCollection<string> PhaseSelect
-         {
-             get
-             {
-                 return _phaseSelect;
-             }
-         }
-
-
-
-         private int _phaseIndexI = 1;
-
-         public int PhaseIndexI
-         {
-             get
-             {
-                 return _phaseIndexI;
-             }
-             set
-             {
-                 _phaseIndexI = value;
-                 RaisePropertyChanged("PhaseIndexI");
-             }
-         }
-         private int _phaseIndexII = 2;
-
-         public int PhaseIndexII
-         {
-             get
-             {
-                 return _phaseIndexII;
-             }
-             set
-             {
-                 _phaseIndexII = value;
-                 RaisePropertyChanged("PhaseIndexII");
-             }
-         }
-         private int _phaseIndexIII = 3;
-
-         public int PhaseIndexIII
-         {
-             get
-             {
-                 return _phaseIndexIII;
-             }
-             set
-             {
-                 _phaseIndexIII = value;
-                 RaisePropertyChanged("PhaseIndexIII");
-             }
-         }
-
-        /// <summary>
-        /// 将字符串转化为，浮点数分辨率为0.5
-         /// "1.23"转化为1，"1.43"转化为1.5,"1.83"转化为2.0
-        /// </summary>
-        /// <param name="str">字符串</param>
       
-         void CalAngle(string str, out double angle)
-         {
-
-             if (double.TryParse(str, out angle))
-             {
-                 angle = (angle+360) % 360;
-                 double remain = angle - (UInt32)angle;
-                 if (remain <= 0.3)
-                 {
-                      angle=  (double)((UInt32)angle);
-                 }
-                 else if (remain < 0.7)
-                 {
-                      angle = (double)((UInt32)angle) + 0.5;
-                 }
-                 else
-                 {
-                      angle = (double)((UInt32)angle) + 1;
-                 }
-             }             
-         }
-
-
-         /// <summary>
-         /// 角度 I
-         /// </summary>
-         private double _angleI = 0;
-
-         public string AngleI
-         {
-             set
-             {
-                 CalAngle(value, out _angleI);
-                 RaisePropertyChanged("AngleI");
-             }
-             get
-             {
-                 return _angleI.ToString("f1");
-             }
-         }
-         /// <summary>
-         /// 角度 II
-         /// </summary>
-         private double _angleII = 0;
-         public string AngleII
-         {
-             set
-             {
-                 CalAngle(value, out _angleII);
-                 RaisePropertyChanged("AngleII");
-             }
-             get
-             {
-                 return _angleII.ToString("f1");
-             }
-         }
-         /// <summary>
-         /// 角度 III
-         /// </summary>
-         private double _angleIII = 0;
-
-         public string AngleIII
-         {
-             set
-             {
-                 CalAngle(value, out _angleIII);
-                 RaisePropertyChanged("AngleIII");
-             }
-             get
-             {
-                 return _angleIII.ToString("f1");
-             }
-         }
-        /// <summary>
-        /// 获取同步命令字
-        /// </summary>
-        /// <param name="p">命令参数</param>
-        /// <returns>带有长度的命令字节</returns>
-         private Tuple<byte[], int> GetSynCommand(string p)
-         {
-             try
-             {
-
-                 var data = new double[3];
-                 int i = 0;
-                 byte selectByte = (byte)(PhaseIndexI);
-                 if (PhaseIndexI == 0)
-                 {
-                     throw new ArgumentNullException("你没有选择任何相!");
-                 }
-
-                 data[i++] = _angleI;
-                 if (PhaseIndexII != 0)
-                 {
-                     selectByte = (byte)(selectByte | ((PhaseIndexII) << 2));
-                     data[i++] = _angleII;
-
-                     if (PhaseIndexIII != 0)
-                     {
-                         data[i++] = _angleIII;
-                         selectByte = (byte)(selectByte | ((PhaseIndexIII) << 4));
-                     }
-                 }
-                 var byteArray = new byte[i * 2];
-                 for (int k = 0; k < i; k++)
-                 {
-                     var angle = data[k];
-                     UInt16 tris = (ushort)(angle / 360 * 65536);//转化为以65536为为基准的归一化值
-
-                     byteArray[2 * k] = (byte)(tris & 0x00FF);
-                     byteArray[2 * k + 1] = (byte)(tris >> 8);
-                 }
-
-                 var command = new byte[2 + 6];
-
-                 if (p == "Ready")
-                 {
-                     command[0] = (byte)CommandIdentify.SyncOrchestratorReadyClose;
-                 }
-                 else if (p == "Action")
-                 {
-                     command[0] = (byte)CommandIdentify.SyncOrchestratorCloseAction;
-                 }
-                 else
-                 {
-                     return null;
-                 }
-
-
-                 command[1] = selectByte;
-                 Array.Copy(byteArray, 0, command, 2, 2 * i);
-
-                 return new Tuple<byte[], int>(command, 2 + 2 * i);
-
-
-             }
-             catch (Exception ex)
-             {
-                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-                 return null;
-             }
-         }
-         private void ExecuteSynCommand_DSP(string p)
-         {
-             try
-             {
-                 if (p == "SynReadyHeDSP")
-                 {
-                     p = "Ready";
-                 }
-                 else if (p == "SynActionHeDSP")
-                 {
-                     p = "Action";
-                 }
-                 var command = GetSynCommand(p);
-                
-                 if (command == null)
-                 {
-                     return;
-                 }
-                 //此处发送控制命令
-
-                 modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
-                 modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command.Item1;
-                 modelServer.ControlNetServer.MasterSendCommand(0x0D, command.Item1, 0, command.Item2);  
-
-
-             }
-             catch (Exception ex)
-             {
-                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-             }
-         }
-       
-        #endregion
+        
     }
 }

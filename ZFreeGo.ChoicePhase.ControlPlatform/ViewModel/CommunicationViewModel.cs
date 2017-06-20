@@ -53,6 +53,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             RaisePropertyChanged(e.PropertyName);
         }
+
         #region 加载数据命令：LoadDataCommand
         /// <summary>
         /// 加载数据
@@ -95,8 +96,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         }
         #endregion
+     
 
-       
+
 
         #region 串口数据处理
 

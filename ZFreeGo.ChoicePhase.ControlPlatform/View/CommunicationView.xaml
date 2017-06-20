@@ -120,6 +120,7 @@
                                  Command="{Binding SerialCommand}" CommandParameter="CloseSerial"  IsEnabled="{Binding CloseEnable}">关闭串口</Button>
                            
                         </StackPanel>
+                       
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="命令发送">

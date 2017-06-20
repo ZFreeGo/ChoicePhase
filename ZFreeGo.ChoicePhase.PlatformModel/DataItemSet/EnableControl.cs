@@ -532,12 +532,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
                 //同步按钮
-                if (!OperateSyn)
-                {
-                    SynCloseReady = true;
-                    SynCloseAction = false;
-                }
-                
+                //if (!OperateSyn)
+                //{
+                //    SynCloseReady = true;
+                //    SynCloseAction = false;
+                //}                
                 
             }
             //全是分闸则使能总分闸
@@ -551,11 +550,79 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 CloseReady = false;
                 CloseAction = false;
                 //同步按钮
-                SynCloseReady = false;
-                SynCloseAction = false;
+                //SynCloseReady = false;
+                //SynCloseAction = false;
                 
             }
         }
+
+        /// <summary>
+        /// 设置同步按钮使能状态
+        /// </summary>
+        /// <param name="selectButton"></param>
+        public void SetSynControlButtonState(byte configByte)
+        {
+            if (configByte == 0)
+            {
+                //同步按钮
+                SynCloseReady = false;
+                SynCloseAction = false;
+                return;
+            }
+
+            bool sate = true;
+
+            for (int i = 0; i < 3; i++)
+            {
+                var byteBit = (byte)((configByte >> (2 * i)) & 0x03);
+                switch (byteBit)
+                {
+                    case 1:
+                        {
+                            sate =sate && CloseReadyA;                            
+                            continue;
+                        }
+                    case 2:
+                        {
+                            sate = sate && CloseReadyB;
+                            continue;                            
+                        }
+                    case 3:
+                        {
+                            sate = sate && CloseReadyC;
+                            continue;
+                        }
+                    default:
+                        {                            
+                            break;
+                        }
+                }
+                break;
+
+            }
+            //全是合闸则使能总合闸
+            if (sate)
+            {
+                //同步按钮
+                if (!OperateSyn)
+                {
+                    SynCloseReady = true;
+                    SynCloseAction = false;
+                }
+            }
+            else
+            {
+                //同步按钮
+                SynCloseReady = false;
+                SynCloseAction = false;
+            }
+
+        }
+
+
+
+
+
         public Action<string> ExecuteReadyCommandDelegate;
 
 
