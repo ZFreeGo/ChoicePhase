@@ -56,6 +56,7 @@
     <Compile Include="DataItemSet\StatusBarMessage.cs" />
     <Compile Include="DataItemSet\PhaseChoice.cs" />
     <Compile Include="GetViewData\LogicalPresentation.cs" />
+    <Compile Include="GetViewData\NodeAttribute.cs" />
     <Compile Include="Helper\OverTimeTimer.cs" />
     <Compile Include="Helper\XmlDatasetConvert.cs" />
     <Compile Include="Helper\XMLOperate.cs" />

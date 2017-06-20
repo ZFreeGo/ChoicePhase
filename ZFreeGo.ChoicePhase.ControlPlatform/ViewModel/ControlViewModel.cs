@@ -379,10 +379,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     }
             }
             if (command != null)
-            {
-                
-                SendCMD(0x0D, command);
-                
+            {                
+                SendCMD(NodeAttribute.MacSynControllerMac, command);                
             }
             else
             {
@@ -451,7 +449,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ShowMessageBox("有正在处理的其它操作", "预制操作");
                             }
 
-                            modelServer.LogicalUI.GetNdoe(0x0D).ResetState();//复位状态                           
+                            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynControllerMac).ResetState();//复位状态                           
 
                             SendSynCommand(SynReadyHeDSP);//首先发送命令到同步控制器，置为同步合闸预制状态
                             Thread.Sleep(200);
@@ -491,15 +489,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             if (ShowMessageBox("是否确认 三相合闸预制？", "三相合闸操作"))
                             {
                                 var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
-                                SendCMD(0x10, command);
+                                SendCMD(NodeAttribute.MacPhaseA, command);
                                 Thread.Sleep(10);
-                                SendCMD(0x12, command);
+                                SendCMD(NodeAttribute.MacPhaseB, command);
                                 Thread.Sleep(10);
-                                SendCMD(0x14, command);
+                                SendCMD(NodeAttribute.MacPhaseC, command);
 
-                                modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
                                 modelServer.LogicalUI.UserControlEnable.OperateABC = true;
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
                                     new OverTimeTimer(10000, () =>
@@ -520,43 +518,43 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "CloseAction":
                         {                            
                             var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
-                            SendCMD(0x10, command);
+                            SendCMD(NodeAttribute.MacPhaseA, command);
                             Thread.Sleep(10);
-                            SendCMD(0x12, command);
+                            SendCMD(NodeAttribute.MacPhaseB, command);
                             Thread.Sleep(10);
-                            SendCMD(0x14, command);
+                            SendCMD(NodeAttribute.MacPhaseC, command);
 
                             break;
                         }
                     case "CloseReadyA":
                         {
-                            SinglePhaseReadyAction(0x10, CommandIdentify.ReadyClose);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.ReadyClose);
                             break;
                         }
                     case "CloseActionA":
                         {
-                            SinglePhaseReadyAction(0x10, CommandIdentify.CloseAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.CloseAction);
                             break;
                         }
                     case "CloseReadyB":
                         {                          
-                            SinglePhaseReadyAction(0x12, CommandIdentify.ReadyClose);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.ReadyClose);
                             break;
                         }
                     case "CloseActionB":
                         {
-                            SinglePhaseReadyAction(0x12, CommandIdentify.CloseAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.CloseAction);
                             break;
                         }
                     case "CloseReadyC":
                         {
 
-                            SinglePhaseReadyAction(0x14, CommandIdentify.ReadyClose);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.ReadyClose);
                             break;
                         }
                     case "CloseActionC":
                         {
-                            SinglePhaseReadyAction(0x14, CommandIdentify.CloseAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.CloseAction);
                             break;
                         }
                     case "OpenReady":
@@ -571,15 +569,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             if (ShowMessageBox("是否确认 三相分闸预制？", "三相分闸操作"))
                             {
                                 var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)_actionTime };
-                                SendCMD(0x10, command);
+                                SendCMD(NodeAttribute.MacPhaseA, command);
                                 Thread.Sleep(10);
-                                SendCMD(0x12, command);
+                                SendCMD(NodeAttribute.MacPhaseB, command);
                                 Thread.Sleep(10);
-                                SendCMD(0x14, command);
+                                SendCMD(NodeAttribute.MacPhaseC, command);
 
-                                modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
                                 modelServer.LogicalUI.UserControlEnable.OperateABC = true;
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
                                     new OverTimeTimer(10000, () =>
@@ -597,42 +595,42 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "OpenAction":
                         {
                             var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)_actionTime };
-                            SendCMD(0x10, command);
+                            SendCMD(NodeAttribute.MacPhaseA, command);
                             Thread.Sleep(10);
-                            SendCMD(0x12, command);
+                            SendCMD(NodeAttribute.MacPhaseB, command);
                             Thread.Sleep(10);
-                            SendCMD(0x14, command);
+                            SendCMD(NodeAttribute.MacPhaseC, command);
                             break;
                         }
                     case "OpenReadyA":
                         {
-                            SinglePhaseReadyAction(0x10, CommandIdentify.ReadyOpen);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.ReadyOpen);
                             break;
                         }
                     case "OpenActionA":
                         {
-                            SinglePhaseReadyAction(0x10, CommandIdentify.OpenAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.OpenAction);
                             break;
                         }
                     case "OpenReadyB":
                         {
-                            SinglePhaseReadyAction(0x12, CommandIdentify.ReadyOpen);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.ReadyOpen);
                             break;
                         }
                     case "OpenActionB":
                         {
-                            SinglePhaseReadyAction(0x12, CommandIdentify.OpenAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.OpenAction);
                             break;
                             
                         }
                     case "OpenReadyC":
                         {
-                            SinglePhaseReadyAction(0x14, CommandIdentify.ReadyOpen);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.ReadyOpen);
                             break;
                         }
                     case "OpenActionC":
                         {
-                            SinglePhaseReadyAction(0x14, CommandIdentify.OpenAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.OpenAction);
                             break;
                         }
                     default:
@@ -659,38 +657,30 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             string des = "";
             string cmdDes =  modelServer.GetIDDescription(cmd);
             bool opetate = false;
-           
-            switch (mac)
+
+            if (mac == NodeAttribute.MacPhaseA)
             {
-                case 0x10:
-                    {
-                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateA = ar; };
-                        opetate = modelServer.LogicalUI.UserControlEnable.OperateA;
-                        des = "A";
-                       
-                        break;
-                    }
-                case 0x12:
-                    {
-                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateB = ar; };
-                        opetate = modelServer.LogicalUI.UserControlEnable.OperateB;
-                        des = "B";
-                        
-                        break;
-                    }
-                case 0x14:
-                    {
-                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateC = ar; };
-                        opetate = modelServer.LogicalUI.UserControlEnable.OperateC;
-                        des = "C";
-                       
-                        break;
-                    }
-                default:
-                    {
-                        return;
-                    }
+                actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateA = ar; };
+                opetate = modelServer.LogicalUI.UserControlEnable.OperateA;
+                des = "A";
             }
+            else if (mac == NodeAttribute.MacPhaseB)
+            {
+                actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateB = ar; };
+                opetate = modelServer.LogicalUI.UserControlEnable.OperateB;
+                des = "B";
+            }
+            else if (mac == NodeAttribute.MacPhaseC)
+            {
+                actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateC = ar; };
+                opetate = modelServer.LogicalUI.UserControlEnable.OperateC;
+                des = "C";
+            }
+            else
+            {
+                return;
+            }
+            
 
 
             if (modelServer.LogicalUI.UserControlEnable.OperateState &&
@@ -714,32 +704,30 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                     var timer = new OverTimeTimer(10000, () =>
                                 {
-                                    actDelegate(false);      
+                                    actDelegate(false);
                                     ShowMessageBox(string.Format("{0}相操作超时！", des), "单相操作");
-                                    modelServer.MonitorData.UpdateStatus(string.Format("{0}相操作超时！", des));});
-                       
-                    switch (mac)
+                                    modelServer.MonitorData.UpdateStatus(string.Format("{0}相操作超时！", des));
+                                });
+
+                    if (mac == NodeAttribute.MacPhaseA)
                     {
-                        case 0x10:
-                            {
-                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA =  timer;
-                                break;                            
-                            }
-                        case 0x12:
-                            {
-                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB =  timer;
-                                break;
-                            }
-                        case 0x14:
-                            {
-                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC = timer;
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
-                    }                                           
+                        modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA = timer;
+
+                    }
+                    else if (mac == NodeAttribute.MacPhaseB)
+                    {
+                        modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB = timer;
+
+                    }
+                    else if (mac == NodeAttribute.MacPhaseC)
+                    {
+                        modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC = timer;
+
+                    }
+                    else
+                    {
+                        return;
+                    }
                     timer.ReStartTimer();
                 }
             }
@@ -769,41 +757,36 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case CommandIdentify.SyncReadyClose:
                         {
                             OverTimeTimer timer;
-                            switch (e.MAC)
+
+                            if (e.MAC == NodeAttribute.MacSynControllerMac)
                             {
-                                case 0x0D:
-                                    {
-                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn;
-                                        break;
-                                    }
-                                case 0x10:
-                                    {
-                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA;
-                                        break;
-                                    }
-                                case 0x12:
-                                    {
-                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB;
-                                        break;
-                                    }
-                                case 0x14:
-                                    {
-                                        timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC;
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        timer = null;
-                                        break;
-                                    }
+                                timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn;
 
+                            }
+                            else if (e.MAC == NodeAttribute.MacPhaseA)
+                            {
+                                timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA;
 
+                            }
+                            else if (e.MAC == NodeAttribute.MacPhaseB)
+                            {
+                                timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB;
+                            }
+                            else if (e.MAC == NodeAttribute.MacPhaseC)
+                            {
+                                timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC;
+                                break;
+                            }
+                            else
+                            {
+                                timer = null;
+                                break;
                             }
                             if (timer != null)
                             {
                                 timer.StopTimer();
                             }
-                            if(modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC !=null)
+                            if (modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC != null)
                             {
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.StopTimer();
                             }
@@ -844,35 +827,35 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             if (modelServer.LogicalUI.SynPhaseChoice.GetPhaseEnable(1))
             {
-                var cb = modelServer.LogicalUI.GetNdoe(0x10).SynConfigByte;
-                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 & 0x00FF);
-                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x10).DelayTime1 >> 8);
+                var cb = modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).SynConfigByte;
+                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).DelayTime1 & 0x00FF);
+                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).DelayTime1 >> 8);
                 var command = new byte[] { (byte)cmd, cb, t1, t2 };
-                modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态
-                modelServer.LogicalUI.GetNdoe(0x10).LastSendData = command;
-                modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
+                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态
+                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).LastSendData = command;
+                modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseA, command, 0, command.Length);
                 Thread.Sleep(20);
             }
             if (modelServer.LogicalUI.SynPhaseChoice.GetPhaseEnable(2))
             {
-                var cb = modelServer.LogicalUI.GetNdoe(0x12).SynConfigByte;
-                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 & 0x00FF);
-                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x12).DelayTime1 >> 8);
+                var cb = modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).SynConfigByte;
+                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).DelayTime1 & 0x00FF);
+                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).DelayTime1 >> 8);
                 var command = new byte[] { (byte)cmd, cb, t1, t2 };
-                modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态  
-                modelServer.LogicalUI.GetNdoe(0x12).LastSendData = command;
-                modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
+                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态  
+                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).LastSendData = command;
+                modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseB, command, 0, command.Length);
                 Thread.Sleep(20);
             }
             if (modelServer.LogicalUI.SynPhaseChoice.GetPhaseEnable(3))
             {
-                var cb = modelServer.LogicalUI.GetNdoe(0x14).SynConfigByte;
-                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 & 0x00FF);
-                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(0x14).DelayTime1 >> 8);
+                var cb = modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).SynConfigByte;
+                var t1 = (byte)(modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).DelayTime1 & 0x00FF);
+                var t2 = (byte)(modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).DelayTime1 >> 8);
                 var command = new byte[] { (byte)cmd, cb, t1, t2 };
-                modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
-                modelServer.LogicalUI.GetNdoe(0x14).LastSendData = command;
-                modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
+                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
+                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).LastSendData = command;
+                modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseC, command, 0, command.Length);
             }
         }
       
@@ -882,17 +865,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <param name="command"></param>
         private void SendToABC(byte[] command)
         {
-            modelServer.LogicalUI.GetNdoe(0x10).ResetState();//复位状态
-            modelServer.LogicalUI.GetNdoe(0x10).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(0x10, command, 0, command.Length);
+            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态
+            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).LastSendData = command;
+            modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseA, command, 0, command.Length);
             Thread.Sleep(20);
-            modelServer.LogicalUI.GetNdoe(0x12).ResetState();//复位状态        
-            modelServer.LogicalUI.GetNdoe(0x12).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(0x12, command, 0, command.Length);
+            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态        
+            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).LastSendData = command;
+            modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseB, command, 0, command.Length);
             Thread.Sleep(20);
-            modelServer.LogicalUI.GetNdoe(0x14).ResetState();//复位状态 
-            modelServer.LogicalUI.GetNdoe(0x14).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(0x14, command, 0, command.Length);
+            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
+            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).LastSendData = command;
+            modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseC, command, 0, command.Length);
         }
         /// <summary>
         /// 发送命令状态到子站
@@ -910,7 +893,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         #endregion
 
         #region 永磁控制器控制
-        private byte _macAddress = 0x10;
+        private byte _macAddress = NodeAttribute.MacPhaseA;
 
         public string MacAddress
         {

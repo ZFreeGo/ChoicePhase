@@ -126,10 +126,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 StationNameList.Add("C相监测");
 
                 _macList = new List<byte>();
-                _macList.Add(0x10);
-                _macList.Add(0x12);
-                _macList.Add(0x14);
-                _macList.Add(0x0D);
+                _macList.Add(NodeAttribute.MacPhaseA);
+                _macList.Add(NodeAttribute.MacPhaseB);
+                _macList.Add(NodeAttribute.MacPhaseC);
+                _macList.Add(NodeAttribute.MacSynControllerMac);
                 _macList.Add(0x02);
                 _macList.Add(0x16);
                 _macList.Add(0x18);
