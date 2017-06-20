@@ -2,3 +2,4 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.C
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.pdb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.dll
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.csprojResolveAssemblyReference.cache

@@ -21,7 +21,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
         {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
-
+            
             //注册MVVMLight消息
           //  Messenger.Default.Register<string>(this, "ShowUserView", ShowUserView);
             Messenger.Default.Register<Exception>(this, "ExceptionMessage", ExceptionMessage);

@@ -107,6 +107,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
         }
 
+        
+
+
 
         #region 同步控制器 A/B/C 离线/在线
 
@@ -117,39 +120,35 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         private void UpdateNodeOnlineState(byte mac)
         {
             byte index = 0;
-            string des = "";
 
-            if (NodeAttribute.MacSynControllerMac == mac)
+            if (NodeAttribute.MacSynController == mac)
             {
-                index = 0;
-                des = "同步控制器在线";
+                index = 0;                             
+                StatusBar.SetSyn(true, "同步控制器在线");
             }
             else if (NodeAttribute.MacPhaseA == mac)
             {
                 index = 1;
-                des = "A相在线";
+                StatusBar.SetPhaseA(true, "A相在线");
             }
             else if (NodeAttribute.MacPhaseB == mac)
             {
                 index = 2;
-                des = "B相在线";
+                StatusBar.SetPhaseB(true, "B相在线");
             }
             else if (NodeAttribute.MacPhaseC == mac)
             {
                 index = 3;
-                des = "C相在线";
+                StatusBar.SetPhaseC(true, "C相在线");               
             }
             else
             {
                 return;
-            }
-
-            //重新启动超时定时器
+            }           
             var node = GetNdoe(mac);
             node.ReStartOverTimer();
             node.IsOnline = true;
-            OnlineBit = SetBit(OnlineBit, index);
-            StatusBar.SetSyn(true, des);
+            OnlineBit = SetBit(OnlineBit, index);           
         }
       
 
@@ -284,7 +283,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         {
 
 
-            if (NodeAttribute.MacSynControllerMac == mac)//同步控制器                    
+            if (NodeAttribute.MacSynController == mac)//同步控制器                    
             {
                 switch (cmd)
                 {
@@ -510,7 +509,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             var cmd = (CommandIdentify)(data[0] & 0x7F);
 
             node.ResetState();
-            if (NodeAttribute.MacSynControllerMac == mac)//同步控制器                    
+            if (NodeAttribute.MacSynController == mac)//同步控制器                    
             {
                 switch (cmd)
                 {
@@ -687,7 +686,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
 
 
-            if (NodeAttribute.MacSynControllerMac == mac)
+            if (NodeAttribute.MacSynController == mac)
             {
                 node.UpdateSynStatus(data);
 
@@ -714,7 +713,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
             var mac = defStationInformation.MacID;
 
-            if (NodeAttribute.MacSynControllerMac == mac)
+            if (NodeAttribute.MacSynController == mac)
             {
                 action = statusBar.SetSyn;
                 comment = "同步控制器";
@@ -846,7 +845,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             {
                 IndicatorLightABC = new IndicatorLight();
                 NodeStatusList = new ObservableCollection<NodeStatus>();
-                NodeStatusList.Add(new NodeStatus(NodeAttribute.MacSynControllerMac, "同步控制器", 7000));
+                NodeStatusList.Add(new NodeStatus(NodeAttribute.MacSynController, "同步控制器", 7000));
                 NodeStatusList.Add(new NodeStatus(NodeAttribute.MacPhaseA, "A相控制器", 7000));
                 NodeStatusList.Add(new NodeStatus(NodeAttribute.MacPhaseB, "B相控制器", 7000));
                 NodeStatusList.Add(new NodeStatus(NodeAttribute.MacPhaseC, "C相控制器", 7000));

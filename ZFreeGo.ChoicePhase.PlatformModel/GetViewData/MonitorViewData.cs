@@ -129,7 +129,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 _macList.Add(NodeAttribute.MacPhaseA);
                 _macList.Add(NodeAttribute.MacPhaseB);
                 _macList.Add(NodeAttribute.MacPhaseC);
-                _macList.Add(NodeAttribute.MacSynControllerMac);
+                _macList.Add(NodeAttribute.MacSynController);
                 _macList.Add(0x02);
                 _macList.Add(0x16);
                 _macList.Add(0x18);

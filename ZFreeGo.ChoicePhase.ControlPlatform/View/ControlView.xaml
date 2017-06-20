@@ -261,8 +261,8 @@
 
                     </Grid>                                                  
             </StackPanel>
-            <GroupBox Header="开关控制" Grid.Row="1" Margin="3">                
-                <TabControl Margin="3">
+            <GroupBox Header="开关控制" Grid.Row="1" Margin="3">
+                <TabControl Margin="3" DataContext="{Binding ActionLoopChoice}">
                     <TabItem Header="遥控操作" >
                         <StackPanel Orientation="Horizontal">
                             <Label Margin="3">MAC:</Label>
@@ -281,8 +281,8 @@
                             <CheckBox VerticalAlignment="Center" IsChecked="{Binding CircleIII}">III路</CheckBox>
                             <Label Margin="3">动作时间(ms):</Label>
                             <TextBox MinWidth="60" Margin="3" Text="{Binding ActionTime}"></TextBox>
-                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="ReadyAction">预制</Button>
-                            <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="ExecuteAction">执行</Button>
+                            <Button Margin="30,3,3,3" Command="{Binding OpearateCommand}" CommandParameter="ReadyAction">预制</Button>
+                            <Button Margin="30,3,3,3" Command="{Binding OpearateCommand}" CommandParameter="ExecuteAction">执行</Button>
                         </StackPanel>
                     </TabItem>
                    

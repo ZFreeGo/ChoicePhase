@@ -5,6 +5,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
 using ZFreeGo.ChoicePhase.PlatformModel;
@@ -35,26 +37,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private const string SynActionHeDSP = "SynActionHeDSP";
         private const string SynReadyHeDSP = "SynReadyHeDSP";
 
+
+
+        private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+      
         /// <summary>
         /// Initializes a new instance of the ControlViewModel class.
         /// </summary>
         public ControlViewModel()
-        {
-             _actionSelect = new ObservableCollection<string>();
-             _actionSelect.Add("合闸");
-             _actionSelect.Add("分闸");
-
-             ActionCommand = new RelayCommand<string>(ExecuteReadyCommand);
-           
-             _loopSelect = new ObservableCollection<string>();
-             _loopSelect.Add("未选择");
-             _loopSelect.Add("回路I");
-             _loopSelect.Add("回路II");
-             _loopSelect.Add("回路III");
-            
+        {         
 
              LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
              SecureCheckCommand = new RelayCommand<String>(ExecuteSecureCheckCommand);
+
+             _actionLoopChoice = new LoopChoice();
 
 
              Messenger.Default.Register<string>(this, "ControlViewPassword", UpdatePassword);
@@ -89,6 +86,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer.LogicalUI.SynPhaseChoice.SynCommandDelegate = ExecuteSynCommand;
 
 
+                _actionLoopChoice.ExecuteOpearateCommandDelegate = ExecuteOperateCommand;
 
             }           
         }
@@ -216,7 +214,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         public RelayCommand<String> SecureCheckCommand { get; private set; }
 
 
-
+        
         private void ExecuteSecureCheckCommand(string obj)
         {
 
@@ -224,7 +222,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 case "Check":
                     {
-                        if ("12345" == _passWord)
+                        if (NodeAttribute.PasswordII == _passWord)
                         {
                             SecureTip = "认证通过";
                             SecureColor = "Green";
@@ -264,86 +262,59 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #region 合分闸控制，同步预制
 
+        private LoopChoice _actionLoopChoice;
 
-        
-       
-
-
-        public RelayCommand<string> ActionCommand { get; private set; }
-
-
-      
-        void ExecuteReadyCommand(string str)
+        public LoopChoice ActionLoopChoice
         {
+            get
+            {
+                return _actionLoopChoice;
+            }
+            set
+            {
+                _actionLoopChoice = value;
+                RaisePropertyChanged("ActionLoopChoice");
+            }
+        }
 
-           
 
+        /// <summary>
+        /// 执行每相合分闸/同步合闸操作
+        /// </summary>
+        /// <param name="str"></param>
+      
+        void ExecuteOperateCommand(string str)
+        {
             try
             {
+                byte[] command;
                 switch (str)
                 {
                     case "ReadyAction":
                         {
-                            CommandIdentify cmd;                            
-                            if (SelectActionIndex == 0)//合闸预制
-                            {
-                                cmd = CommandIdentify.ReadyClose;
-                            }
-                            else if (SelectActionIndex == 1)//分闸预制
-                            {
-                                cmd = CommandIdentify.ReadyOpen;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                            var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
-
-                            //复位状态
-                            modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
-                            modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command;
-                            //此处发送控制命令                     
-                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);                          
-
-
+                            command = _actionLoopChoice.GetReadyCommand();                                                      
                             break;
                         }
                     case "ExecuteAction":
                         {
-                            CommandIdentify cmd;
-                            if (SelectActionIndex == 0)//合闸执行
-                            {
-                                cmd = CommandIdentify.CloseAction;
-                            }
-                            else if (SelectActionIndex == 1)//分闸执行
-                            {
-                                cmd = CommandIdentify.OpenAction;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                            //复位状态
-                            modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
-                            var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
-                            modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command;
-                            //此处发送控制命令                     
-                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);  
+                            command = _actionLoopChoice.GetExecuteCommand();                 
 
                             break;
                         }
                     case "Synchronization":
                         {
-                            ExecuteSynReadyCommand("Synchronization");
+                            command = _actionLoopChoice.GetSynReadyCommand();
                             break;
-                        }                    
-                       
-               
+                        }                  
                     default:
                         {
-                            break;
+                            throw new Exception("ExecuteOperateCommand:未识别的操作命令");                            
                         }
 
+                }
+                if (command != null)
+                {
+                    SendCMD(_actionLoopChoice.MacID, command);
                 }
             }
             catch(Exception ex)
@@ -366,8 +337,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         break;
                     }
                 case SynActionHeDSP:
-                    {
-                        
+                    {                        
                         command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommand(CommandIdentify.SyncOrchestratorCloseAction);
                         break;
                     }
@@ -380,7 +350,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
             if (command != null)
             {                
-                SendCMD(NodeAttribute.MacSynControllerMac, command);                
+                SendCMD(NodeAttribute.MacSynController, command);                
             }
             else
             {
@@ -449,7 +419,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ShowMessageBox("有正在处理的其它操作", "预制操作");
                             }
 
-                            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynControllerMac).ResetState();//复位状态                           
+                            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
 
                             SendSynCommand(SynReadyHeDSP);//首先发送命令到同步控制器，置为同步合闸预制状态
                             Thread.Sleep(200);
@@ -458,7 +428,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                             modelServer.LogicalUI.UserControlEnable.OperateSyn = true;
                             modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn =
-                                   new OverTimeTimer(10000, () =>
+                                   new OverTimeTimer(NodeAttribute.SynCloseActionOverTime, () =>
                                    {
                                        ShowMessageBox("同步合闸操作超时", "单相操作");
                                        modelServer.MonitorData.UpdateStatus("同步合闸操作超时");
@@ -488,7 +458,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                             if (ShowMessageBox("是否确认 三相合闸预制？", "三相合闸操作"))
                             {
-                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, (byte)_actionTime };
+                                //默认为两个回路，50ms
+                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, 50 };
                                 SendCMD(NodeAttribute.MacPhaseA, command);
                                 Thread.Sleep(10);
                                 SendCMD(NodeAttribute.MacPhaseB, command);
@@ -500,7 +471,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
                                 modelServer.LogicalUI.UserControlEnable.OperateABC = true;
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
-                                    new OverTimeTimer(10000, () =>
+                                    new OverTimeTimer(NodeAttribute.CloseActionOverTime, () =>
                                     {
                                           ShowMessageBox("三相合闸操作超时", "单相操作");
                                         modelServer.MonitorData.UpdateStatus("三相合闸操作超时");
@@ -516,8 +487,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             break;
                         }
                     case "CloseAction":
-                        {                            
-                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, (byte)_actionTime };
+                        {
+                            //默认为两个回路，50ms
+                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, 50 };
                             SendCMD(NodeAttribute.MacPhaseA, command);
                             Thread.Sleep(10);
                             SendCMD(NodeAttribute.MacPhaseB, command);
@@ -568,7 +540,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                             if (ShowMessageBox("是否确认 三相分闸预制？", "三相分闸操作"))
                             {
-                                var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)_actionTime };
+                                //默认为两个回路，40ms
+                                var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)40 };
                                 SendCMD(NodeAttribute.MacPhaseA, command);
                                 Thread.Sleep(10);
                                 SendCMD(NodeAttribute.MacPhaseB, command);
@@ -580,7 +553,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
                                 modelServer.LogicalUI.UserControlEnable.OperateABC = true;
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
-                                    new OverTimeTimer(10000, () =>
+                                    new OverTimeTimer(NodeAttribute.OpenActionOverTime, () =>
                                     {
                                         ShowMessageBox("三相分闸操作超时", "单相操作");
                                         modelServer.MonitorData.UpdateStatus("三相分闸操作超时");
@@ -594,7 +567,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "OpenAction":
                         {
-                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)_actionTime };
+                            //默认为两个回路，40ms
+                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)40 };
                             SendCMD(NodeAttribute.MacPhaseA, command);
                             Thread.Sleep(10);
                             SendCMD(NodeAttribute.MacPhaseB, command);
@@ -692,8 +666,13 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             if (ShowMessageBox(string.Format("是否确认 {0}相{1}？", des, cmdDes), "单相操作"))
             {
-                var command = new byte[] { (byte)cmd, 0x03, (byte)_actionTime };
+                //默认为两个回路，50ms
+                var command = new byte[] { (byte)cmd, 0x03, (byte)50 };
                 SendCMD(mac, command);
+
+              
+
+
 
                 if ((cmd == CommandIdentify.SyncReadyClose) ||
                     (cmd == CommandIdentify.ReadyClose) ||
@@ -702,7 +681,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     modelServer.LogicalUI.GetNdoe(mac).ResetState();//复位状态 
                     actDelegate(true);
 
-                    var timer = new OverTimeTimer(10000, () =>
+                    var timer = new OverTimeTimer(NodeAttribute.GetOverTime(cmd), () =>
                                 {
                                     actDelegate(false);
                                     ShowMessageBox(string.Format("{0}相操作超时！", des), "单相操作");
@@ -732,13 +711,23 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 }
             }
         }
+        private void PollingService_ErrorAckChanged(object sender, StatusChangeMessage e)
+        {
+            Action errorAckChanged = () => { PollingService_ErrorAckChanged(e); };
+            //Task.Factory.StartNew(errorAckChanged,
+            //       new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
+
+            Dispatcher.CurrentDispatcher.Invoke(errorAckChanged);
+        }
         /// <summary>
         /// 错误状态主动应答
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PollingService_ErrorAckChanged(object sender, StatusChangeMessage e)
+        private void PollingService_ErrorAckChanged(StatusChangeMessage e)
         {
+           
+           
             try
             {
                 var node = modelServer.LogicalUI.GetNdoe(e.MAC);
@@ -758,7 +747,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                             OverTimeTimer timer;
 
-                            if (e.MAC == NodeAttribute.MacSynControllerMac)
+                            if (e.MAC == NodeAttribute.MacSynController)
                             {
                                 timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn;
 
@@ -891,399 +880,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
         #endregion
-
-        #region 永磁控制器控制
-        private byte _macAddress = NodeAttribute.MacPhaseA;
-
-        public string MacAddress
-        {
-            get
-            {
-                return _macAddress.ToString("X2");
-            }
-            set
-            {
-                byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out  _macAddress);              
-                RaisePropertyChanged("MacAddress");
-            }
-        }
-    
-        private int selectActionIndex = 0;
-
-        public int SelectActionIndex
-        {
-            get
-            {
-                return selectActionIndex;
-            }
-            set
-            {
-                selectActionIndex = value;
-                RaisePropertyChanged("SelectActionIndex");
-            }
-        }
-
-
-
-        private ObservableCollection<string> _actionSelect;
-
-         public ObservableCollection<string> ActionSelect
-        {
-            get
-            {
-                return _actionSelect;
-            }
-        }
-        /// <summary>
-        /// 三相选择字
-        /// </summary>
-        private byte _phaseSelectByte = 0;
-        public bool CheckPhaseA
-        {
-            set
-            {
-                if (value)
-                {
-                    _phaseSelectByte |= 0x01;
-                }
-                else
-                {
-                    _phaseSelectByte &= 0xFE;
-                }
-                RaisePropertyChanged("CheckPhaseA");
-            }
-            get
-            {
-                var state = ((_phaseSelectByte & 0x01) == 0x01) ? (true) : (false);
-                return state;
-            }
-        }
-
-        public bool CheckPhaseB
-        {
-            set
-            {
-                if (value)
-                {
-                    _phaseSelectByte |= 0x02;
-                }
-                else
-                {
-                    _phaseSelectByte &= 0xFC;
-                }
-                RaisePropertyChanged("CheckPhaseB");
-            }
-            get
-            {
-                var state = ((_phaseSelectByte & 0x02) == 0x02) ? (true) : (false);
-                return state;
-            }
-        }
-      
-        public bool CheckPhaseC
-        {
-            set
-            {
-                if (value)
-                {
-                    _phaseSelectByte |= 0x04;
-                }
-                else
-                {
-                    _phaseSelectByte &= 0xFB;
-                }
-                RaisePropertyChanged("CheckPhaseC");
-            }
-            get
-            {
-                var state = ((_phaseSelectByte & 0x04) == 0x04) ? (true) : (false);
-                return state;
-            }
-        }
-        /// <summary>
-        /// 合闸分闸控制选择的回路
-        /// </summary>
-        private byte _circleByte = 0;
-        public bool CircleI
-        {
-            set
-            {
-                if (value)
-                {
-                    _circleByte |= 0x01;
-                }
-                else
-                {
-                    _circleByte &= 0xFE;
-                }
-                RaisePropertyChanged("CircleI");
-            }
-            get
-            {
-                var state = ((_circleByte & 0x01) == 0x01) ? (true) : (false);
-                return state;
-            }
-        }
-
-        public bool CircleII
-        {
-            set
-            {
-                if (value)
-                {
-                    _circleByte |= 0x02;
-                }
-                else
-                {
-                    _circleByte &= 0xFC;
-                }
-                RaisePropertyChanged("CircleII");
-            }
-            get
-            {
-                var state = ((_circleByte & 0x02) == 0x02) ? (true) : (false);
-                return state;
-            }
-        }
-
-        public bool CircleIII
-        {
-            set
-            {
-                if (value)
-                {
-                    _circleByte |= 0x04;
-                }
-                else
-                {
-                    _circleByte &= 0xFB;
-                }
-                RaisePropertyChanged("CircleIII");
-            }
-            get
-            {
-                var state = ((_circleByte & 0x04) == 0x04) ? (true) : (false);
-                return state;
-            }
-        }
-        /// <summary>
-        /// 回路选择字
-        /// </summary>
-        private byte _circleSelectByte = 0;
-
-        private ObservableCollection<string> _loopSelect;
-
-        public ObservableCollection<string> LoopSelect
-        {
-            get
-            {
-                return _loopSelect;
-            }
-        }
-
-
-
-        private int _loopIndexI = 0;
-
-        public int LoopIndexI
-        {
-            get
-            {
-                return _loopIndexI;
-            }
-            set
-            {
-                _loopIndexI = value;
-                RaisePropertyChanged("LoopIndexI");
-            }
-        }
-        private int _loopIndexII = 0;
-
-        public int LoopIndexII
-        {
-            get
-            {
-                return _loopIndexII;
-            }
-            set
-            {
-                _loopIndexII = value;
-                RaisePropertyChanged("LoopIndexII");
-            }
-        }
-        private int _loopIndexIII = 0;
-
-        public int LoopIndexIII
-        {
-            get
-            {
-                return _loopIndexIII;
-            }
-            set
-            {
-                _loopIndexIII = value;
-                RaisePropertyChanged("LoopIndexIII");
-            }
-        }
-        /// <summary>
-        /// 合分闸动作时间
-        /// </summary>
-        private int _actionTime = 50;
-        public string ActionTime
-        {
-            set
-            {
-                int time;
-                if (int.TryParse(value, out time))
-                {
-                    if ((time >= 10) && (time <= 100))
-                    {
-                        _actionTime = time;
-                    }
-                }
-                RaisePropertyChanged("ActionTime");
-            }
-            get
-            {
-                return _actionTime.ToString();
-            }
-        }
-
-        #endregion
-
-        #region 偏移时间
-        /// <summary>
-        /// 偏移时间 I
-        /// </summary>
-        private int _offsetTimeI = 0;
-
-        public string OffsetTimeI
-        {
-            set
-            {
-                int time;
-                if (int.TryParse(value, out time))
-                {
-                    if ((time >= 0) && (time <= 65535))
-                    {
-                        _offsetTimeI = time;
-                    }
-                }
-                RaisePropertyChanged("OffsetTimeI");
-            }
-            get
-            {
-                return _offsetTimeI.ToString();
-            }
-        }
-        /// <summary>
-        /// 偏移时间 II
-        /// </summary>
-        private int _offsetTimeII = 0;
-        public string OffsetTimeII
-        {
-            set
-            {
-                int time;
-                if (int.TryParse(value, out time))
-                {
-                    if ((time >= 0) && (time <= 65535))
-                    {
-                        _offsetTimeII = time;
-                    }
-                }
-                RaisePropertyChanged("OffsetTimeII");
-            }
-            get
-            {
-                return _offsetTimeII.ToString();
-            }
-        }
-        /// <summary>
-        /// 偏移时间 III
-        /// </summary>
-        private int _offsetTimeIII = 0;
-       
-        public string OffsetTimeIII
-        {
-            set
-            {
-                int time;
-                if (int.TryParse(value, out time))
-                {
-                    if ((time >= 0) && (time <= 65535))
-                    {
-                        _offsetTimeIII = time;
-                    }
-                }
-                RaisePropertyChanged("OffsetTimeIII");
-            }
-            get
-            {
-                return _offsetTimeIII.ToString();
-            }
-        }
-
-
-
-       
-
-
-         void ExecuteSynReadyCommand(string obj)
-        {
-            try
-            {
-
-                var data = new int[3];
-                int i = 0;
-                _circleSelectByte = (byte)(LoopIndexI-1);
-                if (LoopIndexI == 0)
-                {
-                    throw new ArgumentNullException("你没有选择任何回路!");
-                }
-
-               
-                if (LoopIndexII != 0)
-                {
-                    data[i++] = _offsetTimeI;
-                    _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexII - 1) << 2));
-
-                    if (LoopIndexIII != 0)
-                    {
-                        data[i++] = _offsetTimeII;
-                        _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexIII - 1) << 4));
-                    }                   
-                }
-                var byteArray = new byte[i  * 2];
-                for(int k = 0; k < i; k++)
-                {
-                    byteArray[2 * k] = (byte)(data[k] & 0x00FF);
-                    byteArray[2 * k + 1] = (byte)(data[k] >> 8);
-                }              
- 
-                var command = new byte[2 + 6];             
-                command[0] = (byte)CommandIdentify.SyncReadyClose;
-                command[1] = _circleSelectByte;
-                Array.Copy(byteArray, 0, command, 2, 2 * i);
-
-                //复位状态
-                modelServer.LogicalUI.GetNdoe(_macAddress).ResetState();//复位状态
-                modelServer.LogicalUI.GetNdoe(_macAddress).LastSendData = command;
-                //此处发送控制命令                     
-                modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, 2 + 2*i);  
-
-
-
-            }
-            catch(Exception ex)
-            {
-                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
-            }
-        }
-
-        #endregion
-
-      
         
     }
 }

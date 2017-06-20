@@ -52,6 +52,7 @@
     <Compile Include="DataItemSet\EnableControl.cs" />
     <Compile Include="DataItemSet\CommandDdentifyItem.cs" />
     <Compile Include="DataItemSet\IndicatorLight.cs" />
+    <Compile Include="DataItemSet\LoopChoice.cs" />
     <Compile Include="DataItemSet\NodeStatus.cs" />
     <Compile Include="DataItemSet\StatusBarMessage.cs" />
     <Compile Include="DataItemSet\PhaseChoice.cs" />

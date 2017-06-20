@@ -91,6 +91,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             get;
         }
 
+        public List<DefStationInformation> StationInformation;
+
 
         /// <summary>
         /// 多帧帧缓冲
@@ -122,7 +124,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 _multiFrameBuffer = new List<byte>();
                 _lastIndex = 0;
 
-                ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal);
+                StationInformation = new List<DefStationInformation>();
+
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacSynController, false, "同步控制器"));
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseA, false, "A相"));
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseB, false, "B相"));
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseC, false, "C相"));
+
+
+                ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal, StationInformation);
                 ControlNetServer.PollingService.ArrtributesArrived += PollingService_ArrtributesArrived;
                 ControlNetServer.PollingService.MultiFrameArrived += PollingService_MultiFrameArrived;
                 ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;

@@ -20,7 +20,10 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
 
         public byte LocalMac;
 
-        public List<DefStationInformation> StationInformation;
+        /// <summary>
+        /// 站信息列表
+        /// </summary>
+        private List<DefStationInformation> StationInformation;
 
         private CodeDictionary _codeDictionary;
 
@@ -51,16 +54,11 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         /// 异常处理委托
         /// </summary>
         private Action<Exception> ExceptionDelegate;
-        public DeviceNetServer(Func<byte[], bool> sendDelegate, Action<Exception> exceptionDelegate)
+        public DeviceNetServer(Func<byte[], bool> sendDelegate, Action<Exception> exceptionDelegate, List<DefStationInformation> stationList)
         {
             LocalMac = 0x02;
-            StationInformation = new List<DefStationInformation>();
-            
-            StationInformation.Add(new DefStationInformation(0x0D, false, "同步控制器"));
-            StationInformation.Add(new DefStationInformation(0x10, false, "A相"));
-            StationInformation.Add(new DefStationInformation(0x12, false, "B相"));
-            StationInformation.Add(new DefStationInformation(0x14, false, "C相"));
 
+            StationInformation = stationList;
 
             ExceptionDelegate = exceptionDelegate;
             PollingService = new StationPollingService(ExceptionDelegate);
