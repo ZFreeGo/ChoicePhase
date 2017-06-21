@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.PlatformModel.Communication;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 
 
@@ -44,7 +45,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
         }
 
         /// <summary>
-        /// 获取数据集合
+        /// 获取串口数据集合
         /// 
         /// </summary>
         /// <param name="ds"></param>
@@ -64,8 +65,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                     (int)productRow["Baud"],
                     (int)productRow["DataBit"],
                     (int)productRow["ParityBit"],
-                    (int)productRow["StopBit"]);
-
+                    (int)productRow["StopBit"]);                           
 
             }
             catch (Exception ex)
@@ -73,7 +73,58 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 throw ex;
             }
         }
+        /// <summary>
+        /// 获取配置参数集合
+        /// </summary>
+        public static void ReadLastConfigRecod()
+        {
+            try
+            {
+                var ds = ReadXml(CommonPath.CommonPortXmlPath, CommonPath.CommonPortXsdPath);
 
+                DataRow productRow = ds.Tables["ConfigParameter"].Rows[0];
+
+                NodeAttribute.EnabitSelect =(byte) (int)productRow["EnabitSelect"];
+                NodeAttribute.SynCloseActionOverTime = (int)productRow["SynCloseActionOverTime"];
+                NodeAttribute.CloseActionOverTime = (int)productRow["CloseActionOverTime"];
+                NodeAttribute.OpenActionOverTime = (byte)(int)productRow["OpenActionOverTime"];
+
+                NodeAttribute.ClosePowerOnTime = (byte)(int)productRow["ClosePowerOnTime"];
+                NodeAttribute.OpenPowerOnTime = (byte)(int)productRow["OpenPowerOnTime"];
+                NodeAttribute.WorkMode = (int)productRow["WorkMode"];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 存储配置参数集合
+        /// </summary>
+        public static void WriteLastConfigRecod()
+        {
+            try
+            {
+                var ds = ReadXml(CommonPath.CommonPortXmlPath, CommonPath.CommonPortXsdPath);
+
+                DataRow productRow = ds.Tables["ConfigParameter"].Rows[0];
+
+                productRow["EnabitSelect"] = (int)NodeAttribute.EnabitSelect;
+                productRow["SynCloseActionOverTime"] = (int)NodeAttribute.SynCloseActionOverTime;
+                productRow["CloseActionOverTime"]  = (int)NodeAttribute.CloseActionOverTime;
+                productRow["OpenActionOverTime"] = (int) NodeAttribute.OpenActionOverTime;
+
+                productRow["ClosePowerOnTime"]  = (int)NodeAttribute.ClosePowerOnTime;
+                productRow["OpenPowerOnTime"] = (int) NodeAttribute.OpenPowerOnTime;
+                productRow["WorkMode"]  = (int)NodeAttribute.WorkMode;
+
+                ds.WriteXml(CommonPath.CommonPortXmlPath); 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         /// <summary>        
         /// 保存命令
         /// </summary>

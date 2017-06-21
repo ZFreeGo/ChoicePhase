@@ -1,15 +1,52 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
     public class ConfigParameter : ObservableObject
     {
-       
+
+
+        public RelayCommand<string> OperateCommand { get; private set; }
+
+        private string _tips = "未修改";
+        public string Tips
+        {
+            get
+            {
+                return _tips;
+            }
+            set
+            {
+                _tips = value;
+                TipColor = "Red";
+                RaisePropertyChanged("Tips");
+            }
+        }
+        public string _tipColor = "Black";
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TipColor
+        {
+            get
+            {
+                return _tipColor;
+            }
+            set
+            {
+                _tipColor = value;
+                RaisePropertyChanged("TipColor");
+            }
+        }
+
+
         /// <summary>
         /// 使能bit bit0-同步控制器 bit1-A相 bit2-B相 bit3-C相
         /// </summary>
@@ -23,6 +60,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.EnabitSelect = value;
                 RaisePropertyChanged("EnabitSelect");
+                Tips = "值已改变";
             }
         }
 
@@ -42,8 +80,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 {
                     EnabitSelect = ClearBit(EnabitSelect, 0);
                 }
-
-
             }
         }
         public bool IsEnablePhaseA
@@ -116,6 +152,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.SynCloseActionOverTime = value;
                 RaisePropertyChanged("SynCloseActionOverTime");
+                Tips = "值已改变";
             }
         }
 
@@ -132,6 +169,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.OpenActionOverTime = value;
                 RaisePropertyChanged("OpenActionOverTime");
+                Tips = "值已改变";
             }
         }
         /// <summary>
@@ -147,6 +185,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.CloseActionOverTime = value;
                 RaisePropertyChanged("CloseActionOverTime");
+                Tips = "值已改变";
             }
         }
         
@@ -163,6 +202,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.ClosePowerOnTime = value;
                 RaisePropertyChanged("ClosePowerOnTime");
+                Tips = "值已改变";
             }
         }
         /// <summary>
@@ -178,6 +218,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.OpenPowerOnTime = value;
                 RaisePropertyChanged("OpenPowerOnTime");
+                Tips = "值已改变";
             }
         }
 
@@ -195,6 +236,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 NodeAttribute.WorkMode = value;
                 RaisePropertyChanged("WorkMode");
+                Tips = "值已改变";
             }
         }
 
@@ -218,6 +260,39 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         private byte ClearBit(byte value, byte seq)
         {
             return (byte)(value & (~(1 << seq)));
+        }
+
+        
+
+        private void ExecuteOperateCommand(string obj)
+        {
+            switch(obj)
+            {
+                case "Save":
+                    {
+                        XMLOperate.WriteLastConfigRecod();
+                        Tips = "保存设置";
+                        break;
+                    }
+                case "Read":
+                    {
+                        XMLOperate.ReadLastConfigRecod();
+                        RaisePropertyChanged("EnabitSelect");
+                        RaisePropertyChanged("SynCloseActionOverTime");
+                        RaisePropertyChanged("OpenActionOverTime");
+                        RaisePropertyChanged("CloseActionOverTime");
+                        RaisePropertyChanged("ClosePowerOnTime");
+                        RaisePropertyChanged("OpenPowerOnTime");
+                        RaisePropertyChanged("WorkMode");
+                        Tips = "重新载入设置";
+                        break;
+                    }
+            }
+        }
+
+        public ConfigParameter()
+        {
+            OperateCommand = new RelayCommand<string>(ExecuteOperateCommand);
         }
 
     }

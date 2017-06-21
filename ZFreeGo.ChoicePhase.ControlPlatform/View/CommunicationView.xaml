@@ -191,6 +191,13 @@
                                 <TextBox Margin="3" Text="{Binding OpenPowerOnTime}"></TextBox>
                             </StackPanel>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button  Padding="2" Margin="3"  HorizontalAlignment="Center"  
+                                 Command="{Binding OperateCommand}" CommandParameter="Read"  >重新载入</Button>
+                            <Button  Padding="2" Margin="3"  HorizontalAlignment="Center"  
+                                 Command="{Binding OperateCommand}" CommandParameter="Save"  >保存应用</Button>
+                            <TextBox Margin="3" IsReadOnly="True" Foreground="{Binding TipColor}" Text="{Binding Tips}"></TextBox>
+                        </StackPanel>
                     </StackPanel>                   
 
 

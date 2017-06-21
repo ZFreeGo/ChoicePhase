@@ -115,6 +115,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             {
                 _localAddr = 0x1A;
                 _laserCANAddr = 0xF1;
+                //读取配置文件
+                XMLOperate.ReadLastConfigRecod();
+
                 _monitorViewData = new MonitorViewData();
                 CommServer = new CommunicationServer();
                 CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;

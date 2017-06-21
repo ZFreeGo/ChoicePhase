@@ -304,8 +304,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
     }
 
 
-  
-
 
 
 }

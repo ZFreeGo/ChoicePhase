@@ -459,7 +459,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             if (ShowMessageBox("是否确认 三相合闸预制？", "三相合闸操作"))
                             {
                                 //默认为两个回路，50ms
-                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, 50 };
+                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, NodeAttribute.ClosePowerOnTime };
                                 SendCMD(NodeAttribute.MacPhaseA, command);
                                 Thread.Sleep(10);
                                 SendCMD(NodeAttribute.MacPhaseB, command);
@@ -489,7 +489,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "CloseAction":
                         {
                             //默认为两个回路，50ms
-                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, 50 };
+                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 0x03, NodeAttribute.ClosePowerOnTime };
                             SendCMD(NodeAttribute.MacPhaseA, command);
                             Thread.Sleep(10);
                             SendCMD(NodeAttribute.MacPhaseB, command);
@@ -541,7 +541,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             if (ShowMessageBox("是否确认 三相分闸预制？", "三相分闸操作"))
                             {
                                 //默认为两个回路，40ms
-                                var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)40 };
+                                var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)NodeAttribute.OpenPowerOnTime };
                                 SendCMD(NodeAttribute.MacPhaseA, command);
                                 Thread.Sleep(10);
                                 SendCMD(NodeAttribute.MacPhaseB, command);
@@ -568,7 +568,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "OpenAction":
                         {
                             //默认为两个回路，40ms
-                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)40 };
+                            var command = new byte[] { (byte)CommandIdentify.OpenAction, 0x03, (byte)NodeAttribute.OpenPowerOnTime };
                             SendCMD(NodeAttribute.MacPhaseA, command);
                             Thread.Sleep(10);
                             SendCMD(NodeAttribute.MacPhaseB, command);
