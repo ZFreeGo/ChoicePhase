@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.Modbus"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.Platform", "ZFreeGo.ChoicePhase.Platform\ZFreeGo.ChoicePhase.Platform.csproj", "{179D11F6-767A-40ED-BD97-A876B4018831}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.ControlPlatform", "ZFreeGo.ChoicePhase.ControlPlatform\ZFreeGo.ChoicePhase.ControlPlatform.csproj", "{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.PlatformModel", "ZFreeGo.ChoicePhase.PlatformModel\ZFreeGo.ChoicePhase.PlatformModel.csproj", "{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.TransportProtocol.ModBus", "ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj", "{201F117C-A205-4B77-92B3-08780A6AA754}"
@@ -18,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.Common.LogTrace", "ZFreeGo.Common.LogTrace\ZFreeGo.Common.LogTrace.csproj", "{B89398A0-0F99-4FB9-BF91-3E4D030B427D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.DeviceNet", "ZFreeGo.ChoicePhase.DeviceNet\ZFreeGo.ChoicePhase.DeviceNet.csproj", "{653FBEE0-BF21-4288-8C68-0D3D49D685F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F3E92B64-0B94-4B9B-A60F-59A62E0CB250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.ControlPlatform", "ZFreeGo.ChoicePhase.ControlPlatform\ZFreeGo.ChoicePhase.ControlPlatform.csproj", "{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +35,6 @@ Global
 		{179D11F6-767A-40ED-BD97-A876B4018831}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{179D11F6-767A-40ED-BD97-A876B4018831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{179D11F6-767A-40ED-BD97-A876B4018831}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +55,10 @@ Global
 		{653FBEE0-BF21-4288-8C68-0D3D49D685F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{653FBEE0-BF21-4288-8C68-0D3D49D685F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{653FBEE0-BF21-4288-8C68-0D3D49D685F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE5E1E74-7836-4775-AA89-6C4607DB7EA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

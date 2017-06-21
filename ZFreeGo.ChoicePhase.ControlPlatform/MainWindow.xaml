@@ -50,7 +50,7 @@
             <ToolBar DockPanel.Dock="Top" Height="40">
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
                     <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
+                        <Image Source="Pictures/config.ico"></Image>
                         <TextBlock  VerticalAlignment="Center">通讯配置</TextBlock>
                     </DockPanel>
                     
@@ -58,41 +58,22 @@
                 <Separator></Separator>
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="MonitorParameter">
                     <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
+                        <Image Source="Pictures/meter.ico"></Image>
                         <TextBlock  VerticalAlignment="Center">监控参数</TextBlock>
                     </DockPanel>
                 </Button>
                 <Separator></Separator>
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="RemoteControl">
                     <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
+                        <Image Source="Pictures/manual.ico"></Image>
                         <TextBlock VerticalAlignment="Center">开关操作</TextBlock>
                     </DockPanel>
                 </Button>
-                <Separator></Separator>
-                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
-                    <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
-                        <TextBlock VerticalAlignment="Center">系统配置</TextBlock>
-                    </DockPanel>                    
-                </Button>
-                <Separator></Separator>
-                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
-                    <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
-                        <TextBlock VerticalAlignment="Center">建立连接</TextBlock>
-                    </DockPanel>
-                </Button>
-                <Separator></Separator>
-                <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
-                    <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
-                        <TextBlock VerticalAlignment="Center">断开连接</TextBlock>
-                    </DockPanel>
-                </Button>
+                <Separator></Separator>                          
+                                
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SetpointParameter">
                     <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
+                        <Image Source="Pictures/set1.png"></Image>
                         <TextBlock VerticalAlignment="Center">定值参数</TextBlock>
                     </DockPanel>
                 </Button>

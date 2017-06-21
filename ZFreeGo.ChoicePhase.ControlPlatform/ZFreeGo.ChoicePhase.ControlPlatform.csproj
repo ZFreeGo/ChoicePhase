@@ -211,6 +211,20 @@
     <Resource Include="ICO\off1.png" />
     <Resource Include="ICO\on1.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\config.ico" />
+    <Resource Include="Pictures\config.png" />
+    <Resource Include="Pictures\le.ico" />
+    <Resource Include="Pictures\le.png" />
+    <Resource Include="Pictures\manual.ico" />
+    <Resource Include="Pictures\manual.png" />
+    <Resource Include="Pictures\meter.ico" />
+    <Resource Include="Pictures\meter.png" />
+    <Resource Include="Pictures\off1.png" />
+    <Resource Include="Pictures\red.png" />
+    <Resource Include="Pictures\set.png" />
+    <Resource Include="Pictures\set1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
