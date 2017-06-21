@@ -120,6 +120,39 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
         }
 
+        private static byte _closePowerOnTime = 50;
+        /// <summary>
+        /// 合闸通电时间
+        /// </summary>
+        public static byte ClosePowerOnTime
+        {
+            get
+            {
+                return _closePowerOnTime;
+            }
+            set
+            {
+                _closePowerOnTime = value;
+            }
+        }
+
+
+
+        private static byte _openPowerOnTime = 30;
+        /// <summary>
+        /// 分闸通电时间
+        /// </summary>
+        public static byte OpenPowerOnTime
+        {
+            get
+            {
+                return _openPowerOnTime;
+            }
+            set
+            {
+                _openPowerOnTime = value;
+            }
+        }
         /// <summary>
         /// 分闸时间
         /// </summary>
@@ -148,19 +181,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             {
                 return _closeActionOverTime;
             }
+            set
+            {
+                _closeActionOverTime = value;
+            }
         }
 
 
 
         private static int _openActionOverTime = 10000;
         /// <summary>
-        /// 合闸操作超时时间ms
+        ///分闸操作超时时间ms
         /// </summary>
         public static int OpenActionOverTime
         {
             get
             {
                 return _openActionOverTime;
+            }
+            set
+            {
+                _openActionOverTime = value;
             }
         }
 
@@ -174,6 +215,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             get
             {
                 return _synCloseActionOverTime;
+            }
+            set
+            {
+                _synCloseActionOverTime = value;
             }
         }
 
@@ -220,6 +265,40 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     }
             }
 
+        }
+
+
+        private static int _workMode = 0;
+        /// <summary>
+        /// 工作模式
+        /// </summary>
+        public static int WorkMode
+        {
+            get
+            {
+                return _workMode;
+            }
+            set
+            {
+                _workMode = value;
+            }
+        }
+
+
+        private static byte _enabitSelect = 0x0F;
+        /// <summary>
+        /// 使能bit bit0-同步控制器 bit1-A相 bit2-B相 bit3-C相
+        /// </summary>
+        static public byte EnabitSelect
+        {
+            get
+            {
+                return _enabitSelect;
+            }
+            set
+            {
+                _enabitSelect = value;
+            }
         }
 
     }

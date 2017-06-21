@@ -28,7 +28,7 @@
         <Grid Grid.Column="0"  Grid.Row="0"  Name="gridServer"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
        
                 
@@ -36,10 +36,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
-
             </Grid.ColumnDefinitions>
-
-            <TabControl Grid.Column="0" Grid.Row="0">
+            
+            <GroupBox Grid.Column="0" Grid.Row="0" Header="通讯设置">
+            <TabControl Margin="3" Padding="2">
+                
                 <TabItem Header="串口设置">
                     <StackPanel>
                         <StackPanel IsEnabled="{Binding OpenEnable}">
@@ -153,12 +154,53 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-           
-          
+            </GroupBox>
+
+            <GroupBox Grid.Column="0" Grid.Row="1" Header="参数设置">
+                <Grid  DataContext="{Binding NodeParameter}">
+                    <StackPanel>
+                        
+                        <StackPanel Margin="3" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Label Margin="3" >使能选择：</Label>
+                            <CheckBox Margin="3" IsChecked="{Binding IsEnableSyncontroller}" VerticalAlignment="Center">同步控制器</CheckBox>
+                            <CheckBox Margin="3" IsChecked="{Binding IsEnablePhaseA}" VerticalAlignment="Center">A相</CheckBox>
+                            <CheckBox Margin="3" IsChecked="{Binding IsEnablePhaseB}" VerticalAlignment="Center">B相</CheckBox>
+                            <CheckBox Margin="3" IsChecked="{Binding IsEnablePhaseC}" VerticalAlignment="Center">C相</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Margin="3">分闸操作超时时间/ms :</Label>
+                                <TextBox Margin="3" Text="{Binding OpenActionOverTime}"></TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Margin="3">合闸操作超时时间/ms :</Label>
+                                <TextBox Margin="3" Text="{Binding CloseActionOverTime}"></TextBox>
+                        </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Label Margin="3">同步合闸操作超时时间/ms :</Label>
+                            <TextBox Margin="3" Text="{Binding SynCloseActionOverTime}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Margin="3">合闸通电时间/ms :</Label>
+                                <TextBox Margin="3" Text="{Binding ClosePowerOnTime}"></TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Label Margin="3">分闸通电时间/ms :</Label>
+                                <TextBox Margin="3" Text="{Binding OpenPowerOnTime}"></TextBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>                   
 
 
-            
-            
+                </Grid>
+            </GroupBox>
+
+
+
+
+
         </Grid>
         <Grid Grid.Row="1" >
             <StackPanel Grid.Column="1" Grid.Row="0">             

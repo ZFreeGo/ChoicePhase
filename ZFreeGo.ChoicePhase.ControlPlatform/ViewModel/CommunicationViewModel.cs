@@ -42,6 +42,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             SendFrameCommand = new RelayCommand<string>(ExecuteSendFrameCommand);
 
             _commParameterSet = new SerialPortParameterSet();
+            _nodeParameter = new ConfigParameter();
         }
         private SerialPortParameterSet _commParameterSet;
 
@@ -61,6 +62,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
+
+        private  ConfigParameter _nodeParameter;
+        public  ConfigParameter NodeParameter
+        {
+            get
+            {
+                return _nodeParameter;
+            }
+            set
+            {
+                _nodeParameter = value;
+                RaisePropertyChanged("NodeParameter");
+            }
+
+        }
 
 
         /// <summary>
