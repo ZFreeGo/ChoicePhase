@@ -49,11 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunicationServer.cs" />
+    <Compile Include="Communication\SerialPortAttribute.cs" />
     <Compile Include="DataItemSet\EnableControl.cs" />
     <Compile Include="DataItemSet\CommandDdentifyItem.cs" />
     <Compile Include="DataItemSet\IndicatorLight.cs" />
     <Compile Include="DataItemSet\LoopChoice.cs" />
     <Compile Include="DataItemSet\NodeStatus.cs" />
+    <Compile Include="GetViewData\SerialPortParameterSet.cs" />
     <Compile Include="DataItemSet\StatusBarMessage.cs" />
     <Compile Include="DataItemSet\PhaseChoice.cs" />
     <Compile Include="GetViewData\LogicalPresentation.cs" />
@@ -65,7 +67,6 @@
     <Compile Include="DataItemSet\AttributeItem.cs" />
     <Compile Include="DataItemSet\SerialPortParamer.cs" />
     <Compile Include="GetViewData\MonitorViewData.cs" />
-    <Compile Include="GetViewData\SerialPortParameterItem.cs" />
     <Compile Include="GetViewData\SQLliteDatabase.cs" />
     <Compile Include="Helper\CommonPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

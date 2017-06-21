@@ -36,14 +36,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             }
         }
 
-        /// <summary>
-        /// 串口参数
-        /// </summary>
-        public SerialPortParameterItem SerialPortParameter
-        {
-            private set;
-            get;
-        }
+        ///// <summary>
+        ///// 串口参数
+        ///// </summary>
+        //public SerialPortParameterItem SerialPortParameter
+        //{
+        //    private set;
+        //    get;
+        //}
 
         private string linkMessage = "";
 
@@ -125,7 +125,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         {
              _commonServer = new SerialPortServer();
 
-                SerialPortParameter = new SerialPortParameterItem();
+                //SerialPortParameter = new SerialPortParameterItem();
 
                 DownAddress = 0xA1;
            

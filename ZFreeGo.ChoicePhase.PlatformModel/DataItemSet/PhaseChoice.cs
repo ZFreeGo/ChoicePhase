@@ -319,6 +319,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                     }
             
             }
+            if (PhaseItemI == null)
+            {
+                PhaseItemI = PhaseNull;
+            }
+            if (PhaseItemII == null)
+            {
+                PhaseItemII = PhaseNull;
+            }
+            if (PhaseItemIII == null)
+            {
+                PhaseItemIII = PhaseNull;
+            }
+
             RaisePropertyChanged("PhaseItemI");
             RaisePropertyChanged("PhaseItemII");
             RaisePropertyChanged("PhaseItemIII");            
@@ -617,7 +630,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
                 SynCommand = new RelayCommand<string>(ExecuteSynCommand);
 
-
+                PhaseItemI = PhaseNull;
                 UpdateAngleVisble();
             }
             catch(Exception ex)

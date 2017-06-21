@@ -41,7 +41,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-      
+        Dispatcher DispatcherShow; 
         /// <summary>
         /// Initializes a new instance of the ControlViewModel class.
         /// </summary>
@@ -57,7 +57,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              Messenger.Default.Register<string>(this, "ControlViewPassword", UpdatePassword);
 
              ExecuteLoadDataCommand();
-              
+             DispatcherShow = Dispatcher.CurrentDispatcher;
         }
 
       
@@ -717,7 +717,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             //Task.Factory.StartNew(errorAckChanged,
             //       new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
 
-            Dispatcher.CurrentDispatcher.Invoke(errorAckChanged);
+            if(Dispatcher.CurrentDispatcher == DispatcherShow)
+            {
+                Dispatcher.CurrentDispatcher.Invoke(errorAckChanged);
+            }
+            else
+            {
+                DispatcherShow.BeginInvoke(errorAckChanged);
+            }
+
         }
         /// <summary>
         /// 错误状态主动应答

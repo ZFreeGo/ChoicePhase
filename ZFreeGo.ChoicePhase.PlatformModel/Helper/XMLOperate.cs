@@ -49,7 +49,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
         /// <param name="ds"></param>
         /// <param name="typeEnum"></param>
         /// <returns></returns>
-        public  static ZFreeGo.Monitor.DASModel.GetViewData.SerialPortParameterItem.SerialPortAttribute ReadLastCommonRecod()
+        public  static ZFreeGo.ChoicePhase.PlatformModel.Communication.SerialPortAttribute ReadLastCommonRecod()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
 
                 DataRow productRow = ds.Tables["SerialPort"].Rows[0];
 
-                return new ZFreeGo.Monitor.DASModel.GetViewData.SerialPortParameterItem.SerialPortAttribute(
+                return new ZFreeGo.ChoicePhase.PlatformModel.Communication.SerialPortAttribute(
                     (int)productRow["CommonPort"],
                     (int)productRow["Baud"],
                     (int)productRow["DataBit"],

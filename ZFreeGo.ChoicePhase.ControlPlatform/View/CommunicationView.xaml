@@ -42,7 +42,8 @@
             <TabControl Grid.Column="0" Grid.Row="0">
                 <TabItem Header="串口设置">
                     <StackPanel>
-                        <Grid Name="commAGrid" IsEnabled="{Binding OpenEnable}">
+                        <StackPanel IsEnabled="{Binding OpenEnable}">
+                        <Grid Name="commAGrid"  DataContext="{Binding CommParameterSet}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"></ColumnDefinition>
                                 <ColumnDefinition Width="80"></ColumnDefinition>
@@ -113,6 +114,7 @@
                             </ComboBox>
 
                         </Grid>
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button  Padding="2" Margin="3"  HorizontalAlignment="Center"  
                                  Command="{Binding SerialCommand}" CommandParameter="OpeanSerial"  IsEnabled="{Binding OpenEnable}">打开串口</Button>

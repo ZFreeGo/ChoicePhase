@@ -40,6 +40,25 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             SerialCommand = new RelayCommand<string>(ExecuteSerialCommand);
             SendFrameCommand = new RelayCommand<string>(ExecuteSendFrameCommand);
+
+            _commParameterSet = new SerialPortParameterSet();
+        }
+        private SerialPortParameterSet _commParameterSet;
+
+        /// <summary>
+        /// 串口参数集合
+        /// </summary>
+        public SerialPortParameterSet CommParameterSet
+        {
+            get
+            {
+                return _commParameterSet;
+            }
+            set
+            {
+                _commParameterSet = value;
+                RaisePropertyChanged("CommParameterSet");
+            }
         }
 
 
@@ -66,32 +85,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             if (modelServer == null) //防止重复初始化
             {
                 modelServer = PlatformModelServer.GetServer();
-                serialPortParameter = modelServer.CommServer.SerialPortParameter;
+               
  
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
 
-
-                if (modelServer.CommServer.SerialPortParameter.LastRecord != null)
-                {
-                    SelectedIndexCommonPort = modelServer.CommServer.SerialPortParameter.GetIndex<string>(serialPortParameter.CommonPort, 
-                        modelServer.CommServer.SerialPortParameter.LastRecord.CommonPort);
-                    SelectedIndexBaud = modelServer.CommServer.SerialPortParameter.GetIndex<int>(serialPortParameter.Baud,
-                        modelServer.CommServer.SerialPortParameter.LastRecord.Baud);
-                    SelectedIndexDataBit = modelServer.CommServer.SerialPortParameter.GetIndex<int>(serialPortParameter.DataBit,
-                        modelServer.CommServer.SerialPortParameter.LastRecord.DataBit);
-                    SelectedIndexStopBit = modelServer.CommServer.SerialPortParameter.GetIndex<StopBits>(serialPortParameter.StopBit,
-                        modelServer.CommServer.SerialPortParameter.LastRecord.StopBit);
-                    SelectedIndexParity = modelServer.CommServer.SerialPortParameter.GetIndex<Parity>(serialPortParameter.ParityBit,
-                        modelServer.CommServer.SerialPortParameter.LastRecord.ParityBit);
-                }
-
-
-
-                RaisePropertyChanged("Baud");
-                RaisePropertyChanged("DataBit");
-                RaisePropertyChanged("ParityBit");
-                RaisePropertyChanged("StopBit");
-                RaisePropertyChanged("CommonPort");
             }
 
         }
@@ -102,141 +99,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #region 串口数据处理
 
-        private int selectedIndexCommonPort;
-
-        public int SelectedIndexCommonPort
-        {
-            get
-            {
-                return selectedIndexCommonPort;
-            }
-            set
-            {
-                selectedIndexCommonPort = value;
-                RaisePropertyChanged("SelectedIndexCommonPort");
-            }
-        }
-
-        private int selectedIndexBaud;
-        public int SelectedIndexBaud
-        {
-            get
-            {
-                return selectedIndexBaud;
-            }
-            set
-            {
-                selectedIndexBaud = value;
-                RaisePropertyChanged("SelectedIndexBaud");
-            }
-        }
-
-        private int selectedIndexDataBit;
-
-        public int SelectedIndexDataBit
-        {
-            get
-            {
-                return selectedIndexDataBit;
-            }
-            set
-            {
-                selectedIndexDataBit = value;
-                RaisePropertyChanged("SelectedIndexDataBit");
-            }
-        }
-
-
-        private int selectedIndexStopBit;
-        public int SelectedIndexStopBit
-        {
-            get
-            {
-                return selectedIndexStopBit;
-            }
-            set
-            {
-                selectedIndexStopBit = value;
-                RaisePropertyChanged("SelectedIndexStopBit");
-            }
-        }
-
-        private int selectedIndexParity;
-
-        public int SelectedIndexParity
-        {
-            get
-            {
-                return selectedIndexParity;
-            }
-            set
-            {
-                selectedIndexParity = value;
-                RaisePropertyChanged("SelectedIndexParity");
-            }
-        }
-
-        private SerialPortParameterItem serialPortParameter;
-        /// <summary>
-        /// 波特率
-        /// </summary>
-        public ObservableCollection<SerialPortParamer<int>> Baud
-        {
-            get
-            {
-                return serialPortParameter.Baud;
-            }
-           
-        }
-
-        /// <summary>
-        /// 数据位
-        /// </summary>
-        public ObservableCollection<SerialPortParamer<int>> DataBit
-        {
-            get
-            {
-                return serialPortParameter.DataBit;
-            }
-        }
-
-        /// <summary>
-        /// 校验位
-        /// </summary>
-        public ObservableCollection<SerialPortParamer<System.IO.Ports.Parity>> ParityBit
-        {
-            get
-            {
-                return serialPortParameter.ParityBit;
-            }
-        }
-
-        /// <summary>
-        /// 停止位
-        /// </summary>
-        public ObservableCollection<SerialPortParamer<System.IO.Ports.StopBits>> StopBit
-        {
-            get
-            {
-                return serialPortParameter.StopBit;
-            }
-        }
-        /// <summary>
-        /// 串口号
-        /// </summary>
-        public ObservableCollection<SerialPortParamer<String>> CommonPort
-        {
-            get
-            {
-                return serialPortParameter.CommonPort;
-            }
-        }
-        
         public bool OpenEnable
         {
             get
             {
-                if ( modelServer.CommServer != null)
+                if (modelServer.CommServer != null)
                 {
                     return !modelServer.CommServer.CommonServer.CommState;
                 }
@@ -244,8 +111,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     return true;
                 }
-                
-            }            
+
+            }
         }
         public bool CloseEnable
         {
@@ -262,6 +129,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             }
         }
+        
+        
         public RelayCommand<string> SerialCommand { get; private set; }
 
         public void ExecuteSerialCommand(string arg)
@@ -272,8 +141,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     case "OpeanSerial":
                         {
-                            modelServer.CommServer.CommonServer.Open(CommonPort[SelectedIndexCommonPort].Paramer, Baud[SelectedIndexBaud].Paramer, DataBit[SelectedIndexDataBit].Paramer,
-                                ParityBit[SelectedIndexParity].Paramer, StopBit[SelectedIndexStopBit].Paramer);
+                            var select = CommParameterSet.GetSelectedPortAttribute();
+                            modelServer.CommServer.CommonServer.Open(select.CommonPort, select.Baud, select.DataBit,
+                                select.ParityBit, select.StopBit);
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
                             modelServer.LogicalUI.StatusBar.SetCom(true);
