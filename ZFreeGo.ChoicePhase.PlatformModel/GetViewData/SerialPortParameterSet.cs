@@ -182,6 +182,13 @@ namespace ZFreeGo.Monitor.DASModel.GetViewData
            }
            return 0;
         }
+        /// <summary>
+        /// 保存最新的串口记录
+        /// </summary>
+        public void SaveLastPortRecod()
+        {
+            XMLOperate.WriteLastPortRecod(GetSelectedPortAttribute());
+        }
 
         
 
@@ -230,7 +237,7 @@ namespace ZFreeGo.Monitor.DASModel.GetViewData
                     CommonPort.Add(new SerialPortParamer<string>(s));
                 }
 
-                LastRecord = XMLOperate.ReadLastCommonRecod();
+                LastRecord = XMLOperate.ReadLastPortRecod();
 
                 if (LastRecord != null)
                 {
@@ -244,80 +251,16 @@ namespace ZFreeGo.Monitor.DASModel.GetViewData
                         LastRecord.StopBit);
                     SelectedIndexParity = GetIndex<Parity>(ParityBit,
                         LastRecord.ParityBit);
-
-                    //RaisePropertyChanged("Baud");
-                    //RaisePropertyChanged("DataBit");
-                    //RaisePropertyChanged("ParityBit");
-                    //RaisePropertyChanged("StopBit");
-                    //RaisePropertyChanged("CommonPort");
+                  
                 }
 
             }
             catch(Exception ex)
             {
-
                 ZFreeGo.Common.LogTrace.CLog.LogError(ex.StackTrace);
             }
         }
 
-
-
-
-
-        //private SerialPortParameterItem serialPortParameter;
-        ///// <summary>
-        ///// 波特率
-        ///// </summary>
-        //public ObservableCollection<SerialPortParamer<int>> Baud
-        //{
-        //    get
-        //    {
-        //        return Baud;
-        //    }
-
-        //}
-
-        ///// <summary>
-        ///// 数据位
-        ///// </summary>
-        //public ObservableCollection<SerialPortParamer<int>> DataBit
-        //{
-        //    get
-        //    {
-        //        return DataBit;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 校验位
-        ///// </summary>
-        //public ObservableCollection<SerialPortParamer<System.IO.Ports.Parity>> ParityBit
-        //{
-        //    get
-        //    {
-        //        return ParityBit;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// 停止位
-        ///// </summary>
-        //public ObservableCollection<SerialPortParamer<System.IO.Ports.StopBits>> StopBit
-        //{
-        //    get
-        //    {
-        //        return StopBit;
-        //    }
-        //}
-        ///// <summary>
-        ///// 串口号
-        ///// </summary>
-        //public ObservableCollection<SerialPortParamer<String>> CommonPort
-        //{
-        //    get
-        //    {
-        //        return CommonPort;
-        //    }
-        //}
+       
     }
 }

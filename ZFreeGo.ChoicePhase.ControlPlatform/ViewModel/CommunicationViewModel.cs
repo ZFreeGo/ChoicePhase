@@ -147,7 +147,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             RaisePropertyChanged("OpenEnable");
                             RaisePropertyChanged("CloseEnable");
                             modelServer.LogicalUI.StatusBar.SetCom(true);
-                            modelServer.ControlNetServer.RestartLinkServer();                           
+                            modelServer.ControlNetServer.RestartLinkServer();
+                            CommParameterSet.SaveLastPortRecod();
                             break;
                         }
                     case "CloseSerial":
@@ -158,6 +159,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             modelServer.LogicalUI.StatusBar.SetCom(false);
                             modelServer.ControlNetServer.StopLinkServer();
                             modelServer.LogicalUI.StatusBar.CloseAll();//关闭所有状态显示
+
+                           
                             break;
                         }
               

@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ZFreeGo.ChoicePhase.PlatformModel.Communication;
 
 
 
@@ -49,7 +50,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
         /// <param name="ds"></param>
         /// <param name="typeEnum"></param>
         /// <returns></returns>
-        public  static ZFreeGo.ChoicePhase.PlatformModel.Communication.SerialPortAttribute ReadLastCommonRecod()
+        public  static SerialPortAttribute ReadLastPortRecod()
         {
             try
             {
@@ -73,53 +74,35 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
             }
         }
 
-        //public void  UpdateTable(DataSet ds, DataTypeEnum typeEnum, object dataObserver)
-        //{
-        //    try
-        //    {
+        /// <summary>        
+        /// 保存命令
+        /// </summary>
+        /// <param name="ds"></param>
+        /// <param name="typeEnum"></param>
+        /// <returns></returns>
+        public static void WriteLastPortRecod(SerialPortAttribute attribute)
+        {
+            try
+            {
+                var ds = ReadXml(CommonPath.CommonPortXmlPath, CommonPath.CommonPortXsdPath);
+
+                ds.Tables["SerialPort"].Rows.Clear();
+
+                var productRow = ds.Tables["SerialPort"].NewRow();
                
-        //        switch (typeEnum)
-        //        {
-        //            case DataTypeEnum.Telesignalisation:
-        //                {
-        //                    ds.Tables["Telesignalisation"].Rows.Clear();
-        //                    var datas = dataObserver as ObservableCollection<Telesignalisation>;
-        //                    foreach (var m in datas)
-        //                    {
-        //                        var productRow = ds.Tables["Telesignalisation"].NewRow();
-        //                        productRow["InternalID"] = m.InternalID;
-        //                        productRow["TelesignalisationName"] = m.TelesignalisationName;
-        //                        productRow["TelesignalisationID"] = m.TelesignalisationID;
-        //                        productRow["TelesignalisationValue"] = m.TelesignalisationResult;
-        //                        productRow["IsNot"] = m.IsNot;
-        //                        productRow["Date"] = m.Date;
-        //                        productRow["Comment"] = m.Comment;
-        //                        productRow["StateA"] = m.StateA;
-        //                        productRow["StateB"] = m.StateB;
-        //                        ds.Tables["Telesignalisation"].Rows.Add(productRow);
-        //                    }
-                           
+                productRow["CommonPort"] = attribute.CommonPortNum;
+                productRow["Baud"]  = attribute.Baud;
+                productRow["DataBit"] = attribute.DataBit;
+                productRow["ParityBit"] = attribute.ParityBitMark;
+                productRow["StopBit"] = attribute.StopBitMark;
+                ds.Tables["SerialPort"].Rows.Add(productRow);
+                ds.WriteXml(CommonPath.CommonPortXmlPath);               
 
-                   
-
-        //                    break;
-        //                }
-        //            default:
-        //                {
-        //                    throw new ArgumentOutOfRangeException("所使用的枚举值不在范围之内!");
-        //                }
-        //        }
-
-                
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-       
-
-        
-
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

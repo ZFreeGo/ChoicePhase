@@ -24782,3 +24782,27 @@ LogTrace Warning: 0 :     [2017年6月21日8:02:29]: 串口接收进程::正在�
 LogTrace Warning: 0 :     [2017年6月21日8:02:29]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年6月21日8:04:06]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年6月21日8:04:06]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日8:09:14]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日8:09:14]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:47:13]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:47:13]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:52:43]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:52:43]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:52:50]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:52:50]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:53:18]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:53:18]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:53:29]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:53:30]: DeviceNet::正在中止线程。
+LogTrace Error: 0 :       [2017年6月21日9:53:47]:    在 ZFreeGo.ChoicePhase.PlatformModel.Helper.XMLOperate.ReadLastPortRecod() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\Helper\XMLOperate.cs:行号 73
+   在 ZFreeGo.Monitor.DASModel.GetViewData.SerialPortParameterSet..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\SerialPortParameterSet.cs:行号 240
+LogTrace Warning: 0 :     [2017年6月21日9:53:53]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:53:53]: DeviceNet::正在中止线程。
+LogTrace Error: 0 :       [2017年6月21日9:54:05]:    在 ZFreeGo.ChoicePhase.PlatformModel.Helper.XMLOperate.ReadLastPortRecod() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\Helper\XMLOperate.cs:行号 73
+   在 ZFreeGo.Monitor.DASModel.GetViewData.SerialPortParameterSet..ctor() 位置 j:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\GetViewData\SerialPortParameterSet.cs:行号 240
+LogTrace Warning: 0 :     [2017年6月21日9:54:10]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:54:11]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:57:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:57:44]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:59:53]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月21日9:59:53]: DeviceNet::正在中止线程。

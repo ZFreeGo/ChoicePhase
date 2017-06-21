@@ -12,12 +12,37 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
     public class SerialPortAttribute
     {
         /// <summary>
+        /// 公共串口号
+        /// </summary>
+        private int _commonPortNum;
+        /// <summary>
         /// 串口号
         /// </summary>
         public string CommonPort
         {
-            get;
-            set;
+            get
+            {
+                return "COM" + _commonPortNum.ToString();
+            }
+
+            set
+            {
+                var num = value.ToUpper().Remove(0, 3);
+                int.TryParse(num, out _commonPortNum);
+                     
+            }
+        }
+
+        public int CommonPortNum
+        {
+            get
+            {
+                return _commonPortNum;
+            }
+            set
+            {
+                _commonPortNum = value;
+            }
         }
 
 
@@ -49,6 +74,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
             get;
             set;
         }
+
+        public int ParityBitMark
+        {
+            get
+            {
+                return GetParityIndex(ParityBit);
+            }
+        }
+
         /// <summary>
         /// 停止位
         /// </summary>
@@ -57,7 +91,154 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
             get;
             set;
         }
+        /// <summary>
+        /// 停止位索引mark
+        /// </summary>
+        public int StopBitMark
+        {
+            get
+            {
+                return GetStopBitIndex(StopBit);
+            }
+        }
 
+        /// <summary>
+        /// 根据代号Mark获取就bit
+        /// </summary>
+        /// <param name="parityBit"></param>
+        /// <returns></returns>
+        private Parity GetParityBit(int parityIndex)
+        {
+            switch (parityIndex)
+            {
+                case 0:
+                    {
+                        return Parity.None;                       
+                    }
+                case 1:
+                    {
+                        return Parity.Odd;                       
+                    }
+                case 2:
+                    {
+                        return Parity.Even;                        
+                    }
+                case 3:
+                    {
+                        return Parity.Space;                        
+                    }
+                case 5:
+                    {
+                        return Parity.Mark;                       
+                    }
+                default:
+                    {
+                        return Parity.None; 
+                    }
+            }
+        }
+        /// <summary>
+        /// 根据ParityBit获取索引
+        /// </summary>
+        /// <param name="parityBit"></param>
+        /// <returns></returns>
+        private int GetParityIndex(Parity parityBit)
+        {
+            switch (parityBit)
+            {
+                case Parity.None:
+                    {
+                        return 0;
+                    }
+                case Parity.Odd:
+                    {
+                        return 1;
+                    }
+                case Parity.Even:
+                    {
+                        return 2;
+                    }
+                case Parity.Space:
+                    {
+                        return 3;
+                    }
+                case Parity.Mark:
+                    {
+                        return 4;
+                    }
+                default:
+                    {
+                        return 0;
+                    }
+            }
+        }
+        /// <summary>
+        /// 根据索引mark获取StopBits
+        /// </summary>
+        /// <param name="stopIndex"></param>
+        /// <returns></returns>
+        private StopBits GetStopBit(int stopIndex)
+        {
+            switch (stopIndex)
+            {
+
+                case 0:
+                    {
+                        return  StopBits.None;                       
+                    }
+
+                case 1:
+                    {
+                        return  StopBits.One;                        
+                    }
+                case 2:
+                    {
+                        return  StopBits.Two;                       
+                    }
+                case 3:
+                    {
+                        return  StopBits.OnePointFive;                      
+                    }
+                default:
+                    {
+                        return  StopBits.One;                       
+                    }
+
+            }
+        }
+        /// <summary>
+        /// 根据停止位获取索引
+        /// </summary>
+        /// <param name="stopBit"></param>
+        /// <returns></returns>
+        private int  GetStopBitIndex(StopBits stopBit)
+        {
+            switch (stopBit)
+            {
+
+                case StopBits.None:
+                    {
+                        return 0;
+                    }
+
+                case StopBits.One:
+                    {
+                        return 1;
+                    }
+                case StopBits.Two:
+                    {
+                        return 2;
+                    }
+                case StopBits.OnePointFive:
+                    {
+                        return 3;
+                    }
+                default:
+                    {
+                        return 0;
+                    }
+            }
+        }
         /// <summary>
         /// 串口属性初始化
         /// </summary>
@@ -70,6 +251,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
         {
 
             string comstr = "COM" + comNum.ToString();
+            
+
             var ports = SerialPort.GetPortNames();
             bool isExist = false;
             foreach (var m in ports)
@@ -81,7 +264,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
             }
             if (!isExist)
             {
-                throw new ArgumentNullException("指定的串口号，不存在");
+                //throw new ArgumentNullException("指定的串口号，不存在");
+                if (ports.Length != 0)
+                {
+                   comstr = ports[0];
+                }
+                
             }
             CommonPort = comstr;
 
