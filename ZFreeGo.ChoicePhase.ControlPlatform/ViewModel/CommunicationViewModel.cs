@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using ZFreeGo.ChoicePhase.Modbus;
 using System.IO.Ports;
 using System.Windows.Media;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
@@ -43,6 +44,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             _commParameterSet = new SerialPortParameterSet();
             _nodeParameter = new ConfigParameter();
+            _nodeParameter.PropertyChanged += _nodeParameter_PropertyChanged;
+        }
+
+        void _nodeParameter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "EnabitSelect")
+            {
+                modelServer.StationInformation[NodeAttribute.IndexPhaseA].Enable = _nodeParameter.IsEnablePhaseA;
+
+                modelServer.StationInformation[NodeAttribute.IndexPhaseB].Enable = _nodeParameter.IsEnablePhaseB;
+                modelServer.StationInformation[NodeAttribute.IndexPhaseC].Enable = _nodeParameter.IsEnablePhaseC;
+                modelServer.StationInformation[NodeAttribute.IndexSynController].Enable
+                    = _nodeParameter.IsEnableSyncontroller;
+            }
+
         }
         private SerialPortParameterSet _commParameterSet;
 

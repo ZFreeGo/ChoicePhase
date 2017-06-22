@@ -55,6 +55,7 @@
     <Compile Include="DataItemSet\CommandDdentifyItem.cs" />
     <Compile Include="DataItemSet\IndicatorLight.cs" />
     <Compile Include="DataItemSet\LoopChoice.cs" />
+    <Compile Include="DataItemSet\LoopTest.cs" />
     <Compile Include="DataItemSet\NodeStatus.cs" />
     <Compile Include="GetViewData\SerialPortParameterSet.cs" />
     <Compile Include="DataItemSet\StatusBarMessage.cs" />

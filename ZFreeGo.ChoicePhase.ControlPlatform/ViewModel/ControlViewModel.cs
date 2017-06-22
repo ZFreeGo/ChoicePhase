@@ -14,7 +14,7 @@ using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 using ZFreeGo.Monitor.AutoStudio.Secure;
-
+using System.Timers;
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
     /// <summary>
@@ -58,7 +58,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
              ExecuteLoadDataCommand();
              DispatcherShow = Dispatcher.CurrentDispatcher;
+
+             _testParameter = new LoopTest();
+             LoopTestCommand = new RelayCommand<string>(ExecuteLoopTestCommand);
+
+             
         }
+
+      
 
       
 
@@ -88,8 +95,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                 _actionLoopChoice.ExecuteOpearateCommandDelegate = ExecuteOperateCommand;
 
+                ControlCollect.PropertyChanged += ControlCollect_PropertyChanged;
+
             }           
         }
+
 
 
         /// <summary>
@@ -102,7 +112,221 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return modelServer.LogicalUI.IndicatorLightABC;
             }
         }
-     
+        #region 测试
+        private LoopTest _testParameter;
+
+        public LoopTest TestParameter
+        {
+            get
+            {
+                return _testParameter;
+            }
+            set
+            {
+                _testParameter = value;
+                RaisePropertyChanged("TestParameter");
+            }
+        }
+        private bool _enableStart = true;
+
+        public bool EnableStart
+        {
+            get
+            {
+                return _enableStart;
+            }
+            set
+            {
+                _enableStart = value;
+                RaisePropertyChanged("EnableStart");
+            }
+        }
+
+        private bool _enableStop = false;
+
+        public bool EnableStop
+        {
+            get
+            {
+                return _enableStop;
+            }
+            set
+            {
+                _enableStop = value;
+                RaisePropertyChanged("EnableStop");
+            }
+        }
+        
+        /// <summary>
+        /// 循环测试标志
+        /// </summary>
+        private bool _loopTestFlag = false;
+        private bool _loopActionFlag = true;//false-进行分组 true--进行合闸
+
+
+        void CloseLoopTime()
+        {
+            if (LoopTime != null)
+            {
+                LoopTime.Enabled = false;
+                LoopTime.Elapsed -= LoopTestAction_Elapsed;
+                LoopTime.Stop();
+                LoopTime.Close();
+                LoopTime.Dispose();
+            }
+        }
+        void ReStartTimer(int time)
+        {
+            LoopTime = new System.Timers.Timer(time);
+            LoopTime.Elapsed += LoopTestAction_Elapsed;
+            LoopTime.AutoReset = false;
+            LoopTime.Start();
+            EnableStart = false;
+            EnableStop = true;
+        }
+
+
+        /// <summary>
+        /// 控制合集使能按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ControlCollect_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (_loopTestFlag)
+            {
+                switch (e.PropertyName)
+                {
+                    case "CloseAction"://合闸执行使能
+                        {
+                            ExecuteUserReadyActionCommand("CloseAction");
+
+                            break;
+                        }
+                    case "OpenAction":
+                        {
+                            ExecuteUserReadyActionCommand("OpenAction");
+                            TestParameter.CurrentCount++;
+                           
+
+
+                            break;
+                        }
+                  
+                }
+            }
+        }
+        /// <summary>
+        /// 安全检测命令
+        /// </summary>
+        public RelayCommand<String> LoopTestCommand { get; private set; }
+
+
+        private void ExecuteLoopTestCommand(string obj)
+        {
+            try
+            {
+                switch (obj)
+                {
+                    case "Start":
+                        {
+                           // OverTimeTimer
+                           // TimerCallback time = ;
+                            if (ControlCollect.CloseReady)
+                            {                               
+                                _loopTestFlag = true;
+                                _loopActionFlag = true;
+
+                                ReStartTimer((int)TestParameter.CoTime);
+                                TestParameter.CurrentCount = 0;
+                                TestParameter.Tips = "启动循环";
+
+                                EnableStart = false;
+                                EnableStop = true;
+                            }
+                            else
+                            {
+                                TestParameter.Tips = "总合闸预制未使能";
+
+                            }
+                            break;
+                        }
+                    case "Stop":
+                        {
+                            _loopTestFlag = false;
+                            CloseLoopTime();
+                            EnableStart = true;
+                            EnableStop = false;
+                            break;
+                        }
+                }
+            }
+                    catch(Exception ex)
+            {
+                         Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+                    }
+        }
+
+
+        private void LoopTestAction_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (_loopTestFlag)//是否处于测试模式
+            {
+                if (TestParameter.CurrentCount > TestParameter.SetCount)
+                {
+                    _loopTestFlag = false;
+                    CloseLoopTime();
+                    EnableStart = true;
+                    EnableStop = false;
+                    return;
+
+                }
+
+                //合闸
+                if(_loopActionFlag )
+                {
+                    if (ControlCollect.CloseReady)
+                    {
+                       
+                        ExecuteUserReadyActionCommand("CloseReady");
+                        ReStartTimer((int)TestParameter.OcTime);
+                    }
+                    else
+                    {
+                        TestParameter.Tips = "总合闸预制未使能";
+                    }
+                }
+                else
+                {
+                    if (ControlCollect.OpenReady)
+                    {
+
+                        ExecuteUserReadyActionCommand("OpenReady");
+                        ReStartTimer((int)TestParameter.CoTime);
+                    }
+                    else
+                    {
+                        TestParameter.Tips = "总合闸预制未使能";
+                    }
+                }
+            }
+            else
+            {
+                CloseLoopTime();
+            }
+
+        }
+
+
+
+
+        /// <summary>
+        /// 循环定时器
+        /// </summary>
+        System.Timers.Timer LoopTime;
+
+        #endregion
+
 
         /// <summary>
         /// 同步相角选择

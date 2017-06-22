@@ -357,9 +357,29 @@
                            
                         </StackPanel>
                     </StackPanel>
-             
-                    
-            </StackPanel>
+                    <GroupBox Header="合分闸循环控制">
+                        <StackPanel >
+                            <StackPanel Orientation="Horizontal" DataContext="{Binding TestParameter}" IsEnabled="{Binding EnableChoice}">
+                                <Label>C-O时间/S :</Label>
+                                <TextBox MinWidth="60" Margin="3" Text="{Binding CoTime}"></TextBox>
+                                <Label>O-C时间/S :</Label>
+                                <TextBox MinWidth="60" Margin="3" Text="{Binding OcTime}" ></TextBox>
+                                <Label>设定次数 :</Label>
+                                <TextBox MinWidth="60" Margin="3" Text="{Binding SetCount}" ></TextBox>
+                                <Label>当前次数:</Label>
+                                <TextBox MinWidth="60" Margin="3" Text="{Binding CurrentCount}" IsReadOnly="True"></TextBox>
+                                <Label>Tips:</Label>
+                                <TextBox MinWidth="60" Margin="3" Text="{Binding Tips}" IsReadOnly="True"></TextBox>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal">
+                            <Button Margin="30,3,3,3" Command="{Binding LoopTestCommand}" CommandParameter="Start" IsEnabled="{Binding EnableStart}">启动循环</Button>
+                            <Button Margin="30,3,3,3" Command="{Binding LoopTestCommand}" CommandParameter="Stop" IsEnabled="{Binding EnableStop}">停止循环</Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                </StackPanel>
 
 
             </GroupBox >
@@ -443,7 +463,7 @@
 
                             </StackPanel>
                             </GroupBox>
-                       
+                      
                     </StackPanel>
             </GroupBox>
             </Border>

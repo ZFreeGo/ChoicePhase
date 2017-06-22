@@ -24867,3 +24867,13 @@ LogTrace Warning: 0 :     [2017年6月22日10:02:58]: DeviceNet::正在中止线
 LogTrace Warning: 0 :     [2017年6月22日11:22:03]: 接收超时，移除第一个重新开始判断。
 LogTrace Warning: 0 :     [2017年6月22日16:45:33]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年6月22日16:45:34]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日17:07:08]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日17:07:09]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日17:08:02]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日17:08:02]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日18:49:08]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日18:49:08]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日18:50:05]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日18:50:05]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日19:02:56]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年6月22日19:02:56]: DeviceNet::正在中止线程。
