@@ -87,7 +87,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 NodeAttribute.EnabitSelect =(byte) (int)productRow["EnabitSelect"];
                 NodeAttribute.SynCloseActionOverTime = (int)productRow["SynCloseActionOverTime"];
                 NodeAttribute.CloseActionOverTime = (int)productRow["CloseActionOverTime"];
-                NodeAttribute.OpenActionOverTime = (byte)(int)productRow["OpenActionOverTime"];
+                NodeAttribute.OpenActionOverTime = (int)productRow["OpenActionOverTime"];
 
                 NodeAttribute.ClosePowerOnTime = (byte)(int)productRow["ClosePowerOnTime"];
                 NodeAttribute.OpenPowerOnTime = (byte)(int)productRow["OpenPowerOnTime"];

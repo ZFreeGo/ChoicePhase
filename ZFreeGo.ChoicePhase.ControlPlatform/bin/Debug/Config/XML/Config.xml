@@ -8,9 +8,9 @@
     <StopBit>1</StopBit>
   </SerialPort>
   <ConfigParameter>
-    <EnabitSelect>7</EnabitSelect>
+    <EnabitSelect>5</EnabitSelect>
     <SynCloseActionOverTime>10000</SynCloseActionOverTime>
-    <OpenActionOverTime>16</OpenActionOverTime>
+    <OpenActionOverTime>1000</OpenActionOverTime>
     <CloseActionOverTime>10000</CloseActionOverTime>
     <ClosePowerOnTime>50</ClosePowerOnTime>
     <OpenPowerOnTime>38</OpenPowerOnTime>
