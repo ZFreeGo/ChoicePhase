@@ -1,19 +1,19 @@
 <?xml version="1.0" standalone="yes"?>
 <NewDataSet>
   <SerialPort>
-    <CommonPort>35</CommonPort>
+    <CommonPort>5</CommonPort>
     <Baud>56000</Baud>
     <DataBit>8</DataBit>
     <ParityBit>0</ParityBit>
     <StopBit>1</StopBit>
   </SerialPort>
   <ConfigParameter>
-    <EnabitSelect>5</EnabitSelect>
+    <EnabitSelect>14</EnabitSelect>
     <SynCloseActionOverTime>10000</SynCloseActionOverTime>
-    <OpenActionOverTime>1000</OpenActionOverTime>
+    <OpenActionOverTime>10000</OpenActionOverTime>
     <CloseActionOverTime>10000</CloseActionOverTime>
-    <ClosePowerOnTime>50</ClosePowerOnTime>
-    <OpenPowerOnTime>38</OpenPowerOnTime>
+    <ClosePowerOnTime>60</ClosePowerOnTime>
+    <OpenPowerOnTime>25</OpenPowerOnTime>
     <WorkMode>40</WorkMode>
   </ConfigParameter>
 </NewDataSet>

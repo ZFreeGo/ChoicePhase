@@ -10,12 +10,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
     /// </summary>
     public class LoopTest : ObservableObject
     {
-        private uint _coTime = 10;
+        private int _coTime = 10;
 
         /// <summary>
         /// 合分时间间隔/s
         /// </summary>
-        public uint CoTime
+        public int CoTime
         {
             get
             {
@@ -23,17 +23,29 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             set
             {
-                _coTime = value;
-                RaisePropertyChanged("CoTime");
+                if (value >= 5)
+                {
+                    _coTime = value;
+                    RaisePropertyChanged("CoTime");
+                }
             }
         }
 
-        private uint _ocTime = 10;
+        public int CoMs
+        {
+            get
+            {
+                return CoTime * 1000;
+            }
+        }
+
+
+        private int _ocTime = 10;
 
         /// <summary>
         /// 分合时间间隔/s
         /// </summary>
-        public uint OcTime
+        public int OcTime
         {
             get
             {
@@ -41,10 +53,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             set
             {
-                _ocTime = value;
-                RaisePropertyChanged("OcTime");
+                if (value >= 5)
+                {
+                    _ocTime = value;
+                    RaisePropertyChanged("OcTime");
+                }
             }
         }
+
+        public int OcMs
+        {
+            get
+            {
+                return OcTime * 1000;
+            }
+        }
+
 
         private uint _setCount = 1000;
         /// <summary>

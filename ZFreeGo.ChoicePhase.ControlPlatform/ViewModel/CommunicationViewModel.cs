@@ -42,6 +42,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             SerialCommand = new RelayCommand<string>(ExecuteSerialCommand);
             SendFrameCommand = new RelayCommand<string>(ExecuteSendFrameCommand);
 
+            ExecuteLoadDataCommand();
             _commParameterSet = new SerialPortParameterSet();
             _nodeParameter = new ConfigParameter();
             _nodeParameter.PropertyChanged += _nodeParameter_PropertyChanged;

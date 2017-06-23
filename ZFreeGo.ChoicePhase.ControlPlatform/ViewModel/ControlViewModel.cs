@@ -186,6 +186,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
 
+
+        
         /// <summary>
         /// 控制合集使能按钮
         /// </summary>
@@ -193,21 +195,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <param name="e"></param>
         void ControlCollect_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (_loopTestFlag)
+            if (_loopTestFlag && ExecuteFinished)
             {
                 switch (e.PropertyName)
                 {
                     case "CloseAction"://合闸执行使能
                         {
                             ExecuteUserReadyActionCommand("CloseAction");
-
+                            ExecuteFinished = false;
                             break;
                         }
                     case "OpenAction":
                         {
                             ExecuteUserReadyActionCommand("OpenAction");
                             TestParameter.CurrentCount++;
-                           
+                            ExecuteFinished = false;
 
 
                             break;
@@ -237,10 +239,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 _loopTestFlag = true;
                                 _loopActionFlag = true;
 
-                                ReStartTimer((int)TestParameter.CoTime);
+                                ReStartTimer(TestParameter.CoMs);
                                 TestParameter.CurrentCount = 0;
                                 TestParameter.Tips = "启动循环";
-
+                                ExecuteFinished = false;
                                 EnableStart = false;
                                 EnableStop = true;
                             }
@@ -257,6 +259,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             CloseLoopTime();
                             EnableStart = true;
                             EnableStop = false;
+                            ExecuteFinished = false;
                             break;
                         }
                 }
@@ -267,7 +270,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     }
         }
 
-
+        private bool ExecuteFinished = false;
         private void LoopTestAction_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (_loopTestFlag)//是否处于测试模式
@@ -289,24 +292,37 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     {
                        
                         ExecuteUserReadyActionCommand("CloseReady");
-                        ReStartTimer((int)TestParameter.OcTime);
+                        ExecuteFinished = true;
+                        _loopActionFlag = false;
+                        ReStartTimer(TestParameter.OcMs);
                     }
                     else
                     {
                         TestParameter.Tips = "总合闸预制未使能";
+                        _loopTestFlag = false;
+                        CloseLoopTime();
+                        EnableStart = true;
+                        EnableStop = false;
+                        ExecuteFinished = false;
                     }
                 }
                 else
                 {
                     if (ControlCollect.OpenReady)
-                    {
-
+                    {                         
                         ExecuteUserReadyActionCommand("OpenReady");
-                        ReStartTimer((int)TestParameter.CoTime);
+                        _loopActionFlag = true;
+                        ExecuteFinished = true;
+                        ReStartTimer(TestParameter.CoMs);
                     }
                     else
                     {
-                        TestParameter.Tips = "总合闸预制未使能";
+                        TestParameter.Tips = "总分闸预制未使能";
+                        _loopTestFlag = false;
+                        CloseLoopTime();
+                        EnableStart = true;
+                        EnableStop = false;
+                        ExecuteFinished = false;
                     }
                 }
             }
@@ -724,33 +740,33 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "CloseReadyA":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.ReadyClose);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.ReadyClose, NodeAttribute.ClosePowerOnTime);
                             break;
                         }
                     case "CloseActionA":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.CloseAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.CloseAction, NodeAttribute.ClosePowerOnTime);
                             break;
                         }
                     case "CloseReadyB":
                         {                          
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.ReadyClose);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.ReadyClose, NodeAttribute.ClosePowerOnTime);
                             break;
                         }
                     case "CloseActionB":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.CloseAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.CloseAction, NodeAttribute.ClosePowerOnTime);
                             break;
                         }
                     case "CloseReadyC":
                         {
 
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.ReadyClose);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.ReadyClose, NodeAttribute.ClosePowerOnTime);
                             break;
                         }
                     case "CloseActionC":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.CloseAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.CloseAction, NodeAttribute.ClosePowerOnTime);
                             break;
                         }
                     case "OpenReady":
@@ -802,33 +818,33 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "OpenReadyA":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.ReadyOpen);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.ReadyOpen, NodeAttribute.OpenPowerOnTime);
                             break;
                         }
                     case "OpenActionA":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.OpenAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseA, CommandIdentify.OpenAction, NodeAttribute.OpenPowerOnTime);
                             break;
                         }
                     case "OpenReadyB":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.ReadyOpen);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.ReadyOpen, NodeAttribute.OpenPowerOnTime);
                             break;
                         }
                     case "OpenActionB":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.OpenAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseB, CommandIdentify.OpenAction, NodeAttribute.OpenPowerOnTime);
                             break;
                             
                         }
                     case "OpenReadyC":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.ReadyOpen);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.ReadyOpen, NodeAttribute.OpenPowerOnTime);
                             break;
                         }
                     case "OpenActionC":
                         {
-                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.OpenAction);
+                            SinglePhaseReadyAction(NodeAttribute.MacPhaseC, CommandIdentify.OpenAction, NodeAttribute.OpenPowerOnTime);
                             break;
                         }
                     default:
@@ -848,7 +864,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// </summary>
         /// <param name="mac"></param>
         /// <param name="cmd"></param>
-        private void SinglePhaseReadyAction(byte mac, CommandIdentify cmd)
+        private void SinglePhaseReadyAction(byte mac, CommandIdentify cmd, byte time)
         {
 
             Action<bool> actDelegate;
@@ -890,8 +906,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             if (ShowMessageBox(string.Format("是否确认 {0}相{1}？", des, cmdDes), "单相操作"))
             {
-                //默认为两个回路，50ms
-                var command = new byte[] { (byte)cmd, 0x03, (byte)50 };
+              
+
+              
+             
+                var command = new byte[] { (byte)cmd, 0x03, (byte)time };
                 SendCMD(mac, command);
 
               
