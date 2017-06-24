@@ -191,7 +191,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             string error1 = "错误代码:" + serverData[2].ToString("X2");
             string error2 = "附加错误代码:" + serverData[3].ToString("X2");
             MonitorData.ExceptionMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
-            MonitorData.ExceptionMessage += des + " " + error1 + " " + error2 + "\n"; 
+            MonitorData.ExceptionMessage += "MAC:" + e.MAC.ToString("X2") + des + " " + error1 + " " + error2; 
            
 
 
@@ -419,16 +419,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         void CommonServer_SerialDataArrived(object sender, Communication.SerialDataEvent e)
         {
             RtuServer.AddBuffer(e.SerialData);
-            CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);
-            
-             
+            CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);                        
         }
 
         void ExceptionDeal(Exception ex)
         {
             MonitorData.ExceptionMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
             MonitorData.ExceptionMessage += ex.Message;
-            MonitorData.ExceptionMessage += ex.StackTrace;
+            //MonitorData.ExceptionMessage += ex.StackTrace;
             
         }
 

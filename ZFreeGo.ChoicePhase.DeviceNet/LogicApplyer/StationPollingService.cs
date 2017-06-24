@@ -86,7 +86,9 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                    }
                    else
                    {
-                       throw new Exception("子站主动错误应答,未识别ID");
+                        var str = ByteToString(serverData, 0, serverData.Length);
+                        throw new Exception(
+                            string.Format("子站主动错误应答,未识别ID,数据：[{0}]",str));
                    }
                     
                 }
@@ -94,7 +96,8 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
 
                 if ((ackID & 0x80) != 0x80)
                 {
-                    throw new Exception(string.Format("不是应答ID|0x80, ID={0:X2}", ackID));
+                    var str = ByteToString(serverData, 0, serverData.Length);
+                    throw new Exception(string.Format("未处理，数据：[{0}], ID=0x{1:X2},MAC:0x{2:X2}", str, ackID, mac));
                 }
                 byte id =(byte)(ackID & 0x7F);
 
@@ -149,6 +152,16 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
             }
         }
 
+        private string ByteToString(byte[] data, int start, int len)
+        {
+            StringBuilder strBuild = new StringBuilder(len * 3 + 10);
+            for (int i = start; i < start + len; i++)
+            {
+                strBuild.AppendFormat("{0:X2} ", data[i]);
+            }
+
+            return strBuild.ToString();
+        }
         /// <summary>
         /// 从站状态改变报告
         /// </summary>

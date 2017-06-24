@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using System;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -120,6 +121,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("Tips");
             }
         }
+        public void UpadeTip(string tip)
+        {
+            Tips += "\n";
+            Tips +=  DateTime.Now.ToLongTimeString() + ":\n";
+            Tips += tip;
+            if (Tips.Length > 2000)
+            {
+                Tips.Remove(0, Tips.Length * 4 / 2);
+            }
+        }
+
 
         private bool _enableChoice = true;
 

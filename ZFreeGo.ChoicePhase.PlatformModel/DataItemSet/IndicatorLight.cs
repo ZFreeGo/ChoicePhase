@@ -14,7 +14,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
 
-        private static string redLed = @"../Pictures/dp1.png";
+        private static string redLed = @"../Pictures/red.png";
         private static string greenLed = @"../Pictures/green.png";
         private static string yellowLed = @"../Pictures/yellow.png";
         private static string offLed = @"../Pictures/off.jpg";

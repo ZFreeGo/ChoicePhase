@@ -59,7 +59,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              ExecuteLoadDataCommand();
              DispatcherShow = Dispatcher.CurrentDispatcher;
 
-             _testParameter = new LoopTest();
+             
              LoopTestCommand = new RelayCommand<string>(ExecuteLoopTestCommand);
 
              
@@ -113,17 +113,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
         #region 测试
-        private LoopTest _testParameter;
+        
 
         public LoopTest TestParameter
         {
             get
             {
-                return _testParameter;
+                return modelServer.LogicalUI.TestParameter;
             }
             set
             {
-                _testParameter = value;
+                modelServer.LogicalUI.TestParameter = value;
                 RaisePropertyChanged("TestParameter");
             }
         }
@@ -201,16 +201,23 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     case "CloseAction"://合闸执行使能
                         {
-                            ExecuteUserReadyActionCommand("CloseAction");
-                            ExecuteFinished = false;
+                            if (ControlCollect.CloseAction)
+                            {
+                                ExecuteUserReadyActionCommand("CloseAction");
+                                ExecuteFinished = false;
+                                TestParameter.UpadeTip("执行合闸。");
+                            }
                             break;
                         }
                     case "OpenAction":
                         {
-                            ExecuteUserReadyActionCommand("OpenAction");
-                            TestParameter.CurrentCount++;
-                            ExecuteFinished = false;
-
+                            if (ControlCollect.OpenAction)
+                            {
+                                ExecuteUserReadyActionCommand("OpenAction");
+                                TestParameter.CurrentCount++;
+                                ExecuteFinished = false;
+                                TestParameter.UpadeTip("执行分闸。");
+                            }
 
                             break;
                         }
@@ -241,20 +248,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                                 ReStartTimer(TestParameter.CoMs);
                                 TestParameter.CurrentCount = 0;
-                                TestParameter.Tips = "启动循环";
+                                TestParameter.UpadeTip ("启动循环");
                                 ExecuteFinished = false;
                                 EnableStart = false;
                                 EnableStop = true;
                             }
                             else
                             {
-                                TestParameter.Tips = "总合闸预制未使能";
+                                TestParameter.UpadeTip("总合闸预制未使能");
 
                             }
                             break;
                         }
                     case "Stop":
                         {
+                            TestParameter.UpadeTip("停止循环");
                             _loopTestFlag = false;
                             CloseLoopTime();
                             EnableStart = true;
@@ -281,6 +289,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     CloseLoopTime();
                     EnableStart = true;
                     EnableStop = false;
+                    TestParameter.UpadeTip("超过规定测试，停止测试");
                     return;
 
                 }
@@ -295,15 +304,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         ExecuteFinished = true;
                         _loopActionFlag = false;
                         ReStartTimer(TestParameter.OcMs);
+                        TestParameter.UpadeTip(
+                            string.Format("当前进行第{0}次合闸，共{1}次。", TestParameter.CurrentCount, TestParameter.SetCount));
                     }
                     else
-                    {
-                        TestParameter.Tips = "总合闸预制未使能";
+                    {                      
                         _loopTestFlag = false;
                         CloseLoopTime();
                         EnableStart = true;
                         EnableStop = false;
                         ExecuteFinished = false;
+                        TestParameter.UpadeTip("总合闸预制未使能");
+
                     }
                 }
                 else
@@ -314,10 +326,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         _loopActionFlag = true;
                         ExecuteFinished = true;
                         ReStartTimer(TestParameter.CoMs);
+                        TestParameter.UpadeTip(
+                           string.Format("当前进行第{0}次分闸，共{1}次。", TestParameter.CurrentCount, TestParameter.SetCount));
                     }
                     else
                     {
-                        TestParameter.Tips = "总分闸预制未使能";
+                        TestParameter.UpadeTip("总分闸预制未使能");                      
                         _loopTestFlag = false;
                         CloseLoopTime();
                         EnableStart = true;
@@ -329,6 +343,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             else
             {
                 CloseLoopTime();
+                TestParameter.UpadeTip("当前不是测试模式。");
             }
 
         }
@@ -695,9 +710,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
                             }
 
-
-                            if (ShowMessageBox("是否确认 三相合闸预制？", "三相合闸操作"))
+                            //执行测试时，不提示确认
+                            if (_loopTestFlag || ShowMessageBox("是否确认 三相合闸预制？", "三相合闸操作"))
                             {
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
                                 //默认为两个回路，50ms
                                 var command = new byte[] { (byte)CommandIdentify.ReadyClose, 0x03, NodeAttribute.ClosePowerOnTime };
                                 SendCMD(NodeAttribute.MacPhaseA, command);
@@ -706,9 +724,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 Thread.Sleep(10);
                                 SendCMD(NodeAttribute.MacPhaseC, command);
 
-                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
+                      
                                 modelServer.LogicalUI.UserControlEnable.OperateABC = true;
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
                                     new OverTimeTimer(NodeAttribute.CloseActionOverTime, () =>
@@ -720,6 +736,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                         modelServer.LogicalUI.UserControlEnable.CloseAction = false;
                                     });
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
+                                if(_loopTestFlag)
+                                {
+                                    TestParameter.UpadeTip("合闸预制。");
+                                }
+
+
                             }
                             
 
@@ -778,8 +800,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             }
 
 
-                            if (ShowMessageBox("是否确认 三相分闸预制？", "三相分闸操作"))
+                            if (_loopTestFlag || ShowMessageBox("是否确认 三相分闸预制？", "三相分闸操作"))
                             {
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态 
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
                                 //默认为两个回路，40ms
                                 var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 0x03, (byte)NodeAttribute.OpenPowerOnTime };
                                 SendCMD(NodeAttribute.MacPhaseA, command);
@@ -788,9 +813,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 Thread.Sleep(10);
                                 SendCMD(NodeAttribute.MacPhaseC, command);
 
-                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态 
-                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
+                            
                                 modelServer.LogicalUI.UserControlEnable.OperateABC = true;
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
                                     new OverTimeTimer(NodeAttribute.OpenActionOverTime, () =>
@@ -802,6 +825,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                         modelServer.LogicalUI.UserControlEnable.OpenAction = false;
                                     });
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
+
+
+                                if (_loopTestFlag)
+                                {
+                                    TestParameter.UpadeTip("分闸预制。");
+                                }
                             }
                             break;
                         }
@@ -894,17 +923,19 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 return;
             }
-            
 
 
+          
             if (modelServer.LogicalUI.UserControlEnable.OperateState &&
                                (!opetate))
             {
                 ShowMessageBox("有正在处理的其它相操作", "单相操作");
             }
 
-
-            if (ShowMessageBox(string.Format("是否确认 {0}相{1}？", des, cmdDes), "单相操作"))
+            var ActionState = (cmd == CommandIdentify.CloseAction) ||
+                            (cmd == CommandIdentify.OpenAction);
+            //执行状态不在进行确认
+            if (ActionState || ShowMessageBox(string.Format("是否确认 {0}相{1}？", des, cmdDes), "单相操作"))
             {
               
 
@@ -1044,10 +1075,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                             var serverData = e.Data;
                             var des = modelServer.GetIDDescription((CommandIdentify)serverData[1]);
+                            
                             string error1 = "错误代码:" + serverData[2].ToString("X2");
                             string error2 = "附加错误代码:" + serverData[3].ToString("X2");
 
-                            ShowMessageBox(e.MAC.ToString("x2") + des + " " + error1 + " " + error2, "应答错误");
+                            ShowMessageBox("MAC:" + e.MAC.ToString("x2") + des + " " + error1 + " " + error2, "应答错误");
 
 
                             break;

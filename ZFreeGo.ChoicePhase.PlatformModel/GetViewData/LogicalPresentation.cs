@@ -91,7 +91,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
         }
 
-        
+        /// <summary>
+        /// 用于训话测试
+        /// </summary>
+        public LoopTest TestParameter
+        {
+            get;
+            set;
+        }
+
 
 
 
@@ -107,7 +115,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
             if (NodeAttribute.MacSynController == mac)
             {
-                index = 0;                             
+                index = 0;               
                 StatusBar.SetSyn(true, "同步控制器在线");
             }
             else if (NodeAttribute.MacPhaseA == mac)
@@ -132,6 +140,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             var node = GetNdoe(mac);
             node.ReStartOverTimer();
             node.IsOnline = true;
+            node.LastOnline = true;
+            
             OnlineBit = SetBit(OnlineBit, index);           
         }
       
@@ -531,7 +541,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                         {
                             node.ActionOpenState = true;
                             node.ReadyOpenState = false;
-                            UpdateStatus(mac, "分闸预制");
+                            UpdateStatus(mac, "分闸执行");
                             break;
                         }
                     case CommandIdentify.ReadyClose: // 合闸预制
@@ -567,6 +577,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             if (!UserControlEnable.OperateABC)
             {
                 SetUserControlEnable(mac, cmd);
+                
             }
             else
             {
@@ -576,8 +587,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 {
                     UserControlEnable.CloseReady = false;
                     UserControlEnable.CloseAction = true;
+                    
                 }
-                if (NodeStatusList[1].ActionCloseState && NodeStatusList[2].ActionCloseState && NodeStatusList[3].ActionCloseState)
+                else if (NodeStatusList[1].ActionCloseState && NodeStatusList[2].ActionCloseState && NodeStatusList[3].ActionCloseState)
                 {
                     UserControlEnable.CloseReady = true;
                     UserControlEnable.CloseAction = false;
@@ -586,19 +598,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
 
                 //均为分闸预制模式
-                if (NodeStatusList[1].ReadyOpenState && NodeStatusList[2].ReadyOpenState && NodeStatusList[3].ReadyOpenState)
+                else if (NodeStatusList[1].ReadyOpenState && NodeStatusList[2].ReadyOpenState && NodeStatusList[3].ReadyOpenState)
                 {
                     UserControlEnable.OpenReady = false;
                     UserControlEnable.OpenAction = true;
                 }
-                if (NodeStatusList[1].ActionOpenState && NodeStatusList[2].ActionOpenState && NodeStatusList[3].ActionOpenState)
+                else if (NodeStatusList[1].ActionOpenState && NodeStatusList[2].ActionOpenState && NodeStatusList[3].ActionOpenState)
                 {
                     UserControlEnable.OpenReady = true;
                     UserControlEnable.OpenAction = false;
                     UserControlEnable.OverTimerReadyActionABC.StopTimer();
                     UserControlEnable.OperateABC = false;
                 }
-
+                return;
             }
             //同步合闸模式
             if (UserControlEnable.OperateSyn)
@@ -859,7 +871,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
                 SynPhaseChoice = new PhaseChoice();
 
-                
+                TestParameter = new LoopTest();
             }
             catch(Exception ex)
             {

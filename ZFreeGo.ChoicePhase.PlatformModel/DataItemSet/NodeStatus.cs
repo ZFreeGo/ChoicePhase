@@ -401,8 +401,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             SynActionCloseState = false;
 
 
-            LastOnline = true;
-            IsOnline = false;
+           // LastOnline = true;
+           // IsOnline = false;
         }
 
         

@@ -79,7 +79,23 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
            
         }
         #endregion
-        private string showUri;
+
+        public LoopTest TestParameter
+        {
+            get
+            {
+                return modelServer.LogicalUI.TestParameter;
+            }
+            set
+            {
+                modelServer.LogicalUI.TestParameter = value;
+                RaisePropertyChanged("TestParameter");
+
+
+            }
+        }
+
+            private string showUri;
 
         /// <summary>
         /// 显示Uri

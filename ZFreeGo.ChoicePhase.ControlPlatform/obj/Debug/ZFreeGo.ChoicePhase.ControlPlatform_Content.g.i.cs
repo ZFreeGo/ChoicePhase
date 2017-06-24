@@ -8,17 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/config.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/config.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/le.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/le.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/manual.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/manual.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/meter.ico")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/meter.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/off1.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/red.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/set.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/set1.png")]
 
 

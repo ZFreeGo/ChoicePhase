@@ -73,7 +73,7 @@
                                 
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SetpointParameter">
                     <DockPanel>
-                        <Image Source="Pictures/set1.png"></Image>
+                        <Image Source="Pictures/set.png"></Image>
                         <TextBlock VerticalAlignment="Center">定值参数</TextBlock>
                     </DockPanel>
                 </Button>
@@ -140,6 +140,19 @@
                             </ContextMenu>
                         </TextBox.ContextMenu>
                        
+                    </TextBox>
+                </TabItem>
+                <TabItem Header="测试" DataContext="{Binding  TestParameter}">
+                    <TextBox Margin="0" Background="AliceBlue"    IsReadOnly="True" 
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding Tips}" >
+                        <TextBox.ContextMenu>
+                            <ContextMenu StaysOpen="True"  IsEnabled="True">
+                                <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="ExceptionMessage" />
+                                <!--<MenuItem Header="到最下端" Command="{Binding ToEnd}"/>-->
+
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+
                     </TextBox>
                 </TabItem>
             </TabControl>

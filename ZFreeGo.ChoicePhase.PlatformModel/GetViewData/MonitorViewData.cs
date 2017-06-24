@@ -2,12 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
-using System.Xml;
-using ZFreeGo.ChoicePhase.DeviceNet.Element;
-using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 
@@ -179,7 +173,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         {
             StatusMessage += "\n";
             StatusMessage += DateTime.Now.ToLongTimeString() + ":\n";
-            StatusMessage += des + "\n";
+            StatusMessage += des;
         }
    
 

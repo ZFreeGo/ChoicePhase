@@ -539,6 +539,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 //}                
                 
             }
+            else
+            {
+                CloseReady = false;
+                CloseAction = false;
+            }
             //全是分闸则使能总分闸
             if (OpenReadyA && OpenReadyB && OpenReadyC)
             {
@@ -553,6 +558,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 //SynCloseReady = false;
                 //SynCloseAction = false;
                 
+            }
+            else
+            {
+                OpenReady = false;
+                OpenAction = false;
             }
         }
 

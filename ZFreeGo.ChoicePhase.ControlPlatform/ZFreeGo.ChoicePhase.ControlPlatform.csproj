@@ -186,12 +186,6 @@
     <Resource Include="Pictures\SOJO.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Pictures\dp1.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Pictures\dp1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Pictures\yellow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -220,10 +214,10 @@
     <Resource Include="Pictures\manual.png" />
     <Resource Include="Pictures\meter.ico" />
     <Resource Include="Pictures\meter.png" />
-    <Resource Include="Pictures\off1.png" />
     <Resource Include="Pictures\red.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Pictures\set.png" />
-    <Resource Include="Pictures\set1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

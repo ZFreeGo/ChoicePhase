@@ -12,7 +12,7 @@
     <SynCloseActionOverTime>10000</SynCloseActionOverTime>
     <OpenActionOverTime>10000</OpenActionOverTime>
     <CloseActionOverTime>10000</CloseActionOverTime>
-    <ClosePowerOnTime>60</ClosePowerOnTime>
+    <ClosePowerOnTime>70</ClosePowerOnTime>
     <OpenPowerOnTime>25</OpenPowerOnTime>
     <WorkMode>40</WorkMode>
   </ConfigParameter>
