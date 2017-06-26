@@ -358,12 +358,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             if (state)
             {
                 PhaseA = comment;
-                PhaseABrush = "Green";                
+                PhaseABrush = "Green";  
+              
+              
             }
             else
             {
                 PhaseA = "A相离线";
                 PhaseABrush = "Red";
+                
             }
         }
         /// <summary>

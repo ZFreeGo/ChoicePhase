@@ -122,6 +122,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             {
                 index = 1;
                 StatusBar.SetPhaseA(true, "A相在线");
+                //此模式下，ABC联动
+                if (NodeAttribute.SingleThreeMode)
+                {
+                    StatusBar.SetPhaseB(true, "B相在线");
+                    StatusBar.SetPhaseC(true, "C相在线");
+                }
+
             }
             else if (NodeAttribute.MacPhaseB == mac)
             {
@@ -197,18 +204,45 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 if (!e.Node.LastOnline)
                 {
                     StatusBar.SetPhaseA(true, "A相在线");
-                    UpdateStatus("A相恢复在线");
+                    UpdateStatus("A相在线1");
+
+                    //此模式下，ABC联动
+                    if (NodeAttribute.SingleThreeMode)
+                    {
+                        StatusBar.SetPhaseB(true, "B相在线");
+                        UpdateStatus("B相在线1");
+                        StatusBar.SetPhaseC(true, "C相在线");
+                        UpdateStatus("C相在线1");
+                    }
                 }
                 OnlineBit = SetBit(OnlineBit, 1);
+                 
             }
             else
             {
                 StatusBar.SetPhaseA(false, "");
                 UpdateStatus("A相超时离线");
                 OnlineBit = ClearBit(OnlineBit, 1);
-            }
 
-            SetControlButtonState();
+                //此模式下，ABC联动
+                if (NodeAttribute.SingleThreeMode)
+                {
+                    StatusBar.SetPhaseB(false, "");
+                    UpdateStatus("B相超时离线");                    
+
+                    StatusBar.SetPhaseC(false, "");
+                    UpdateStatus("C相超时离线");
+                   
+                }
+            }
+            if (NodeAttribute.SingleThreeMode)
+            {
+                SetControlButtonStateSigleThree();
+            }
+            else
+            {
+                SetControlButtonState();
+            }
 
         }
 
@@ -478,6 +512,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
         }
+        /// <summary>
+        /// 针对单相模式的三相控制
+        /// </summary>
+        public void SetControlButtonStateSigleThree()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                //电能正常，且属于合位，使能分闸按钮
+                if (NodeStatusList[NodeAttribute.IndexPhaseA].EnergyStatusLoopCollect[i] == EnergyStatusLoop.Normal)
+                {
+                    UserControlEnable.ChooiceEnableButton((UInt16)(((i+1) << 8) | ((byte)NodeStatusList[NodeAttribute.IndexPhaseA].StatusLoopCollect[i])));
+                    UserControlEnable.SetSynControlButtonState(SynPhaseChoice.ConfigByte);
+                }
+                else
+                {
+                    UserControlEnable.ChooiceEnableButton((UInt16)(((i + 1) << 8)));//关闭所有
+                    UserControlEnable.SetSynControlButtonState(SynPhaseChoice.ConfigByte);
+                }
+            }
+        }
+
         #endregion
 
 
@@ -698,16 +753,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
         #region 更新状态栏信息
-        /// <summary>
-        /// 更新站点信息
-        /// </summary>
-        /// <param name="defStationInformation"></param>
-        internal void UpdateStationStatus(DeviceNet.Element.DefStationInformation defStationInformation)
+
+        void UpdateStationSingleStatus(byte mac, NetStep step)
         {
             Action<bool, string> action;
             string comment = "";
 
-            var mac = defStationInformation.MacID;
+        
 
             if (NodeAttribute.MacSynController == mac)
             {
@@ -738,7 +790,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 return;
             }
 
-            switch (defStationInformation.Step)
+            switch (step)
             {
                 case NetStep.Start:
                     {
@@ -772,6 +824,23 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
 
             UpdateStatus(comment);
+        }
+        /// <summary>
+        /// 更新站点信息
+        /// </summary>
+        /// <param name="defStationInformation"></param>
+        internal void UpdateStationStatus(DeviceNet.Element.DefStationInformation defStationInformation)
+        {
+            UpdateStationSingleStatus(defStationInformation.MacID, defStationInformation.Step);
+            //ABC联动
+            if (NodeAttribute.SingleThreeMode)
+            {
+                if(defStationInformation.MacID == NodeAttribute.MacPhaseA)
+                {
+                    UpdateStationSingleStatus(NodeAttribute.MacPhaseB, defStationInformation.Step);
+                    UpdateStationSingleStatus(NodeAttribute.MacPhaseC, defStationInformation.Step);
+                }
+            }
         }
         #endregion
 
