@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -14,6 +15,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
     {
         private string _icoOff = @"ICO/off1.png";
         private string _icoOn = @"ICO/on1.png";
+
+
+
+        private const string Hidden = "Hidden";
+        private const string Collapsed = "Collapsed";
+        private const string Visible = "Visible";
+
+
 
         private string _userName;
 
@@ -268,6 +277,43 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
+        private string _visibleB;
+        /// <summary>
+        /// B相可见性
+        /// </summary>
+        public string VisibleB
+        {
+            get
+            {
+                return _visibleB;
+            }
+            set
+            {
+                _visibleB = value;
+                RaisePropertyChanged("VisibleB");
+            }
+        }
+
+        private string _visibleC;
+        /// <summary>
+        /// C相可见性
+        /// </summary>
+        public string VisibleC
+        {
+            get
+            {
+                return _visibleC;
+            }
+            set
+            {
+                _visibleC = value;
+                RaisePropertyChanged("VisibleC");
+            }
+        }
+
+
+
+
         /// <summary>
         /// 设置通讯状态
         /// </summary>
@@ -399,6 +445,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
 
+
+
+
+
+
+
         /// <summary>
         /// 初始化状态栏信息
         /// </summary>
@@ -422,6 +474,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             _synICO = _icoOff;
             _synBrush = "Red";
 
+            //单相模式不可见
+            if (NodeAttribute.SingleMode)
+            {
+                _visibleB = Collapsed;
+                _visibleC = Collapsed;
+            }
+            else
+            {
+                _visibleB = Visible;
+                _visibleC = Visible;
+            }
 
         }
 

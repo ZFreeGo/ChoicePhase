@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -935,5 +936,93 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
         #endregion
+
+
+
+        private string _visibleNormal;
+        /// <summary>
+        /// 普通模式
+        /// </summary>
+        public string VisibleNormal
+        {
+            get
+            {
+                return _visibleNormal;
+            }
+            set
+            {
+                _visibleNormal = value;
+                RaisePropertyChanged("VisibleNormal");
+            }
+        }
+
+        private string _visibleSingle;
+        /// <summary>
+        /// 单相模式
+        /// </summary>
+        public string VisibleSingle
+        {
+            get
+            {
+                return _visibleSingle;
+            }
+            set
+            {
+                _visibleSingle = value;
+                RaisePropertyChanged("VisibleSingle");
+            }
+        }
+
+        private string _visibleSingleThree;
+        /// <summary>
+        /// 单开关，三相模式
+        /// </summary>
+        public string VisibleSingleThree
+        {
+            get
+            {
+                return _visibleSingleThree;
+            }
+            set
+            {
+                _visibleSingleThree = value;
+                RaisePropertyChanged("VisibleSingleThree");
+            }
+        }
+
+
+        private const string Hidden = "Hidden";
+        private const string Collapsed = "Collapsed";
+        private const string Visible = "Visible";
+
+        public IndicatorLight()
+        {
+            if (NodeAttribute.NormalMode)
+            {
+                VisibleNormal = Visible;
+            }
+            else
+            {
+                VisibleNormal = Collapsed;
+            }
+
+            if (NodeAttribute.SingleMode)
+            {
+                VisibleSingle = Visible;
+            }
+            else
+            {
+                VisibleSingle = Collapsed;
+            }
+
+            if (NodeAttribute.SingleThreeMode)
+            {
+                VisibleSingleThree = Visible;
+            }
+            else
+            {
+                VisibleSingleThree = Collapsed;
+            }
+        }
     }
 }

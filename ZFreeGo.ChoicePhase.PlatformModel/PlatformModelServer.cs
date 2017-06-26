@@ -130,10 +130,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
                 StationInformation = new List<DefStationInformation>();
 
-                StationInformation.Add(new DefStationInformation(NodeAttribute.MacSynController, false, "同步控制器"));
-                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseA, false, "A相"));
-                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseB, false, "B相"));
-                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseC, false, "C相"));
+
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacSynController, ((NodeAttribute.EnabitSelect & 0x01) == 0x01), "同步控制器"));
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseA, ((NodeAttribute.EnabitSelect & 0x02) == 0x02), "A相"));
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseB, ((NodeAttribute.EnabitSelect & 0x04) == 0x04), "B相"));
+                StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseC, ((NodeAttribute.EnabitSelect & 0x08) == 0x08), "C相"));
 
 
                 ControlNetServer = new DeviceNetServer(PacketDevicetNetData, ExceptionDeal, StationInformation);

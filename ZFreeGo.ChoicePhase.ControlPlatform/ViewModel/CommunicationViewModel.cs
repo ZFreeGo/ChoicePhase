@@ -46,6 +46,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             _commParameterSet = new SerialPortParameterSet();
             _nodeParameter = new ConfigParameter();
             _nodeParameter.PropertyChanged += _nodeParameter_PropertyChanged;
+         
         }
 
         void _nodeParameter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

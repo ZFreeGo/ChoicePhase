@@ -11,6 +11,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
     /// </summary>
     public class NodeAttribute
     {
+    
 
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         static private byte[]  _macID = new byte[] { 0x0D, 0x10, 0x12, 0x14,0x02,};
  
 
-          /// <summary>
+        /// <summary>
         /// 同步控制器
         /// </summary>
         public const byte IndexSynController = 0;
@@ -36,6 +37,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// C相
         /// </summary>
         public const byte IndexPhaseC = 3;
+
 
         /// <summary>
         /// 主站索引
@@ -223,8 +225,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
-        private static string _passWordII = "12345";
-            
+        private static string _passWordII = "12345";            
         /// <summary>
         /// 二级执行密码
         /// </summary>
@@ -267,7 +268,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         }
 
-
+        //0--普通三相模式， 11--单相模式，22--单开关三相模式
         private static int _workMode = 0;
         /// <summary>
         /// 工作模式
@@ -284,6 +285,36 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
         }
 
+        /// <summary>
+        /// 普通三相模式
+        /// </summary>
+        public static bool NormalMode
+        {
+            get
+            {
+                return (WorkMode == 0);
+            }
+        }
+        /// <summary>
+        /// 单相模式
+        /// </summary>
+        public static bool SingleMode
+        {
+            get
+            {
+                return (WorkMode == 11);
+            }
+        }
+        /// <summary>
+        /// 单开关，三相模式
+        /// </summary>
+        public static bool SingleThreeMode
+        {
+            get
+            {
+                return (WorkMode == 22);
+            }
+        }
 
         private static byte _enabitSelect = 0x0F;
         /// <summary>
@@ -300,6 +331,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 _enabitSelect = value;
             }
         }
+
+        
+
+
 
     }
 

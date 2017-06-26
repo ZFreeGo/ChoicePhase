@@ -293,6 +293,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public ConfigParameter()
         {
             OperateCommand = new RelayCommand<string>(ExecuteOperateCommand);
+          
         }
 
     }
