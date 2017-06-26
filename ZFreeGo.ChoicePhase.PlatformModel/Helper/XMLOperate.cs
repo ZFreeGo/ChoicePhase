@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.PlatformModel.Communication;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 
@@ -148,6 +149,54 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 productRow["StopBit"] = attribute.StopBitMark;
                 ds.Tables["SerialPort"].Rows.Add(productRow);
                 ds.WriteXml(CommonPath.CommonPortXmlPath);               
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// 读取永磁控制器错误代码集合
+        /// </summary>
+        public static void ReadYongciErrorCodeRecod()
+        {
+            try
+            {
+                var ds = ReadXml(CommonPath.YongciErrorCodeXmlPath, CommonPath.ErrorCodeXsdPath);
+               
+                var rows =  ds.Tables["ErrorCode"].Rows;
+                for (int i = 0; i < rows.Count; i++)
+                {
+
+                    var ele = new ErrorCode((int)rows[i]["ID"], (string)rows[i]["Sign"], (string)rows[i]["Comment"]);
+                     ErrorCode.YongciErrorCode.Add(ele);
+                }
+         
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 读取同步控制器错误代码集合
+        /// </summary>
+        public static void ReadTongbuErrorCodeRecod()
+        {
+            try
+            {
+                var ds = ReadXml(CommonPath.TongbuErrorCodeXmlPath, CommonPath.ErrorCodeXsdPath);
+
+                var rows = ds.Tables["ErrorCode"].Rows;
+                for (int i = 0; i < rows.Count; i++)
+                {
+
+                    var ele = new ErrorCode((int)rows[i]["ID"], (string)rows[i]["Sign"], (string)rows[i]["Comment"]);
+                    ErrorCode.TongbuErrorCode.Add(ele);
+                }
 
             }
             catch (Exception ex)

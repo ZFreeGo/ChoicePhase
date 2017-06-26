@@ -37,16 +37,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
         /// </summary>
         public static string CommonPortXsdPath = @"Config\XSD\Config.xsd";
 
-      
 
         /// <summary>
-        /// 事件记录XML路径
+        /// 永磁错误代码XML表格路径
         /// </summary>
-        public static string SOEXmlPath = @"Config\SOE.xml";
+        public static string YongciErrorCodeXmlPath = @"Config\XML\YongciErrorCode.xml";
+
         /// <summary>
-        /// 事件记录XSD架构路径
+        /// 同步控制器错误代码XML表格路径
         /// </summary>
-        public static string SOEXsdPath = @"Config\SOE.xsd";
+        public static string TongbuErrorCodeXmlPath = @"Config\XML\TongbuErrorCode.xml";
+
+        /// <summary>
+        /// 错误代码XSD架构路径
+        /// </summary>
+        public static string ErrorCodeXsdPath = @"Config\XSD\ErrorCode.xsd";
+       
 
 
         public static string DataBase =  @"config\Database\Das.db";

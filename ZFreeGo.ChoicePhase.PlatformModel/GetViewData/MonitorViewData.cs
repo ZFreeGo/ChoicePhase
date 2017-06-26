@@ -130,12 +130,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 _macList.Add(0x1A);
 
 
-
+                XMLOperate.ReadYongciErrorCodeRecod();
+                XMLOperate.ReadTongbuErrorCodeRecod();
                
             }
             catch(Exception ex)
             {
-
+                ZFreeGo.Common.LogTrace.CLog.LogError(ex.Message + " " +ex.StackTrace);
             }
 
         }

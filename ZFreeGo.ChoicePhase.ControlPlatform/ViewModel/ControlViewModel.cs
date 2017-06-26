@@ -699,8 +699,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                             SendSynCommand(SynActionHeDSP);
                             break;
-                        }    
-
+                        }  
                     case "CloseReady":
                         {
 
@@ -740,12 +739,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 {
                                     TestParameter.UpadeTip("合闸预制。");
                                 }
-
-
-                            }
-                            
-
-
+                            }                          
                             break;
                         }
                     case "CloseAction":
@@ -936,17 +930,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             (cmd == CommandIdentify.OpenAction);
             //执行状态不在进行确认
             if (ActionState || ShowMessageBox(string.Format("是否确认 {0}相{1}？", des, cmdDes), "单相操作"))
-            {
-              
-
-              
-             
+            {                                    
                 var command = new byte[] { (byte)cmd, 0x03, (byte)time };
-                SendCMD(mac, command);
-
-              
-
-
+                SendCMD(mac, command);            
 
                 if ((cmd == CommandIdentify.SyncReadyClose) ||
                     (cmd == CommandIdentify.ReadyClose) ||
@@ -1026,6 +1012,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case CommandIdentify.ReadyOpen:
                     case CommandIdentify.OpenAction:
                     case CommandIdentify.SyncReadyClose:
+                    case CommandIdentify.SyncOrchestratorReadyClose:
+                    case CommandIdentify.SyncOrchestratorCloseAction:
                         {
                             OverTimeTimer timer;
 
@@ -1073,13 +1061,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             modelServer.LogicalUI.UserControlEnable.OperateABC = false;
                             modelServer.LogicalUI.UserControlEnable.OperateSyn = false;
 
-                            var serverData = e.Data;
-                            var des = modelServer.GetIDDescription((CommandIdentify)serverData[1]);
-                            
-                            string error1 = "错误代码:" + serverData[2].ToString("X2");
-                            string error2 = "附加错误代码:" + serverData[3].ToString("X2");
 
-                            ShowMessageBox("MAC:" + e.MAC.ToString("x2") + des + " " + error1 + " " + error2, "应答错误");
+                            var str = modelServer.GetErrorComment(e.MAC, e.Data);
+                            ShowMessageBox(str, "应答错误");
 
 
                             break;

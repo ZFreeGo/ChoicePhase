@@ -9,6 +9,7 @@ using ZFreeGo.ChoicePhase.DeviceNet;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.Modbus;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 using ZFreeGo.Monitor.DASModel.GetViewData;
@@ -186,17 +187,45 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void PollingService_ErrorAckChanged(object sender, StatusChangeMessage e)
         {
-            var serverData = e.Data;
-            var des = GetIDDescription((CommandIdentify)serverData[1]);
-            string error1 = "错误代码:" + serverData[2].ToString("X2");
-            string error2 = "附加错误代码:" + serverData[3].ToString("X2");
-            MonitorData.ExceptionMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
-            MonitorData.ExceptionMessage += "MAC:" + e.MAC.ToString("X2") + des + " " + error1 + " " + error2; 
-           
-
-
+            var str = "\n" + DateTime.Now.ToLongTimeString() + "  异常处理:\n";
+             str += GetErrorComment(e.MAC, e.Data);
+            MonitorData.ExceptionMessage += str;
         }
 
+        /// <summary>
+        /// 获取错误描述
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <param name="serverData"></param>
+        public string GetErrorComment(byte mac, byte[] serverData)
+        {
+            
+            var des = GetIDDescription((CommandIdentify)serverData[1]);
+            var node = LogicalUI.GetNdoe(mac);
+            if(node != null)
+            {
+                string error1 = "";
+                
+                if (node.Mac == NodeAttribute.MacSynController)
+                {
+                    error1 = ErrorCode.GetTongbuErrorComment(serverData[2]);
+                }
+                else if ((node.Mac == NodeAttribute.MacPhaseA)||
+                    (node.Mac == NodeAttribute.MacPhaseB)||(node.Mac == NodeAttribute.MacPhaseC))
+                {
+                    error1 = ErrorCode.GetYongciErrorComment(serverData[2]);
+                }
+                string str = string.Format("主动应答错误:{0}(0x{1:X2}),{2},{3}", node.Name, mac, des, error1);
+                return str;
+            }
+            else
+            {
+                string error1 = "错误代码:" + serverData[2].ToString("X2");
+                string error2 = "附加错误代码:" + serverData[3].ToString("X2");
+                var str = "MAC:" + mac.ToString("X2") + des + " " + error1 + " " + error2;
+                return str;
+            }
+        }
         private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
       
@@ -642,7 +671,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                         break;
                     }
             }
-            return des + " " + ((byte)id).ToString("X2");
+            return des + "(0x" + ((byte)id).ToString("X2") + ")";
         }
         
 
