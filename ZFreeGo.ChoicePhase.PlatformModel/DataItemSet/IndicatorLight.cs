@@ -25,14 +25,30 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
         public void PhaseA_StatusUpdateEvent(object sender, StatusMessage e)
         {
-            if (e.IsOnline)
+            if (NodeAttribute.SingleThreeMode)
             {
-                UpdatePositionStatus(e.Node.StatusLoopCollect, "A");
-                UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "A");
+                if (e.IsOnline)
+                {
+                    UpdatePositionStatusSingleThree(e.Node.StatusLoopCollect, "A");
+                    UpdateEnergyStatusSingleThree(e.Node.EnergyStatusLoopCollect, "A");
+                }
+                else
+                {
+                    OverTimeCycleASingleThree();
+                }
+
             }
             else
             {
-                OverTimeCycleA();
+                if (e.IsOnline)
+                {
+                    UpdatePositionStatus(e.Node.StatusLoopCollect, "A");
+                    UpdateEnergyStatus(e.Node.EnergyStatusLoopCollect, "A");
+                }
+                else
+                {
+                    OverTimeCycleA();
+                }
             }
         }
         public void PhaseB_StatusUpdateEvent(object sender, StatusMessage e)
@@ -73,6 +89,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             LedOpenA = offLed;
             LedErrorA = redLed;
             LedEneryA = offLed;
+        }
+
+        /// <summary>
+        /// SingleThree 超时三相控制
+        /// </summary>
+        void OverTimeCycleASingleThree()
+        {
+            LedCloseA1 = offLed;
+            LedOpenA1 = offLed;
+            LedErrorA1 = redLed;
+            LedEneryA1 = offLed;
+
+            LedCloseA2 = offLed;
+            LedOpenA2 = offLed;
+            LedErrorA2 = redLed;
+            LedEneryA2 = offLed;
+
+            LedCloseA3 = offLed;
+            LedOpenA3 = offLed;
+            LedErrorA3 = redLed;
+            LedEneryA3 = offLed;           
         }
 
         void OverTimeCycleB()
@@ -153,6 +190,36 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
 
+        }
+
+        void UpdatePositionStatusSingleThree(StatusLoop[] status, string ph)
+        {
+            Action<StatusLoop, string> act = (loop, led) =>
+                {
+                    if ((loop== StatusLoop.Error) || (loop== StatusLoop.Null))
+                    {
+                        SetLed(led, redLed);
+                    }
+                    else
+                    {
+                        SetLed(led, offLed);
+                    }
+                };
+
+            UpdateLedStatus(status[0], ph + "1");
+            act(status[0], "LedErrorA1");
+            UpdateLedStatus(status[1], ph + "2");
+            act(status[1], "LedErrorA2");
+            UpdateLedStatus(status[2], ph + "3");
+            act(status[2], "LedErrorA3");
+            
+        }
+        void UpdateEnergyStatusSingleThree(EnergyStatusLoop[] status, string ph)
+        {
+           
+            UpdateEnerggLedStatus(status[0], ph + "1");
+            UpdateEnerggLedStatus(status[1], ph + "2");
+            UpdateEnerggLedStatus(status[2], ph + "3");      
         }
         /// <summary>
         /// 更新单只 储能LED状态
@@ -284,6 +351,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                         LedCloseA2 = state;
                         break;
                     }
+                case "LedCloseA3":
+                    {
+                        LedCloseA3 = state;
+                        break;
+                    }
                 case "LedOpenA1":
                     {
                         LedOpenA1 = state;
@@ -292,6 +364,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 case "LedOpenA2":
                     {
                         LedOpenA2 = state;
+                        break;
+                    }
+                case "LedOpenA3":
+                    {
+                        LedOpenA3 = state;
                         break;
                     }
                 case "LedCloseA":
@@ -309,6 +386,21 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                         LedErrorA = state;
                         break;
                     }
+                case "LedErrorA1":
+                    {
+                        LedErrorA1 = state;
+                        break;
+                    }
+                case "LedErrorA2":
+                    {
+                        LedErrorA2 = state;
+                        break;
+                    }
+                case "LedErrorA3":
+                    {
+                        LedErrorA3 = state;
+                        break;
+                    }
                 case "LedEneryA":
                     {
                         LedEneryA = state;
@@ -322,6 +414,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 case "LedEneryA2":
                     {
                         LedEneryA2 = state;
+                        break;
+                    }
+                case "LedEneryA3":
+                    {
+                        LedEneryA3 = state;
                         break;
                     }
                 case "LedCloseB1":
@@ -479,6 +576,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
+        private string ledCloseA3 = offLed;
+        /// <summary>
+        /// 合闸指示A3
+        /// </summary>
+        public String LedCloseA3
+        {
+            get
+            {
+                return ledCloseA3;
+            }
+            set
+            {
+                ledCloseA3 = value;
+                RaisePropertyChanged("LedCloseA3");
+            }
+        }
 
         private string ledOpenA1 = offLed;
         /// <summary>
@@ -513,7 +626,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
         }
 
-
+        private string ledOpenA3 = offLed;
+        /// <summary>
+        /// 分闸指示A3
+        /// </summary>
+        public String LedOpenA3
+        {
+            get
+            {
+                return ledOpenA3;
+            }
+            set
+            {
+                ledOpenA3 = value;
+                RaisePropertyChanged("LedOpenA3");
+            }
+        }
 
         private string ledCloseA = offLed;
         /// <summary>
@@ -566,6 +694,54 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("LedErrorA");
             }
         }
+        private string ledErrorA1 = offLed;
+        /// <summary>
+        /// 故障指示A1
+        /// </summary>
+        public String LedErrorA1
+        {
+            get
+            {
+                return ledErrorA1;
+            }
+            set
+            {
+                ledErrorA1 = value;
+                RaisePropertyChanged("LedErrorA1");
+            }
+        }
+        private string ledErrorA2 = offLed;
+        /// <summary>
+        /// 故障指示A1
+        /// </summary>
+        public String LedErrorA2
+        {
+            get
+            {
+                return ledErrorA2;
+            }
+            set
+            {
+                ledErrorA2 = value;
+                RaisePropertyChanged("LedErrorA2");
+            }
+        }
+        private string ledErrorA3 = offLed;
+        /// <summary>
+        /// 故障指示A1
+        /// </summary>
+        public String LedErrorA3
+        {
+            get
+            {
+                return ledErrorA3;
+            }
+            set
+            {
+                ledErrorA3 = value;
+                RaisePropertyChanged("LedErrorA3");
+            }
+        }
         private string ledEneryA = offLed;
         public String LedEneryA
         {
@@ -605,7 +781,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 RaisePropertyChanged("LedEneryA2");
             }
         }
-
+        private string ledEneryA3 = offLed;
+        public String LedEneryA3
+        {
+            get
+            {
+                return ledEneryA3;
+            }
+            set
+            {
+                ledEneryA3 = value;
+                RaisePropertyChanged("LedEneryA3");
+            }
+        }
         #endregion
         #region 状态指示灯 B相
 

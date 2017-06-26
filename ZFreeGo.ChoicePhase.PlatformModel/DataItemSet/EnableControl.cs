@@ -778,7 +778,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
             ReadyActionCommand = new RelayCommand<string>(ExecuteReadyCommand);
 
-            if(NodeAttribute.NormalMode)
+            if(NodeAttribute.NormalMode || NodeAttribute.SingleThreeMode)
             {
                 VisibleNormal = Visible;
             }

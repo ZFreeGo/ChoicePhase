@@ -352,6 +352,82 @@
 
 
                     </Grid>
+                    <Grid DataContext="{Binding IndicatorLightABC}" Visibility="{Binding VisibleSingleThree}" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <!--  A相 -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontFamily="黑体" FontSize="24">A相</TextBlock>                                        
+                        <StackPanel Grid.Row="0" Grid.Column="1" >
+                            <Grid>
+                                <Image Source="{Binding LedCloseA1}" Height="64" ></Image>
+                            </Grid>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">合位</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" >
+                            <Image Source="{Binding LedOpenA1}" Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">分位</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="3" >
+                            <Image Source="{Binding  LedEneryA1}" Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">储能</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="4" >
+                            <Image Source="{Binding LedErrorA1}"  Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">故障</TextBlock>
+                        </StackPanel>
+                        <!--  B相 -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontFamily="黑体" FontSize="24">B相</TextBlock>
+                        <StackPanel Grid.Row="1" Grid.Column="1" >
+                            <Grid>
+                                <Image Source="{Binding LedCloseA2}" Height="64" ></Image>
+                            </Grid>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">合位</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" >
+                            <Image Source="{Binding LedOpenA2}" Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">分位</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="3" >
+                            <Image Source="{Binding  LedEneryA2}" Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">储能</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="4" >
+                            <Image Source="{Binding LedErrorA2}"  Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">故障</TextBlock>
+                        </StackPanel>
+                        <!--C相 -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontFamily="黑体" FontSize="24">C相</TextBlock>
+                        <StackPanel Grid.Row="2" Grid.Column="1" >
+                            <Grid>
+                                <Image Source="{Binding LedCloseA3}" Height="64" ></Image>
+                            </Grid>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">合位</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2" >
+                            <Image Source="{Binding LedOpenA3}" Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">分位</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="3" >
+                            <Image Source="{Binding  LedEneryA3}" Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">储能</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="4" >
+                            <Image Source="{Binding LedErrorA3}"  Height="64"></Image>
+                            <TextBlock HorizontalAlignment="Center" FontFamily="黑体" FontSize="24">故障</TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
                 <Border BorderThickness="3" BorderBrush="{Binding SecureColor}"  Grid.Column="1" CornerRadius="5" Margin="3">
                     <GroupBox Header="同步开关" Margin="3"  IsEnabled="{Binding ControlEnable}"  >
