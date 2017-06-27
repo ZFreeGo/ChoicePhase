@@ -492,7 +492,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
         }
-
+       
         /// <summary>
         /// 更新设置控件状态
         /// </summary>
@@ -545,6 +545,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// <param name="data"></param>
         public void UpdateNodeStatus(byte mac, byte[] data)
         {
+
+            //首先判断是否启用SingleThreMode
+            if (NodeAttribute.SingleThreeMode)
+            {
+                UpdateNodeStatusSingleThree(mac, data);
+                return;
+            }
+
+
             var node = GetNdoe(mac);
             if (node == null)
             {
@@ -637,38 +646,49 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
             else
             {
-                //ABC一起动模式
-                //均为合闸预制模式
-                if (NodeStatusList[1].ReadyCloseState && NodeStatusList[2].ReadyCloseState && NodeStatusList[3].ReadyCloseState)
-                {
-                    UserControlEnable.CloseReady = false;
-                    UserControlEnable.CloseAction = true;
-                    
-                }
-                else if (NodeStatusList[1].ActionCloseState && NodeStatusList[2].ActionCloseState && NodeStatusList[3].ActionCloseState)
-                {
-                    UserControlEnable.CloseReady = true;
-                    UserControlEnable.CloseAction = false;
-                    UserControlEnable.OverTimerReadyActionABC.StopTimer();
-                    UserControlEnable.OperateABC = false;
-                }
-
-                //均为分闸预制模式
-                else if (NodeStatusList[1].ReadyOpenState && NodeStatusList[2].ReadyOpenState && NodeStatusList[3].ReadyOpenState)
-                {
-                    UserControlEnable.OpenReady = false;
-                    UserControlEnable.OpenAction = true;
-                }
-                else if (NodeStatusList[1].ActionOpenState && NodeStatusList[2].ActionOpenState && NodeStatusList[3].ActionOpenState)
-                {
-                    UserControlEnable.OpenReady = true;
-                    UserControlEnable.OpenAction = false;
-                    UserControlEnable.OverTimerReadyActionABC.StopTimer();
-                    UserControlEnable.OperateABC = false;
-                }
+                UpdateWholeOperate();
                 return;
             }
             //同步合闸模式
+            UpdateOperateSyn();
+        }
+        public void UpdateWholeOperate()
+        {
+            //ABC一起动模式
+            //均为合闸预制模式
+            if (NodeStatusList[1].ReadyCloseState && NodeStatusList[2].ReadyCloseState && NodeStatusList[3].ReadyCloseState)
+            {
+                UserControlEnable.CloseReady = false;
+                UserControlEnable.CloseAction = true;
+
+            }
+            else if (NodeStatusList[1].ActionCloseState && NodeStatusList[2].ActionCloseState && NodeStatusList[3].ActionCloseState)
+            {
+                UserControlEnable.CloseReady = true;
+                UserControlEnable.CloseAction = false;
+                UserControlEnable.OverTimerReadyActionABC.StopTimer();
+                UserControlEnable.OperateABC = false;
+            }
+
+            //均为分闸预制模式
+            else if (NodeStatusList[1].ReadyOpenState && NodeStatusList[2].ReadyOpenState && NodeStatusList[3].ReadyOpenState)
+            {
+                UserControlEnable.OpenReady = false;
+                UserControlEnable.OpenAction = true;
+            }
+            else if (NodeStatusList[1].ActionOpenState && NodeStatusList[2].ActionOpenState && NodeStatusList[3].ActionOpenState)
+            {
+                UserControlEnable.OpenReady = true;
+                UserControlEnable.OpenAction = false;
+                UserControlEnable.OverTimerReadyActionABC.StopTimer();
+                UserControlEnable.OperateABC = false;
+            }
+        }
+        /// <summary>
+        /// 同步合闸模式更新
+        /// </summary>
+        public void UpdateOperateSyn()
+        {
             if (UserControlEnable.OperateSyn)
             {
 
@@ -701,11 +721,222 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
                     UserControlEnable.OverTimerReadyActionSyn.StopTimer();
                     UserControlEnable.OperateSyn = false;
-                }               
+                }
 
             }
         }
+        /// <summary>
+        /// 合闸预制状态, 单开关三相
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <param name="data"></param>
+        public void UpdateNodeStatusSingleThree(byte mac, byte[] data)
+        {
+            var node = GetNdoe(mac);
+            if (node == null)
+            {
+                return;
+            }
+            UpdateNodeOnlineState(mac);
+            //if (!node.IsValid(data))
+            //{
+            //    UpdateStatus(node.Mac.ToString("X2") + "应答数据无效！");
+            //    return;
+            //}
+            var cmd = (CommandIdentify)(data[0] & 0x7F);
 
+            node.ResetState();
+            if (NodeAttribute.MacSynController == mac)//同步控制器                    
+            {
+                switch (cmd)
+                {
+                    //执行合闸
+                    case CommandIdentify.SyncOrchestratorCloseAction:
+                        {
+                            node.SynActionCloseState = true;
+                            node.SynReadyCloseState = false;
+                            UpdateStatus("同步控制器，执行合闸");
+                            break;
+                        }
+                    //预备合闸
+                    case CommandIdentify.SyncOrchestratorReadyClose:
+                        {
+                            node.SynReadyCloseState = true;
+                            node.SynActionCloseState = false;
+                            UpdateStatus("同步控制器，预制合闸");
+                            break;
+                        }
+                }
+            }
+            else if (NodeAttribute.MacPhaseA == mac) //A相                  
+            {
+                var loop = data[1];
+                for (int k = 0; k < 3; k++)
+                {
+                    switch (k)
+                    {
+                        case 0:
+                            {
+                                if ((loop & NodeAttribute.LoopI) == NodeAttribute.LoopI)
+                                {
+                                    node = NodeStatusList[1];
+                                }
+                                break;
+                            }
+                        case 1:
+                            {
+                                if ((loop & NodeAttribute.LoopII) == NodeAttribute.LoopII)
+                                {
+                                    node = NodeStatusList[2];
+                                }
+                                break;
+                            }
+                        case 2:
+                            {
+                                if ((loop & NodeAttribute.LoopIII) == NodeAttribute.LoopIII)
+                                {
+                                    node = NodeStatusList[3];
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                throw new Exception("UpdateNodeStatusSingleThree,未定义相");
+                            }
+
+                    }
+                    
+                    
+
+                    switch (cmd)
+                    {
+                        case CommandIdentify.CloseAction://合闸执行
+                            {
+                                node.ActionCloseState = true;
+                                node.ReadyCloseState = false;
+                                UpdateStatusSingleThree(loop, "合闸执行");
+                                break;
+                            }
+                        case CommandIdentify.OpenAction: //分闸执行
+                            {
+                                node.ActionOpenState = true;
+                                node.ReadyOpenState = false;
+                                UpdateStatusSingleThree(loop, "分闸执行");
+                                break;
+                            }
+                        case CommandIdentify.ReadyClose: // 合闸预制
+                            {
+                                node.ReadyCloseState = true;
+                                node.ActionCloseState = false;
+                                UpdateStatusSingleThree(loop, "合闸预制");
+
+                                break;
+                            }
+                        case CommandIdentify.ReadyOpen:  //分闸预制                   
+                            {
+                                node.ReadyOpenState = true;
+                                node.ActionOpenState = false;
+                                UpdateStatusSingleThree(loop, "分闸预制");
+                                break;
+                            }
+                       
+
+                    }
+                    
+                }
+                if (cmd == CommandIdentify.SyncReadyClose)  //同步合闸预制 
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        var phase = (loop >> (2 * i)) & 0x03;
+                        switch (phase)
+                        {
+                            case 1:
+                                {
+                                    UpdateStatus("A相同步合闸预制");
+                                    NodeStatusList[NodeAttribute.IndexPhaseA].SynReadyCloseState = true;
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    UpdateStatus("B相同步合闸预制");
+                                    NodeStatusList[NodeAttribute.IndexPhaseB].SynReadyCloseState = true;
+                                    break;
+                                }
+                            case 3:
+                                {
+                                    UpdateStatus("C相同步合闸预制");
+                                    NodeStatusList[NodeAttribute.IndexPhaseC].SynReadyCloseState = true;
+                                    break;
+                                }
+                            default:
+                                {
+                                    UpdateStatus("未知相，同步合闸预制");
+                                    break;
+                                }
+                        }
+                    }
+
+                    
+                }
+                
+
+            }
+
+            //设置用户控件使能状态
+            //不是ABC 一起动模式
+
+            if (!UserControlEnable.OperateABC)
+            {
+                var loop = data[1];
+                for (int k = 0; k < 3; k++)
+                {
+                    switch (k)
+                    {
+                        case 0:
+                            {
+                                if ((loop & NodeAttribute.LoopI) == NodeAttribute.LoopI)
+                                {
+                                    node = NodeStatusList[1];
+                                }
+                                break;
+                            }
+                        case 1:
+                            {
+                                if ((loop & NodeAttribute.LoopII) == NodeAttribute.LoopII)
+                                {
+                                    node = NodeStatusList[2];
+                                }
+                                break;
+                            }
+                        case 2:
+                            {
+                                if ((loop & NodeAttribute.LoopIII) == NodeAttribute.LoopIII)
+                                {
+                                    node = NodeStatusList[3];
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                throw new Exception("UpdateNodeStatusSingleThree,未定义相");
+                            }
+
+                    }
+                    SetUserControlEnable(node.Mac, cmd);
+                }
+
+                
+
+            }
+            else
+            {
+                UpdateWholeOperate();
+                return;
+            }
+            //同步合闸模式
+            UpdateOperateSyn();
+        }
         #endregion
 
         /// <summary>
@@ -880,7 +1111,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
            }
 
        }
+       public void UpdateStatusSingleThree(byte loop, string des)
+       {
 
+           if (loop == NodeAttribute.LoopI)
+           {
+               UpdateStatus("A相:" + des);
+           }
+           else if (loop == NodeAttribute.LoopII)
+           {
+               UpdateStatus("B相:" + des);
+           }
+           else if (loop == NodeAttribute.LoopIII)
+           {
+               UpdateStatus("C相:" + des);
+           }
+           else
+           {
+               UpdateStatus(des);
+           }
+
+       }
         /// <summary>
         /// 将其中deq位设置1，[0,7]
         /// </summary>
