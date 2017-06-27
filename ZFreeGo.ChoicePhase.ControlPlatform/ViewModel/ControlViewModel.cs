@@ -679,7 +679,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             SendSynCommand(SynReadyHeDSP);//首先发送命令到同步控制器，置为同步合闸预制状态
                             Thread.Sleep(200);
 
-                           // SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
+                            var command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommandLoop(CommandIdentify.SyncReadyClose, 20000);
+
+                            SendCMD(NodeAttribute.MacPhaseA, command);     
 
                             modelServer.LogicalUI.UserControlEnable.OperateSyn = true;
                             modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn =

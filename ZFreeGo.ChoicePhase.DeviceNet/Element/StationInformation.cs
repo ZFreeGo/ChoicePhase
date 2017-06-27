@@ -101,6 +101,13 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.Element
             get;
             set;
         }
+
+        public bool InitEnable
+        {
+            get;
+            set;
+        }
+        
         /// <summary>
         /// //使能
         /// </summary>
@@ -161,6 +168,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.Element
             DelayTime = 500;
             WaitFlag = false;
             Enable = enable;
+            InitEnable = Enable;
         }
 
 

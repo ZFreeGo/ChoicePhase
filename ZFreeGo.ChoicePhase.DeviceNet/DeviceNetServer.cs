@@ -130,7 +130,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 m.Online = false;
                 m.Complete = false;
                 m.Step = NetStep.Start;
-                m.Enable = true;
+                m.Enable = m.InitEnable;
             }
             IsActive = true;
         }

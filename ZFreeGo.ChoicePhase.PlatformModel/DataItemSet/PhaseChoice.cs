@@ -487,7 +487,30 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             return null;
         }
 
+        /// <summary>
+        /// 获取同步命令控制字,永磁同步Loop命令
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetSynCommandLoop(CommandIdentify cmdID, float period)
+        {
 
+            if (ConfigByte != 0)
+            {
+                var angle = GetAngleSet();
+                var cmd = new byte[2 + 2 * angle.Length];
+
+                cmd[0] = (byte)cmdID;
+                cmd[1] = ConfigByte;
+                for (int i = 0; i < angle.Length; i++)
+                {
+                    UInt16 tris = (ushort)(angle[i] / 360 * period);//转化为以65536为为基准的归一化值
+                    cmd[2 * i + 2] = (byte)(tris & 0x00FF);
+                    cmd[2 * i + 3] = (byte)(tris >> 8);
+                }
+                return cmd;
+            }
+            return null;
+        }
 
 
         /// <summary>
