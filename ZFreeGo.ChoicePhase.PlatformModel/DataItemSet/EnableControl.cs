@@ -693,7 +693,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
 
-        public Action<string> ExecuteReadyCommandDelegate;
+        public Action<string> ExecuteReadyCommandDelegate
+        {
+            get;
+            set;
+        }
 
 
         public RelayCommand<string> ReadyActionCommand { get; private set; }

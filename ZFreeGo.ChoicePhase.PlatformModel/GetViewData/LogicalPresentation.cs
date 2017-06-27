@@ -216,6 +216,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     }
                 }
                 OnlineBit = SetBit(OnlineBit, 1);
+
                  
             }
             else

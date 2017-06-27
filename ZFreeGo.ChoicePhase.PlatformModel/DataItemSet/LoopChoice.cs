@@ -169,7 +169,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 }
                 else
                 {
-                    _circleByte &= 0xFC;
+                    _circleByte &= 0xFD;
                 }
                 RaisePropertyChanged("CircleII");
             }

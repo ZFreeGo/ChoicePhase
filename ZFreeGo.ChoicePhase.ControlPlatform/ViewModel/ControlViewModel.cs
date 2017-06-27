@@ -83,10 +83,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer = PlatformModelServer.GetServer();
                 _downAddress = modelServer.CommServer.DownAddress;     
       
-
                 modelServer.LogicalUI.UserControlEnable.PropertyChanged += UserControlEnable_PropertyChanged;
                 ///执行代码委托
-                modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;               
+                if (NodeAttribute.SingleThreeMode)
+                {
+                    modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommandSingleThree;
+                }
+                else
+                {
+                    modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate = ExecuteUserReadyActionCommand;
+                }
+                
+
                 modelServer.ControlNetServer.PollingService.ErrorAckChanged += PollingService_ErrorAckChanged;
 
                   ///执行同步命令委托
@@ -650,7 +658,212 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return false;
             }
         }
+        void ExecuteUserReadyActionCommandSingleThree(string str)
+        {
+            try
+            {
 
+                switch (str)
+                {
+
+                    case "SynCloseReady"://同步合闸预制
+                        {
+                            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!modelServer.LogicalUI.UserControlEnable.OperateABC))
+                            {
+                                ShowMessageBox("有正在处理的其它操作", "预制操作");
+                            }
+
+                            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
+
+                            SendSynCommand(SynReadyHeDSP);//首先发送命令到同步控制器，置为同步合闸预制状态
+                            Thread.Sleep(200);
+
+                           // SendSynCMDToABC(CommandIdentify.SyncReadyClose); //分别发送到三相执行同步合闸预制
+
+                            modelServer.LogicalUI.UserControlEnable.OperateSyn = true;
+                            modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn =
+                                   new OverTimeTimer(NodeAttribute.SynCloseActionOverTime, () =>
+                                   {
+                                       ShowMessageBox("同步合闸操作超时", "单相操作");
+                                       modelServer.MonitorData.UpdateStatus("同步合闸操作超时");
+                                       modelServer.LogicalUI.UserControlEnable.OperateSyn = false;
+                                       modelServer.LogicalUI.UserControlEnable.SynCloseReady = true;
+                                       modelServer.LogicalUI.UserControlEnable.SynCloseAction = false;
+                                   });
+                            modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn.ReStartTimer();
+
+                            break;
+                        }
+                    case "SynCloseAction"://同步合闸执行
+                        {
+                            SendSynCommand(SynActionHeDSP);
+                            break;
+                        }
+                    case "CloseReady":
+                        {
+
+                            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!modelServer.LogicalUI.UserControlEnable.OperateABC))
+                            {
+                                ShowMessageBox("有正在处理的其它相操作", "整体操作");
+                            }
+
+                            //执行测试时，不提示确认
+                            if (_loopTestFlag || ShowMessageBox("是否确认 三相合闸预制？", "三相合闸操作"))
+                            {
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+                                                               
+                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 
+                                    (byte)(NodeAttribute.LoopI | NodeAttribute.LoopII | NodeAttribute.LoopIII), NodeAttribute.ClosePowerOnTime };
+                                SendCMD(NodeAttribute.MacPhaseA, command);                             
+
+
+                                modelServer.LogicalUI.UserControlEnable.OperateABC = true;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
+                                    new OverTimeTimer(NodeAttribute.CloseActionOverTime, () =>
+                                    {
+                                        ShowMessageBox("三相合闸操作超时", "单相操作");
+                                        modelServer.MonitorData.UpdateStatus("三相合闸操作超时");
+                                        modelServer.LogicalUI.UserControlEnable.OperateABC = false;
+                                        modelServer.LogicalUI.UserControlEnable.CloseReady = true;
+                                        modelServer.LogicalUI.UserControlEnable.CloseAction = false;
+                                    });
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
+                                if (_loopTestFlag)
+                                {
+                                    TestParameter.UpadeTip("合闸预制。");
+                                }
+                            }
+                            break;
+                        }
+                    case "CloseAction":
+                        {
+                            //默认为两个回路，50ms
+                            var command = new byte[] { (byte)CommandIdentify.CloseAction, 
+                                (byte)(NodeAttribute.LoopI | NodeAttribute.LoopII | NodeAttribute.LoopIII), NodeAttribute.ClosePowerOnTime };
+                            SendCMD(NodeAttribute.MacPhaseA, command);                           
+
+                            break;
+                        }
+                    case "CloseReadyA":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.ReadyClose, NodeAttribute.LoopI, NodeAttribute.ClosePowerOnTime);                           
+                            break;
+                        }
+                    case "CloseActionA":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.CloseAction, NodeAttribute.LoopI, NodeAttribute.ClosePowerOnTime);
+                            break;
+                        }
+                    case "CloseReadyB":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.ReadyClose, NodeAttribute.LoopII, NodeAttribute.ClosePowerOnTime);
+                            break;
+                        }
+                    case "CloseActionB":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.CloseAction, NodeAttribute.LoopII, NodeAttribute.ClosePowerOnTime);
+                            break;
+                        }
+                    case "CloseReadyC":
+                        {
+
+                            SinglePhaseReadyAction(CommandIdentify.ReadyClose, NodeAttribute.LoopIII, NodeAttribute.ClosePowerOnTime);
+                            break;
+                        }
+                    case "CloseActionC":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.CloseAction, NodeAttribute.LoopIII, NodeAttribute.ClosePowerOnTime);
+                            break;
+                        }
+                    case "OpenReady":
+                        {
+                            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!modelServer.LogicalUI.UserControlEnable.OperateABC))
+                            {
+                                ShowMessageBox("有正在处理的其它相操作", "整体操作");
+                            }
+
+
+                            if (_loopTestFlag || ShowMessageBox("是否确认 三相分闸预制？", "三相分闸操作"))
+                            {
+                                modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+
+                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 
+                                    (byte)(NodeAttribute.LoopI | NodeAttribute.LoopII | NodeAttribute.LoopIII), NodeAttribute.OpenPowerOnTime };
+                                SendCMD(NodeAttribute.MacPhaseA, command);        
+
+
+                                modelServer.LogicalUI.UserControlEnable.OperateABC = true;
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC =
+                                    new OverTimeTimer(NodeAttribute.OpenActionOverTime, () =>
+                                    {
+                                        ShowMessageBox("三相分闸操作超时", "单相操作");
+                                        modelServer.MonitorData.UpdateStatus("三相分闸操作超时");
+                                        modelServer.LogicalUI.UserControlEnable.OperateABC = false;
+                                        modelServer.LogicalUI.UserControlEnable.OpenReady = true;
+                                        modelServer.LogicalUI.UserControlEnable.OpenAction = false;
+                                    });
+                                modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionABC.ReStartTimer();
+
+
+                                if (_loopTestFlag)
+                                {
+                                    TestParameter.UpadeTip("分闸预制。");
+                                }
+                            }
+                            break;
+                        }
+                    case "OpenAction":
+                        {
+                            var command = new byte[] { (byte)CommandIdentify.OpenAction,
+                                (byte)(NodeAttribute.LoopI | NodeAttribute.LoopII | NodeAttribute.LoopIII), (byte)NodeAttribute.OpenPowerOnTime };
+                            SendCMD(NodeAttribute.MacPhaseA, command);                            
+                            break;
+                        }
+                    case "OpenReadyA":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.ReadyOpen, NodeAttribute.LoopI, NodeAttribute.OpenPowerOnTime);  
+                            break;
+                        }
+                    case "OpenActionA":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.OpenAction, NodeAttribute.LoopI, NodeAttribute.OpenPowerOnTime); 
+                            break;
+                        }
+                    case "OpenReadyB":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.ReadyOpen, NodeAttribute.LoopII, NodeAttribute.OpenPowerOnTime); 
+                            break;
+                        }
+                    case "OpenActionB":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.OpenAction, NodeAttribute.LoopII, NodeAttribute.OpenPowerOnTime); 
+                            break;
+
+                        }
+                    case "OpenReadyC":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.ReadyOpen, NodeAttribute.LoopIII, NodeAttribute.OpenPowerOnTime); 
+                            break;
+                        }
+                    case "OpenActionC":
+                        {
+                            SinglePhaseReadyAction(CommandIdentify.OpenAction, NodeAttribute.LoopIII, NodeAttribute.OpenPowerOnTime); 
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
+            }
+        }
         
         
         
@@ -878,7 +1091,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
             catch (Exception ex)
             {
-                //TODO:错误处理
+                Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
         }
 
@@ -959,6 +1172,106 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                     }
                     else if (mac == NodeAttribute.MacPhaseC)
+                    {
+                        modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC = timer;
+
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    timer.ReStartTimer();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 单相合闸预制
+        /// </summary>
+        /// <param name="mac"></param>
+        /// <param name="cmd"></param>
+        private void SinglePhaseReadyAction(CommandIdentify cmd,byte loopByte, byte time)
+        {
+
+            Action<bool> actDelegate;
+            string des = "";
+            string cmdDes = modelServer.GetIDDescription(cmd);
+            bool opetate = false;
+
+            switch(loopByte)
+            {
+                case 0x01://A相
+                    {
+                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateA = ar; };
+                        opetate = modelServer.LogicalUI.UserControlEnable.OperateA;
+                        des = "A";
+                        break;
+                    }
+                case 0x02://B相
+                    {
+                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateB = ar; };
+                        opetate = modelServer.LogicalUI.UserControlEnable.OperateB;
+                        des = "B";
+                        break;
+                    }
+                case 0x04://C相
+                    {
+                        actDelegate = ar => { modelServer.LogicalUI.UserControlEnable.OperateC = ar; };
+                        opetate = modelServer.LogicalUI.UserControlEnable.OperateC;
+                        des = "C";
+                        break;
+                    }                
+                default:
+                    {
+                        throw new ArgumentException(string.Format("不能使用的回路控制字(0x{0:X2})", loopByte));                       
+                    }
+            }
+
+
+
+
+            if (modelServer.LogicalUI.UserControlEnable.OperateState &&
+                               (!opetate))
+            {
+                ShowMessageBox("有正在处理的其它相操作", "单相操作");
+            }
+
+            var ActionState = (cmd == CommandIdentify.CloseAction) ||
+                            (cmd == CommandIdentify.OpenAction);
+            //执行状态不在进行确认
+            if (ActionState || ShowMessageBox(string.Format("是否确认 {0}相{1}？", des, cmdDes), "单相操作"))
+            {
+                var command = new byte[] { (byte)cmd, loopByte, (byte)time };
+
+                SendCMD(NodeAttribute.MacPhaseA, command);
+
+
+                if ((cmd == CommandIdentify.SyncReadyClose) ||
+                    (cmd == CommandIdentify.ReadyClose) ||
+                    (cmd == CommandIdentify.ReadyOpen))
+                {
+                    modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
+                    actDelegate(true);
+
+                    var timer = new OverTimeTimer(NodeAttribute.GetOverTime(cmd), () =>
+                    {
+                        actDelegate(false);
+                        ShowMessageBox(string.Format("{0}相操作超时！", des), "单相操作");
+                        modelServer.MonitorData.UpdateStatus(string.Format("{0}相操作超时！", des));
+                    });
+
+                    if (loopByte == 0x01)
+                    {
+                        modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionA = timer;
+
+                    }
+                    else if (loopByte == 0x02)
+                    {
+                        modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionB = timer;
+
+                    }
+                    else if (loopByte == 0x04)
                     {
                         modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC = timer;
 

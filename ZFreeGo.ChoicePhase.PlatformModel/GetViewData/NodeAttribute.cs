@@ -40,6 +40,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
         /// <summary>
+        /// 回路I
+        /// </summary>
+        public const byte LoopI = 0x01;
+        /// <summary>
+        /// 回路II
+        /// </summary>
+        public const byte LoopII = 0x02;
+        /// <summary>
+        /// 回路III
+        /// </summary>
+        public const byte LoopIII = 0x04; 
+
+        /// <summary>
         /// 主站索引
         /// </summary>
         public const byte IndexMainStation = 4;
