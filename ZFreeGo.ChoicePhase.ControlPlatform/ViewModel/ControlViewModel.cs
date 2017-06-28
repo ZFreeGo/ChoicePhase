@@ -62,7 +62,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              
              LoopTestCommand = new RelayCommand<string>(ExecuteLoopTestCommand);
 
-             
         }
 
       

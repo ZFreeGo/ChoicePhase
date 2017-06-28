@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\
+F:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\
 ZFreeGo.ChoicePhase.ControlPlatform
 none
 false
 CODE_ANALYSIS;DEBUG;TRACE
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\App.xaml
+F:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\App.xaml
 7783411192
 
 16-512647025
-201196331886
+20-2086043599
 MainWindow.xaml;Skins\MainSkin.xaml;View\CommunicationView.xaml;View\ControlView.xaml;View\MonitorView.xaml;View\SetpointView.xaml;View\StartupInterface.xaml;
 
 False

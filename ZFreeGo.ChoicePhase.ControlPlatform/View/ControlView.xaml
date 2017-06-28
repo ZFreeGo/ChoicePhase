@@ -613,7 +613,7 @@
                                 <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeI}"></TextBox>
                                 <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeII}"></TextBox>
                                 <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeIII}" Visibility="Collapsed"></TextBox>
-                                <Button Margin="30,3,3,3" Command="{Binding ActionCommand}" CommandParameter="Synchronization">合闸预制</Button>
+                                <Button Margin="30,3,3,3" Command="{Binding OpearateCommand}" CommandParameter="Synchronization">合闸预制</Button>
                             </StackPanel>
                         </TabItem>
                         <TabItem Header="同步控制控制器">

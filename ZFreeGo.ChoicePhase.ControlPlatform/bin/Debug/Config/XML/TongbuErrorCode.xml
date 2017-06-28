@@ -68,12 +68,12 @@
   <ErrorCode>
     <ID>14</ID> 
 	<Sign>ERROR_OVERTIME</Sign>   	
-    <Comment>错误的操作顺序，未预制先执行</Comment>  	
+    <Comment>执行超时</Comment>  	
   </ErrorCode>
   <ErrorCode>
     <ID>15</ID> 
 	<Sign>ERROR_OPERATE_SEQUENCE</Sign>   	
-    <Comment>计算延时错误</Comment>  	
+    <Comment>错误的操作次序</Comment>  	
   </ErrorCode>
   <ErrorCode>
     <ID>16</ID> 
@@ -94,5 +94,10 @@
     <ID>19</ID> 
 	<Sign>ERROR_OUT_PULSE</Sign>   	
     <Comment>输出脉冲</Comment>  	
-  </ErrorCode>    
+  </ErrorCode> 
+  <ErrorCode>
+    <ID>20</ID> 
+	<Sign>ERROR_OVERTIME</Sign>   	
+    <Comment>输出脉冲</Comment>  	
+  </ErrorCode>   
 </NewDataSet>
