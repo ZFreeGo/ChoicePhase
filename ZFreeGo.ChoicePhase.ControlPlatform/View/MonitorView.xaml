@@ -34,7 +34,8 @@
             </StackPanel>
         </Grid>
         <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False"  Name="gridProtectSetPoint" IsReadOnly="{Binding  ReadOnly}" 
-                  SelectedIndex="{Binding SelectedIndex}" CanUserSortColumns="False"  ItemsSource="{Binding UserData}">
+                  SelectedIndex="{Binding SelectedIndex}" CanUserSortColumns="False"  ItemsSource="{Binding UserData}"
+                  >
             <DataGrid.ContextMenu>
                 <ContextMenu Name="dgmenu" StaysOpen="True"  >
                     <MenuItem Header="重新载入表格" CommandParameter="Reload" Command="{Binding DataGridMenumSelected}"/>

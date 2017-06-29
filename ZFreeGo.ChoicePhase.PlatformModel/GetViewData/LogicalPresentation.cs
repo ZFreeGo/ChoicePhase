@@ -781,6 +781,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     node = NodeStatusList[1];
                                 }
+                                
+                                else
+                                {
+                                    continue;
+                                }
                                 break;
                             }
                         case 1:
@@ -789,6 +794,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     node = NodeStatusList[2];
                                 }
+                                else
+                                {
+                                    continue;
+                                }
                                 break;
                             }
                         case 2:
@@ -796,6 +805,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 if ((loop & NodeAttribute.LoopIII) == NodeAttribute.LoopIII)
                                 {
                                     node = NodeStatusList[3];
+                                }
+                                else
+                                {
+                                    continue;
                                 }
                                 break;
                             }
@@ -846,9 +859,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
                 if (cmd == CommandIdentify.SyncReadyClose)  //同步合闸预制 
                 {
+                    bool finshed = false;
                     for (int i = 0; i < 3; i++)
                     {
                         var phase = (loop >> (2 * i)) & 0x03;
+                        finshed = false;
                         switch (phase)
                         {
                             case 1:
@@ -872,8 +887,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             default:
                                 {
                                     UpdateStatus("未知相，同步合闸预制");
+                                    finshed = true;
                                     break;
                                 }
+                        }
+                        if(finshed)
+                        {
+                            break;
                         }
                     }
 

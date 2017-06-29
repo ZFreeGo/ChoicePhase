@@ -385,7 +385,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
                 var data = new int[3];
                 int i = 0;
-                _circleSelectByte = (byte)(LoopIndexI - 1);
+                _circleSelectByte = (byte)(LoopIndexI);
                 if (LoopIndexI == 0)
                 {
                     throw new ArgumentNullException("你没有选择任何回路!");
@@ -395,12 +395,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 if (LoopIndexII != 0)
                 {
                     data[i++] = _offsetTimeI;
-                    _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexII - 1) << 2));
+                    _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexII) << 2));
 
                     if (LoopIndexIII != 0)
                     {
                         data[i++] = _offsetTimeII;
-                        _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexIII - 1) << 4));
+                        _circleSelectByte = (byte)(_circleSelectByte | ((LoopIndexIII) << 4));
                     }
                 }
                 var byteArray = new byte[i * 2];

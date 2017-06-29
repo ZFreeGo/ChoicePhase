@@ -21,7 +21,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         private PlatformModelServer modelServer;
         private readonly byte _downAddress;
-        private readonly byte _triansFunction = 1;
+
 
         private AttributeIndex _attributeIndex = AttributeIndex.YongciReadA;
         /// <summary>

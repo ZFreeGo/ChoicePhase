@@ -497,15 +497,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             if (ConfigByte != 0)
             {
                 var angle = GetAngleSet();
-                var cmd = new byte[2 + 2 * angle.Length];
+                var cmd = new byte[2 + 2 * (angle.Length - 1)];
 
                 cmd[0] = (byte)cmdID;
                 cmd[1] = ConfigByte;
-                for (int i = 0; i < angle.Length; i++)
+                for (int i = 1; i < angle.Length; i++)
                 {
-                    UInt16 tris = (ushort)(angle[i] / 360 * period);//转化为以65536为为基准的归一化值
-                    cmd[2 * i + 2] = (byte)(tris & 0x00FF);
-                    cmd[2 * i + 3] = (byte)(tris >> 8);
+                    UInt16 tris = (ushort)((angle[i] - angle[i - 1]) / 360 * period);//转化为以65536为为基准的归一化值
+                    cmd[2 * i ] = (byte)(tris & 0x00FF);
+                    cmd[2 * i + 1] = (byte)(tris >> 8);
                 }
                 return cmd;
             }

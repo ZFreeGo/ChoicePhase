@@ -304,15 +304,15 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 }
                 catch (ArgumentException ex)
                 {
-
+                    ZFreeGo.Common.LogTrace.CLog.LogError(ex.Message + "" + ex.StackTrace);
                 }
                 catch (FormatException ex)
                 {
-
+                    ZFreeGo.Common.LogTrace.CLog.LogError(ex.Message + "" + ex.StackTrace);
                 }
                 catch (OverflowException ex)
                 {
-
+                    ZFreeGo.Common.LogTrace.CLog.LogError(ex.Message + "" + ex.StackTrace);
                 }
 
             }

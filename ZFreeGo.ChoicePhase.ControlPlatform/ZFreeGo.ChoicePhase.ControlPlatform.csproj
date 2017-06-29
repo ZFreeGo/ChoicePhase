@@ -85,6 +85,7 @@
     <Compile Include="View\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\DataGridCommitEditBehavior.cs" />
     <Compile Include="View\MonitorView.xaml.cs">
       <DependentUpon>MonitorView.xaml</DependentUpon>
     </Compile>
