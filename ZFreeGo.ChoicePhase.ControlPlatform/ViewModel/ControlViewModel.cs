@@ -913,7 +913,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             if (modelServer.LogicalUI.UserControlEnable.OperateState &&
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
-                                ShowMessageBox("有正在处理的其它操作", "预制操作");
+                                ShowMessageBox("有正在处理的其它操作", "同步预制操作");
                             }
 
                             modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
@@ -1216,7 +1216,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
         /// <summary>
-        /// 单相合闸预制
+        /// 单相合闸预制，面向单开关三回路
         /// </summary>
         /// <param name="mac"></param>
         /// <param name="cmd"></param>
@@ -1335,17 +1335,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void PollingService_ErrorAckChanged(StatusChangeMessage e)
-        {
-           
-           
+        {                    
             try
             {
                 var node = modelServer.LogicalUI.GetNdoe(e.MAC);
                 if (node == null)
                 {
                     return;
-                }
-               
+                }               
 
                 switch ((CommandIdentify)e.Data[1])
                 {
@@ -1358,7 +1355,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case CommandIdentify.SyncOrchestratorCloseAction:
                         {
                             OverTimeTimer timer;
-
                             if (e.MAC == NodeAttribute.MacSynController)
                             {
                                 timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn;
@@ -1395,19 +1391,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             {
                                 modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn.StopTimer();
                             }
-
-
                             modelServer.LogicalUI.UserControlEnable.OperateA = false;
                             modelServer.LogicalUI.UserControlEnable.OperateB = false;
                             modelServer.LogicalUI.UserControlEnable.OperateC = false;
                             modelServer.LogicalUI.UserControlEnable.OperateABC = false;
                             modelServer.LogicalUI.UserControlEnable.OperateSyn = false;
 
-
                             var str = modelServer.GetErrorComment(e.MAC, e.Data);
                             ShowMessageBox(str, "应答错误");
-
-
                             break;
                         }
                 }
@@ -1457,24 +1448,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
       
-        /// <summary>
-        /// 将命令发送到A,B,C
-        /// </summary>
-        /// <param name="command"></param>
-        private void SendToABC(byte[] command)
-        {
-            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态
-            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseA, command, 0, command.Length);
-            Thread.Sleep(20);
-            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).ResetState();//复位状态        
-            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseB).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseB, command, 0, command.Length);
-            Thread.Sleep(20);
-            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).ResetState();//复位状态 
-            modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseC).LastSendData = command;
-            modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacPhaseC, command, 0, command.Length);
-        }
+    
         /// <summary>
         /// 发送命令状态到子站
         /// </summary>

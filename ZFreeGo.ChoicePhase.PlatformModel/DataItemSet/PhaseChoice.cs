@@ -511,6 +511,32 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             return null;
         }
+        /// <summary>
+        /// 获取同步命令控制字,永磁同步Loop命令
+        /// 首先将合闸相角时间减去合闸时间CloseTime，得到起始时间StartTime。
+        /// 找取起始时间最小值min，其作为同步动作的选择项，并选择其作为同步合闸相角设定。
+        /// 将其它值减去最小值作为偏移。按从小到到达进行排列。
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetSynCommandLoop(CommandIdentify cmdID, float period, float closeTime)
+        {
+            if (ConfigByte != 0)
+            {
+                var angle = GetAngleSet();
+                var cmd = new byte[2 + 2 * (angle.Length - 1)];
+
+                cmd[0] = (byte)cmdID;
+                cmd[1] = ConfigByte;
+                for (int i = 1; i < angle.Length; i++)
+                {
+                    UInt16 tris = (ushort)((angle[i] - angle[i - 1]) / 360 * period);//转化为以65536为为基准的归一化值
+                    cmd[2 * i] = (byte)(tris & 0x00FF);
+                    cmd[2 * i + 1] = (byte)(tris >> 8);
+                }
+                return cmd;
+            }
+            return null;
+        }
 
 
         /// <summary>
