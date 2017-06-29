@@ -666,6 +666,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                         des = "同步合闸预制";
                         break;
                     }
+                case CommandIdentify.ConfigMode:
+                    {
+                        des = "配置模式";
+                        break;
+                    }
                 default:
                     {
                         des = "未识别的ID";

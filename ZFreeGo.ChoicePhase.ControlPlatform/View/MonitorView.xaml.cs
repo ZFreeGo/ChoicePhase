@@ -25,5 +25,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.View
             InitializeComponent();
            
         }
+
+       
     }
 }

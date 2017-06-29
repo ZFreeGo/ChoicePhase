@@ -64,6 +64,7 @@
     <Compile Include="GetViewData\LogicalPresentation.cs" />
     <Compile Include="GetViewData\NodeAttribute.cs" />
     <Compile Include="Helper\OverTimeTimer.cs" />
+    <Compile Include="Helper\ShortFloat.cs" />
     <Compile Include="Helper\XmlDatasetConvert.cs" />
     <Compile Include="Helper\XMLOperate.cs" />
     <Compile Include="PlatformModelServer.cs" />

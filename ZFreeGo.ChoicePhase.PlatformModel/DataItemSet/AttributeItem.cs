@@ -5,6 +5,7 @@ using System.Text;
 using GalaSoft.MvvmLight;
 using System.Net;
 using GalaSoft.MvvmLight.Command;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -163,8 +164,26 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         /// <returns>true/false 更新是否成功</returns> 
         public bool UpdateAttribute(byte[] data)
         {
+            //浮点数4字节0x4F
+            if (_dataType == 0x4F)
+            {
+                ShortFloating Float = new ShortFloating(data);
+
+                _rawValue = (int)Float.Value;
+                RaisePropertyChanged("RawValue");
+                
+                _value = Float.Value;
+                RaisePropertyChanged("Value");
+                TimeStamp = DateTime.Now.ToLongTimeString();
+                return true;
+            }
+
+
+
             int byteNum = _dataType >> 4;
             int signalNum = _dataType & 0x0F;
+
+          
 
             UInt32 raw = 0;
 
@@ -194,7 +213,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         /// <returns>true/false 更新是否成功</returns> 
         public bool UpdateAttribute(double setValue)
         {
-            
+            if(_dataType == 0x4F)
+            {
+                ShortFloating Float = new ShortFloating((float)setValue);
+                _rawValue = (int)Float.Value;
+                RaisePropertyChanged("RawValue");
+                TimeStamp = DateTime.Now.ToLongTimeString();
+                return true;
+            }
+
             int signalNum = _dataType & 0x0F;
 
             double ration = Math.Pow(10, signalNum); //计算系数
@@ -234,6 +261,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public byte[] GetAttributeByteData()
         {
             UpdateAttribute(NewValue);//更新原始数组
+
+            if (_dataType == 0x4F)
+            {
+                ShortFloating Float = new ShortFloating((float)_newValue);
+                return Float.GetDataArray();
+            }
             int byteNum = _dataType >> 4;
             byte[] data = new byte[byteNum];
             var outData = _rawValue;

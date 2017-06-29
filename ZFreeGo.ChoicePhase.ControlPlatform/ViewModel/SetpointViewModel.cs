@@ -19,7 +19,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
     public class SetpointViewModel : ViewModelBase
     {
         private readonly byte _downAddress;
-        private readonly byte _triansFunction = 1;
+       
         private PlatformModelServer modelServer;
         private AttributeIndex _attributeIndex = AttributeIndex.YongciSetA;
         /// <summary>
@@ -362,6 +362,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 }
                                 
                             }
+                            break;
+                        }
+                    case "EnterConfig":
+                        {
+                            var command = new byte[] { (byte)CommandIdentify.ConfigMode, _macAddress, NodeAttribute.MacMainStation, 0xAA };
+                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);
+
+                            break;
+                        }
+                    case "ExitConfig":
+                        {
+                            var command = new byte[] { (byte)CommandIdentify.ConfigMode, _macAddress, NodeAttribute.MacMainStation, 0x55 };
+                            modelServer.ControlNetServer.MasterSendCommand(_macAddress, command, 0, command.Length);
+
                             break;
                         }
                 }

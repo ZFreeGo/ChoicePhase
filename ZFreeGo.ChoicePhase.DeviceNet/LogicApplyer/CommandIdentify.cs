@@ -62,7 +62,10 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// </summary>
         ErrorACK = 0x14,
 
-
+        /// <summary>
+        /// 配置模式
+        /// </summary>
+        ConfigMode = 0x15,
         /// <summary>
         /// 子站状态改变信息上传
         /// </summary>
