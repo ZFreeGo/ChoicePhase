@@ -64,9 +64,37 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         }
 
-      
 
-      
+        #region 显示控制
+
+
+        /// <summary>
+        /// 普通模式
+        /// </summary>
+        public string VisibleNormal
+        {
+            get
+            {
+                return modelServer.LogicalUI.UserControlEnable.VisibleNormal;
+            }
+           
+        }
+
+       
+        /// <summary>
+        /// 单相模式
+        /// </summary>
+        public string VisibleSingle
+        {
+            get
+            {
+                return modelServer.LogicalUI.UserControlEnable.VisibleSingle;
+            }
+            
+        }
+
+        #endregion
+
 
         #region 加载数据命令：LoadDataCommand
         /// <summary>
