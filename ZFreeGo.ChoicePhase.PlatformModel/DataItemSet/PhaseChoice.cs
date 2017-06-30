@@ -284,8 +284,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                             case PhaseB:
                             case PhaseC:
                                 {
-                                    InitphaseSelect(_phaseSelectList[1]);
-                                    InitphaseSelect(_phaseSelectList[2]);
+                                    InitphaseSelect(_phaseSelectList[1]);                                    
+                                    _phaseSelectList[2].Clear();
+                                    _phaseSelectList[2].Add(PhaseNull);
                                     RemoveItem(item, 1);
                                     break;
                                 }                                

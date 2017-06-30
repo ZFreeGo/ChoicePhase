@@ -1411,8 +1411,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             }
                             else if (e.MAC == NodeAttribute.MacPhaseC)
                             {
-                                timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC;
-                                break;
+                                timer = modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionC;                               
                             }
                             else
                             {

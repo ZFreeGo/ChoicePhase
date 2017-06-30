@@ -124,7 +124,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 if (m.ID == id)
                 {
-                    return string.Format("{0}(1),代号{0:X2}", m.Comment, m.Sign, m.ID);
+                    return string.Format("{0}({1}),代号{2:X2}", m.Comment, m.Sign, m.ID);
                 }
             }
             return "未识别的ID";
