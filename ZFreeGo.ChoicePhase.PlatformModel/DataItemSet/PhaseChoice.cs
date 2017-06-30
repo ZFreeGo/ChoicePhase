@@ -511,32 +511,85 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             return null;
         }
+
+
+        #region 单开关三级相角获取
+
+        
         /// <summary>
         /// 获取同步命令控制字,永磁同步Loop命令
         /// 首先将合闸相角时间减去合闸时间CloseTime，得到起始时间StartTime。
         /// 找取起始时间最小值min，其作为同步动作的选择项，并选择其作为同步合闸相角设定。
         /// 将其它值减去最小值作为偏移。按从小到到达进行排列。
         /// </summary>
-        /// <returns></returns>
-        public byte[] GetSynCommandLoop(CommandIdentify cmdID, float period, float closeTime)
+        /// <returns>同步控制命令，第一个元素：同步控制器命令，第二个元素：永磁同步命令</returns>
+        public Tuple<byte[], byte[]> GetSynCommandLoop(CommandIdentify cmdIDSyn,CommandIdentify cmdID, List<ActionPhase> actionPhase)
         {
             if (ConfigByte != 0)
             {
-                var angle = GetAngleSet();
-                var cmd = new byte[2 + 2 * (angle.Length - 1)];
 
-                cmd[0] = (byte)cmdID;
-                cmd[1] = ConfigByte;
-                for (int i = 1; i < angle.Length; i++)
+                List<ActionPhase> ActionSeq = new List<ActionPhase>();
+                Action<string, double> upadateState = (item, angle) =>
+                    {
+                        byte phaseIndex = (byte)(0x03 & GetByteCode(item));
+                        if (phaseIndex != 0)
+                        {
+                            actionPhase[phaseIndex - 1].Index = (byte)(phaseIndex - 1) ;
+                            actionPhase[phaseIndex - 1].Angle = angle;
+                            actionPhase[phaseIndex - 1].Enable = true;
+                            ActionSeq.Add(actionPhase[phaseIndex - 1]);
+                        }                                       
+                    };             
+                upadateState(PhaseItemI, _angleI);
+                upadateState(PhaseItemII, _angleII);
+                upadateState(PhaseItemIII, _angleIII);
+
+
+                //按顺序排列，Start最小值，最前面
+                Comparison<ActionPhase> compare = (b1, b2)=>
                 {
-                    UInt16 tris = (ushort)((angle[i] - angle[i - 1]) / 360 * period);//转化为以65536为为基准的归一化值
+                    if(b1.StartTime < b2.StartTime)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                };
+
+                ActionSeq.Sort(compare);
+
+                //同步控制器指令
+                var cmdSyn = new byte[2 + 2];
+                cmdSyn[0] = (byte)cmdIDSyn;
+                cmdSyn[1] = ActionSeq[0].Phase;
+                UInt16 tris = (ushort)(ActionSeq[0].Angle / 360 * 65536);//转化为以65536为为基准的归一化值
+                cmdSyn[2] = (byte)(tris & 0x00FF);
+                cmdSyn[3] = (byte)(tris >> 8);
+
+                //永磁同步控制器指令
+
+                var cmd = new byte[2 + 2 * (ActionSeq.Count - 1)];
+                byte config = ActionSeq[0].Phase;               
+
+                for (int i = 1; i < ActionSeq.Count; i++)
+                {
+                    config = (byte)((ActionSeq[i].Phase << (2 * i)) | config);
+                    tris = (ushort)(ActionSeq[i].StartTime - ActionSeq[i-1].StartTime);
                     cmd[2 * i] = (byte)(tris & 0x00FF);
                     cmd[2 * i + 1] = (byte)(tris >> 8);
-                }
-                return cmd;
+                }                              
+                cmd[0] = (byte)cmdID;
+                cmd[1] = config;
+
+                return new Tuple<byte[], byte[]>(cmdSyn, cmd);
             }
             return null;
         }
+
+
+        #endregion
 
 
         /// <summary>

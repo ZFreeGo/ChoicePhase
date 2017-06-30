@@ -122,7 +122,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// <summary>
         /// 合闸时间
         /// </summary>
-        private static byte[] _closeTime = new byte[] {0, 50, 50, 50 };
+        private static byte[] _closeTime = new byte[] {0, 0, 0, 0};
 
         /// <summary>
         /// 合闸时间,索引1开始为A,B,C
@@ -132,6 +132,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             get
             {
                 return _closeTime;
+            }
+        }
+
+        private static float _period = 20000;
+        /// <summary>
+        /// 周期
+        /// </summary>
+        public static float Period
+        {
+            get
+            {
+                return _period;
+            }
+            set
+            {
+                _period = value;
             }
         }
 

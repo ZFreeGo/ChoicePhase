@@ -15,6 +15,7 @@ using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 using ZFreeGo.Monitor.AutoStudio.Secure;
 using System.Timers;
+using System.Collections.Generic;
 namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 {
     /// <summary>
@@ -685,6 +686,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 return false;
             }
         }
+
+        /// <summary>
+        /// 动作相角集合
+        /// </summary>
+        private List<ActionPhase> actionCollect;
         void ExecuteUserReadyActionCommandSingleThree(string str)
         {
             try
@@ -695,6 +701,17 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                     case "SynCloseReady"://同步合闸预制
                         {
+                          
+                            actionCollect = new List<ActionPhase>();
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseA, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseA], false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseB, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseB], false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseC, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseC], false, NodeAttribute.Period));
+
+                            var cmd = modelServer.LogicalUI.SynPhaseChoice.
+                                GetSynCommandLoop(CommandIdentify.SyncOrchestratorReadyClose, 
+                                CommandIdentify.SyncReadyClose, actionCollect);
+                           
+
                             if (modelServer.LogicalUI.UserControlEnable.OperateState &&
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
@@ -703,12 +720,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
                             modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
 
-                            SendSynCommand(SynReadyHeDSP);//首先发送命令到同步控制器，置为同步合闸预制状态
+                            if (cmd.Item1 != null)
+                            {
+                                SendCMD(NodeAttribute.MacSynController, cmd.Item1);
+                            }
+                            else
+                            {
+                                throw new Exception("同步合闸相角设置错误,未选择任何相角！");
+                            }
+
                             Thread.Sleep(200);
-
-                            var command = modelServer.LogicalUI.SynPhaseChoice.GetSynCommandLoop(CommandIdentify.SyncReadyClose, 20000);
-
-                            SendCMD(NodeAttribute.MacPhaseA, command);     
+                          
+                            SendCMD(NodeAttribute.MacPhaseA, cmd.Item2);     
 
                             modelServer.LogicalUI.UserControlEnable.OperateSyn = true;
                             modelServer.LogicalUI.UserControlEnable.OverTimerReadyActionSyn =
@@ -726,7 +749,24 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "SynCloseAction"://同步合闸执行
                         {
-                            SendSynCommand(SynActionHeDSP);
+                            actionCollect = new List<ActionPhase>();
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseA, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseA], false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseB, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseB], false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseC, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseC], false, NodeAttribute.Period));
+
+                            var cmd = modelServer.LogicalUI.SynPhaseChoice.
+                                GetSynCommandLoop(CommandIdentify.SyncOrchestratorCloseAction,
+                                CommandIdentify.SyncReadyClose, actionCollect);
+
+                            if (cmd.Item1 != null)
+                            {
+                                SendCMD(NodeAttribute.MacSynController, cmd.Item1);
+                            }
+                            else
+                            {
+                                throw new Exception("同步合闸相角设置错误,未选择任何相角！");
+                            }
+
                             break;
                         }
                     case "CloseReady":

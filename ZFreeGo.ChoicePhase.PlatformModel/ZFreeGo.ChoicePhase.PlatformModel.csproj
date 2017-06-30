@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="CommunicationServer.cs" />
     <Compile Include="Communication\SerialPortAttribute.cs" />
+    <Compile Include="DataItemSet\ActionPhase.cs" />
     <Compile Include="DataItemSet\ConfigParameter.cs" />
     <Compile Include="DataItemSet\EnableControl.cs" />
     <Compile Include="DataItemSet\CommandDdentifyItem.cs" />
