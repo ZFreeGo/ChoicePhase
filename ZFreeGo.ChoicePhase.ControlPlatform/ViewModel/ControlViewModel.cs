@@ -859,7 +859,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             {
                                 modelServer.LogicalUI.GetNdoe(NodeAttribute.MacPhaseA).ResetState();//复位状态 
 
-                                var command = new byte[] { (byte)CommandIdentify.ReadyClose, 
+                                var command = new byte[] { (byte)CommandIdentify.ReadyOpen, 
                                     (byte)(NodeAttribute.LoopI | NodeAttribute.LoopII | NodeAttribute.LoopIII), NodeAttribute.OpenPowerOnTime };
                                 SendCMD(NodeAttribute.MacPhaseA, command);        
 

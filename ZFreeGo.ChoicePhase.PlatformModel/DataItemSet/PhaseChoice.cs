@@ -241,7 +241,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             else
             {
-                AngleVisibleI = Hidden;
+                AngleVisibleI = Collapsed;
             }
             if ((PhaseItemII != null) && (PhaseItemII != PhaseNull))
             {
@@ -249,7 +249,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             else
             {
-                AngleVisibleII = Hidden;
+                AngleVisibleII = Collapsed;
             }
             if ((PhaseItemIII != null) && (PhaseItemIII != PhaseNull))
             {
@@ -257,7 +257,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
             else
             {
-                AngleVisibleIII = Hidden;
+                AngleVisibleIII = Collapsed;
             }
         }
 
