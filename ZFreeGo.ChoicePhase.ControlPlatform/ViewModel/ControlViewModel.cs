@@ -38,7 +38,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private const string SynActionHeDSP = "SynActionHeDSP";
         private const string SynReadyHeDSP = "SynReadyHeDSP";
 
-
+        /// <summary>
+        /// 同步控制器属性合集
+        /// </summary>
+        private ObservableCollection<AttributeItem> synAttribute;
 
         private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
@@ -60,10 +63,156 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
              ExecuteLoadDataCommand();
              DispatcherShow = Dispatcher.CurrentDispatcher;
 
-             
+            
              LoopTestCommand = new RelayCommand<string>(ExecuteLoopTestCommand);
+             UpdateSystemParameterCommand = new RelayCommand<string>(ExecuteUpdateSystemParameterCommand);
+             
+        }
+
+
+        #region 更新系统参数
+        public RelayCommand<String> UpdateSystemParameterCommand { get; private set; }
+
+        void ExecuteUpdateSystemParameterCommand(string obj)
+        {            
+            for (int i = 0; i < 6; i++)
+            {
+
+                var index = 0x0E - 1 + i;
+                synAttribute[index].NewValue = synAttribute[index].Value;
+                var atrribute = synAttribute[index].GetAttributeByteData();
+                var command = new byte[2 + atrribute.Length];
+                command[0] = (byte)CommandIdentify.MasterParameterSetOne;
+                command[1] = (byte)synAttribute[index].ConfigID;
+                Array.Copy(atrribute, 0, command, 2, atrribute.Length);
+                modelServer.ControlNetServer.MasterSendCommand(NodeAttribute.MacSynController, command, 0, command.Length);
+
+            }       
 
         }
+
+
+        #endregion
+
+
+        #region 同步参数
+        /// <summary>
+        /// 合闸时间A
+        /// </summary>
+        public double CloseTimeA
+        {
+            get
+            {                
+                return synAttribute[0x0E - 1].Value;
+                
+            }
+            set
+            {             
+                if ((value > 0 ) && (value < 65535))
+                {
+                    synAttribute[0x0E - 1].Value = value;
+                    NodeAttribute.CloseTime[1] = (int)value;
+                }               
+                RaisePropertyChanged("CloseTimeA");
+               
+            }
+        }
+        /// <summary>
+        /// 合闸时间B
+        /// </summary>
+        public double CloseTimeB
+        {
+            get
+            {
+                return synAttribute[0x0F - 1].Value;
+
+            }
+            set
+            {
+                 if ((value > 0 ) && (value < 65535))
+                {
+                    synAttribute[0x0F - 1].Value = value;
+                    NodeAttribute.CloseTime[2] = (int)value;
+                }
+                RaisePropertyChanged("CloseTimeB");
+
+            }
+        }
+        /// <summary>
+        /// 合闸时间C
+        /// </summary>
+        public double CloseTimeC
+        {
+            get
+            {
+                return synAttribute[0x10 - 1].Value;
+
+            }
+            set
+            {
+                 if ((value > 0 ) && (value < 65535))
+                {
+                    synAttribute[0x10 - 1].Value = value;
+                    NodeAttribute.CloseTime[3] = (int)value;
+                }
+                RaisePropertyChanged("CloseTimeC");
+
+            }
+        }
+
+
+        /// <summary>
+        /// 补偿时间A
+        /// </summary>
+        public double CompensationTimeA
+        {
+            get
+            {
+                return synAttribute[0x11 - 1].Value;
+            }
+            set
+            {
+
+                synAttribute[0x11 - 1].Value = value;                
+                RaisePropertyChanged("CompensationTimeA");
+                
+            }
+        }
+        /// <summary>
+        /// 补偿时间B
+        /// </summary>
+        public double CompensationTimeB
+        {
+            get
+            {
+                return synAttribute[0x12 - 1].Value;
+            }
+            set
+            {
+
+                synAttribute[0x12 - 1].Value = value;                
+                RaisePropertyChanged("CompensationTimeB");
+
+            }
+        }
+        /// <summary>
+        /// 补偿时间C
+        /// </summary>
+        public double CompensationTimeC
+        {
+            get
+            {
+                return synAttribute[0x13 - 1].Value;
+            }
+            set
+            {
+
+                synAttribute[0x13 - 1].Value = value;                
+                RaisePropertyChanged("CompensationTimeC");
+
+            }
+        }
+        #endregion
 
 
         #region 显示控制
@@ -132,6 +281,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 _actionLoopChoice.ExecuteOpearateCommandDelegate = ExecuteOperateCommand;
 
                 ControlCollect.PropertyChanged += ControlCollect_PropertyChanged;
+
+                synAttribute = modelServer.MonitorData.ReadAttribute(AttributeIndex.DspSet, false);
 
             }           
         }
@@ -546,10 +697,22 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #endregion
 
-
-
-
+        #region 合闸时间
         
+        public ConfigParameter NodeParameter
+        {
+            get
+            {
+                return modelServer.LogicalUI.NodeParameter;
+            }         
+
+        }
+        #endregion
+
+
+
+
+
 
         #region 合分闸控制，同步预制
 
@@ -665,8 +828,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 Messenger.Default.Send<Exception>(ex, "ExceptionMessage");
             }
-
-
         }
 
         /// <summary>
@@ -691,6 +852,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// 动作相角集合
         /// </summary>
         private List<ActionPhase> actionCollect;
+       
         void ExecuteUserReadyActionCommandSingleThree(string str)
         {
             try
@@ -703,9 +865,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                           
                             actionCollect = new List<ActionPhase>();
-                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseA, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseA], false, NodeAttribute.Period));
-                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseB, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseB], false, NodeAttribute.Period));
-                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseC, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseC], false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseA, (int)CloseTimeA, false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseB, (int)CloseTimeB, false, NodeAttribute.Period));
+                            actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseC, (int)CloseTimeC, false, NodeAttribute.Period));
 
                             var cmd = modelServer.LogicalUI.SynPhaseChoice.
                                 GetSynCommandLoop(CommandIdentify.SyncOrchestratorReadyClose, 
@@ -716,6 +878,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它操作", "预制操作");
+                                return;
                             }
 
                             modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
@@ -776,6 +939,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
+                                return;
                             }
 
                             //执行测试时，不提示确认
@@ -852,6 +1016,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
+                                return;
                             }
 
 
@@ -954,6 +1119,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它操作", "同步预制操作");
+                                return;
                             }
 
                             modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
@@ -989,6 +1155,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
+                                return;
                             }
 
                             //执行测试时，不提示确认
@@ -1073,6 +1240,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它相操作", "整体操作");
+                                return;
                             }
 
 
@@ -1206,6 +1374,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!opetate))
             {
                 ShowMessageBox("有正在处理的其它相操作", "单相操作");
+                return;
             }
 
             var ActionState = (cmd == CommandIdentify.CloseAction) ||

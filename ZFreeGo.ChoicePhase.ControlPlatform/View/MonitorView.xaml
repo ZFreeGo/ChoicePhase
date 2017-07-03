@@ -36,6 +36,12 @@
         <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False"  Name="gridProtectSetPoint" IsReadOnly="{Binding  ReadOnly}" 
                   SelectedIndex="{Binding SelectedIndex}" CanUserSortColumns="False"  ItemsSource="{Binding UserData}"
                   >
+            <i:Interaction.Triggers>
+               
+                <i:EventTrigger EventName="Unloaded">
+                    <i:InvokeCommandAction Command="{Binding  UnloadedCommand}"  />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <DataGrid.ContextMenu>
                 <ContextMenu Name="dgmenu" StaysOpen="True"  >
                     <MenuItem Header="重新载入表格" CommandParameter="Reload" Command="{Binding DataGridMenumSelected}"/>

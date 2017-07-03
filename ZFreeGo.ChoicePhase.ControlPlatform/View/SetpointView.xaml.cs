@@ -26,5 +26,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.View
             InitializeComponent();
            
         }
+
+        private void gridProtectSetPoint_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

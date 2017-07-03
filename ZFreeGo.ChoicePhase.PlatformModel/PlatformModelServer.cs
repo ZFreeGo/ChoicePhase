@@ -143,6 +143,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ControlNetServer.PollingService.ReadyActionArrived += PollingService_ReadyActionArrived;
                 ControlNetServer.PollingService.SubStationStatusChanged +=PollingService_SubStationStatusChanged;
                 ControlNetServer.PollingService.ErrorAckChanged += PollingService_ErrorAckChanged;
+                ControlNetServer.PollingService.NormalStatusArrived += PollingService_NormalStatusArrived;
                 ControlNetServer.StationArrived +=ControlNetServer_StationArrived;
 
                 _logicalUI = new LogicalPresentation(MonitorData.UpdateStatus);
@@ -179,6 +180,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ZFreeGo.Common.LogTrace.CLog.LogError(ex.StackTrace);
             }
 
+        }
+
+        /// <summary>
+        /// 其它功能码统一处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PollingService_NormalStatusArrived(object sender, StatusChangeMessage e)
+        {
+
+            LogicalUI.UpdatePramter(e);
         }
 
         /// <summary>

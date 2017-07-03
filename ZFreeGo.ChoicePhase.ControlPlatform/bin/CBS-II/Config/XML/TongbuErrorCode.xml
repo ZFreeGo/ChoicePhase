@@ -97,7 +97,7 @@
   </ErrorCode> 
   <ErrorCode>
     <ID>20</ID> 
-	<Sign>ERROR_OVERTIME</Sign>   	
-    <Comment>输出脉冲</Comment>  	
+	<Sign>ERROR_COMPENSATION</Sign>   	
+    <Comment>补偿异常</Comment>  	
   </ErrorCode>   
 </NewDataSet>

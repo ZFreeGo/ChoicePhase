@@ -205,6 +205,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 Tips = "值已改变";
             }
         }
+
+        
+
+        /// <summary>
+        /// 当前周期
+        /// </summary>
+        public ushort Period
+        {
+            get
+            {
+                return (ushort)NodeAttribute.Period;
+            }
+            set
+            {
+                var old = Period;
+                NodeAttribute.Period = value;
+                RaisePropertyChanged("CloseTimeB");
+                Tips = string.Format("周期由[{0}]变成[{1}]us.", old, Period);
+            }
+        }
+
         /// <summary>
         /// 分闸通电时间
         /// </summary>
@@ -289,6 +310,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                     }
             }
         }
+
+     
+
+
 
         public ConfigParameter()
         {

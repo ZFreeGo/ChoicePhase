@@ -37,11 +37,19 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             modelServer = PlatformModelServer.GetServer();
             _downAddress = modelServer.CommServer.DownAddress;
             _stationNameList = modelServer.MonitorData.StationNameList;
-            
+
+            UnloadedCommand = new RelayCommand<string>(ExecuteUnloadedCommand);
         }
 
 
-      
+
+        public RelayCommand<string> UnloadedCommand { get; private set; }
+
+        void ExecuteUnloadedCommand(string obj)
+        {
+            FixCheck = false;
+        }
+
         /************** 属性 **************/
         private ObservableCollection<AttributeItem> _userData;
         /// <summary>

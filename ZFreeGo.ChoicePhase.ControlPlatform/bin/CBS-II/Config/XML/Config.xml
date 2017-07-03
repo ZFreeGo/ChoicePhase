@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?>
 <NewDataSet>
   <SerialPort>
-    <CommonPort>37</CommonPort>
+    <CommonPort>38</CommonPort>
     <Baud>9600</Baud>
     <DataBit>8</DataBit>
     <ParityBit>0</ParityBit>

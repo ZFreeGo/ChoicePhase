@@ -28,6 +28,11 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         public event EventHandler<StatusChangeMessage> SubStationStatusChanged;
 
         /// <summary>
+        /// 除了已经处理的，其他功能码统一处理
+        /// </summary>
+        public event EventHandler<StatusChangeMessage> NormalStatusArrived;
+
+        /// <summary>
         /// 错误应答
         /// </summary>
         public event EventHandler<StatusChangeMessage> ErrorAckChanged;
@@ -138,9 +143,13 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
                                 ReadyActionArrived(this, new StatusChangeMessage(mac, serverData));
                             }
                             break;
-                        }
+                        }                    
                     default:
                         {
+                            if (NormalStatusArrived != null)
+                            {
+                                NormalStatusArrived(this, new StatusChangeMessage(mac, serverData));
+                            }
                             break;
                         }
 

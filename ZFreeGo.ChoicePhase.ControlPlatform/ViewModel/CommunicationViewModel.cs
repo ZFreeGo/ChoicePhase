@@ -44,21 +44,21 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
             ExecuteLoadDataCommand();
             _commParameterSet = new SerialPortParameterSet();
-            _nodeParameter = new ConfigParameter();
-            _nodeParameter.PropertyChanged += _nodeParameter_PropertyChanged;
+
+            NodeParameter.PropertyChanged += NodeParameter_PropertyChanged;
          
         }
 
-        void _nodeParameter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void NodeParameter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "EnabitSelect")
             {
-                modelServer.StationInformation[NodeAttribute.IndexPhaseA].Enable = _nodeParameter.IsEnablePhaseA;
+                modelServer.StationInformation[NodeAttribute.IndexPhaseA].Enable = NodeParameter.IsEnablePhaseA;
 
-                modelServer.StationInformation[NodeAttribute.IndexPhaseB].Enable = _nodeParameter.IsEnablePhaseB;
-                modelServer.StationInformation[NodeAttribute.IndexPhaseC].Enable = _nodeParameter.IsEnablePhaseC;
+                modelServer.StationInformation[NodeAttribute.IndexPhaseB].Enable = NodeParameter.IsEnablePhaseB;
+                modelServer.StationInformation[NodeAttribute.IndexPhaseC].Enable = NodeParameter.IsEnablePhaseC;
                 modelServer.StationInformation[NodeAttribute.IndexSynController].Enable
-                    = _nodeParameter.IsEnableSyncontroller;
+                    = NodeParameter.IsEnableSyncontroller;
             }
 
         }
@@ -81,17 +81,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         }
 
 
-        private  ConfigParameter _nodeParameter;
-        public  ConfigParameter NodeParameter
+        public ConfigParameter NodeParameter
         {
             get
             {
-                return _nodeParameter;
-            }
-            set
-            {
-                _nodeParameter = value;
-                RaisePropertyChanged("NodeParameter");
+                return modelServer.LogicalUI.NodeParameter;
             }
 
         }

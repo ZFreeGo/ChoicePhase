@@ -649,20 +649,55 @@
                         </TabItem>
 
                         <TabItem Header="同步合闸预制" >
-                            <StackPanel Orientation="Horizontal" DataContext="{Binding ActionLoopChoice}">
-                                <Label Margin="3">MAC:</Label>
-                                <TextBox MinWidth="30" Margin="3" Text="{Binding MacAddress}"></TextBox>
-                                <Label Margin="3">回路选择:</Label>
-                                <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexI}"></ComboBox>
-                                <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexII}"></ComboBox>
-                                <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexIII}"></ComboBox>
-                                <Label Margin="3">偏移时间(us):</Label>
-                                <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeI}"></TextBox>
-                                <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeII}"></TextBox>
-                                <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeIII}" Visibility="Collapsed"></TextBox>
-                                <Button Margin="30,3,3,3" Command="{Binding OpearateCommand}" CommandParameter="Synchronization">合闸预制</Button>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" DataContext="{Binding ActionLoopChoice}">
+                                    <Label Margin="3">MAC:</Label>
+                                    <TextBox MinWidth="30" Margin="3" Text="{Binding MacAddress}"></TextBox>
+                                    <Label Margin="3">回路选择:</Label>
+                                    <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexI}"></ComboBox>
+                                    <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexII}"></ComboBox>
+                                    <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding LoopSelect}" SelectedIndex="{Binding LoopIndexIII}"></ComboBox>
+                                    <Label Margin="3">偏移时间(us):</Label>
+                                    <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeI}"></TextBox>
+                                    <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeII}"></TextBox>
+                                    <TextBox MinWidth="60" Margin="3" Text="{Binding OffsetTimeIII}" Visibility="Collapsed"></TextBox>
+                                    <Button Margin="30,3,3,3" Command="{Binding OpearateCommand}" CommandParameter="Synchronization">合闸预制</Button>
+                                </StackPanel>
+                                
                             </StackPanel>
-                        </TabItem>                       
+                        </TabItem>  
+                        <TabItem Header="同步合闸参数设置" >
+                            <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" >
+                                    <Label Margin="3">A相合闸时间(us):</Label>
+                                    <TextBox MinWidth="30" Margin="3" Text="{Binding CloseTimeA}"></TextBox>
+                                    <Label Margin="3">B相合闸时间(us):</Label>
+                                    <TextBox MinWidth="30" Margin="3" Text="{Binding CloseTimeB}"></TextBox>
+                                    <Label Margin="3">C相合闸时间(us):</Label>
+
+                                    <TextBox MinWidth="30" Margin="3" Text="{Binding CloseTimeC}"></TextBox>
+                                    
+                                    <Button Margin="10,3,3,3" Padding="2">应用</Button>                                    
+                                </StackPanel>
+                                
+                            </StackPanel>
+                                <StackPanel Orientation="Horizontal">                                   
+                                        <Label Margin="3">A相补偿时间(us):</Label>
+                                        <TextBox MinWidth="30" Margin="3" Text="{Binding CompensationTimeA}"></TextBox>
+                                        <Label Margin="3">B相补偿时间(us):</Label>
+                                        <TextBox MinWidth="30" Margin="3" Text="{Binding CompensationTimeB}"></TextBox>
+                                        <Label Margin="3">C相补偿时间(us):</Label>
+                                        <TextBox MinWidth="30" Margin="3" Text="{Binding CompensationTimeC}"></TextBox>
+                                        <!--<Label Margin="3">周期(us):</Label>
+                                        <TextBox MinWidth="30" Margin="3" Text="{Binding Period}"></TextBox>-->
+                                        <Button Margin="10,3,3,3" Padding="2">应用</Button>
+                                        <Button Margin="20,3,3,3" Padding="2" Command="{Binding UpdateSystemParameterCommand}">更新系统参数</Button>
+                                </StackPanel>
+                                   
+                                
+                            </StackPanel>
+                        </TabItem> 
                         <TabItem Header="密码认证">
                             <Border BorderThickness="3" BorderBrush="{Binding SecureColor}"  Grid.Column="1" CornerRadius="5" >
                                 <StackPanel Orientation="Horizontal">

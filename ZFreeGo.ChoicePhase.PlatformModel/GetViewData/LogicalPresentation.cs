@@ -7,6 +7,7 @@ using System.Text;
 using ZFreeGo.ChoicePhase.DeviceNet.Element;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 {
@@ -64,7 +65,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             private set;
             get;
         }
-                
+
+        /// <summary>
+        /// 配置参数
+        /// </summary>
+        public ConfigParameter NodeParameter
+        {
+            private set;
+            get;
+        }
 
 
         private byte _onlineBit;
@@ -101,6 +110,62 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
+        #region 更新参数
+        /// <summary>
+        /// 更新参数信息
+        /// </summary>
+        /// <param name="message"></param>
+        public void UpdatePramter(StatusChangeMessage message)
+        {
+            if(message.MAC == NodeAttribute.MacSynController)
+            {
+                if (message.Data.Length < 4)
+                {
+                    return;
+                }
+                //是否为SetOne应答
+                if (message.Data[0] ==  ((byte)CommandIdentify.MasterParameterSetOne|0x80) )
+                {
+                    var time = ((ushort)message.Data[3] << 8) | (message.Data[2]);
+                    if (message.Data[1] == 0x0E)//A相
+                    {
+                        UpdateStatus(string.Format("更新A相合闸时间为{0}us", time));
+                    }
+                    if (message.Data[1] == 0x0F)//B相
+                    {
+                        UpdateStatus(string.Format("更新B相合闸时间为{0}us", time));
+                    }
+                    if (message.Data[1] == 0x10)//C相
+                    {
+                        UpdateStatus(string.Format("更新C相合闸时间为{0}us", time));
+                    }
+                    
+                    if (message.Data.Length < 6)
+                    {
+                        return;
+                    }
+                    var fl = new byte[4];
+                    Array.Copy(message.Data, 2, fl, 0, 4);
+                    ShortFloating sf = new ShortFloating(fl);
+                    if (message.Data[1] == 0x11)                    
+                    {
+                        UpdateStatus(string.Format("更新A相补偿时间为{0}us", sf.Value));
+                    }
+                    if (message.Data[1] == 0x12)
+                    {
+                        UpdateStatus(string.Format("更新B相补偿时间为{0}us", sf.Value));
+                    }
+                    if (message.Data[1] == 0x13)
+                    {
+                        UpdateStatus(string.Format("更新C相补偿时间为{0}us", sf.Value));
+                    }
+                }
+
+               
+            }
+        }
+
+        #endregion
 
 
         #region 同步控制器 A/B/C 离线/在线
@@ -1213,6 +1278,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 SynPhaseChoice = new PhaseChoice();
 
                 TestParameter = new LoopTest();
+                NodeParameter = new ConfigParameter();
+
             }
             catch(Exception ex)
             {

@@ -84,8 +84,8 @@
     <Compile Include="Secure\XMLAccountOperate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ICO\off1.png" />
-    <Content Include="ICO\on1.png" />
+    <Content Include="Helper\ICO\off1.png" />
+    <Content Include="Helper\ICO\on1.png" />
     <Content Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

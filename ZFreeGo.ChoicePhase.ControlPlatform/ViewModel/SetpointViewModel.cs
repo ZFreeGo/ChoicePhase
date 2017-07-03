@@ -38,6 +38,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             _downAddress = modelServer.CommServer.DownAddress;
 
             _stationNameList = modelServer.MonitorData.StationNameList;
+
+            UnloadedCommand = new RelayCommand<string>(ExecuteUnloadedCommand);
         }
 
 
@@ -86,8 +88,12 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 _selectedItems.Add(m as AttributeItem);
             }
         }
+        public RelayCommand<string> UnloadedCommand { get; private set; }
 
-
+        void ExecuteUnloadedCommand(string obj)
+        {
+            FixCheck = false;
+        }
 
         private byte _macAddress = 0x10;
 

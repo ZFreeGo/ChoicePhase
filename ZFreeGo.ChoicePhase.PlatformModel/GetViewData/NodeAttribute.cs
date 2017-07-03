@@ -122,24 +122,46 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// <summary>
         /// 合闸时间
         /// </summary>
-        private static byte[] _closeTime = new byte[] {0, 0, 0, 0};
+        private static int[] _closeTime = new int[] {0, 0, 0, 0};
 
         /// <summary>
         /// 合闸时间,索引1开始为A,B,C
         /// </summary>
-        public static byte[] CloseTime
+        public static int[] CloseTime
         {
             get
             {
                 return _closeTime;
             }
+           
+
         }
 
-        private static float _period = 20000;
+
+        /// <summary>
+        /// 补偿时间
+        /// </summary>
+        private static int[] _compensationTime = new int[] { 0, 0, 0, 0 };
+
+        /// <summary>
+        /// 补偿时间,索引1开始为A,B,C
+        /// </summary>
+        public static int[] CompensationTime
+        {
+            get
+            {
+                return _compensationTime;
+            }
+
+
+        }
+
+
+        private static int _period = 20000;
         /// <summary>
         /// 周期
         /// </summary>
-        public static float Period
+        public static int Period
         {
             get
             {

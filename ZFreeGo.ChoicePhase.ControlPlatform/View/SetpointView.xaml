@@ -35,17 +35,20 @@
             </StackPanel>
         </Grid>
         <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False"  Name="gridProtectSetPoint" IsReadOnly="{Binding  ReadOnly}" 
-            SelectedIndex="{Binding SelectedIndex}" SelectedValue=""  CanUserSortColumns="False"  ItemsSource="{Binding UserData}" >
+            SelectedIndex="{Binding SelectedIndex}" SelectedValue=""  CanUserSortColumns="False"  ItemsSource="{Binding UserData}"  >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
                     <i:InvokeCommandAction Command="{Binding SelectedItemCommand}" CommandParameter="{Binding ElementName=gridProtectSetPoint, Path=SelectedItems}" />
                 </i:EventTrigger>
+                <i:EventTrigger EventName="Unloaded">
+                    <i:InvokeCommandAction Command="{Binding  UnloadedCommand}"  />
+                </i:EventTrigger>
             </i:Interaction.Triggers>
-
+           
             <DataGrid.ContextMenu>
                 <ContextMenu Name="dgmenu" StaysOpen="True"  >
                     <MenuItem Header="使能设置" CommandParameter="SetNewValue" Command="{Binding DataGridMenumSelected}" VerticalAlignment="Center">
-                        <CheckBox Margin="3" Padding="3" VerticalAlignment="Center" VerticalContentAlignment="Center"  IsChecked="{Binding FixCheck}"  >修改</CheckBox>
+                        <CheckBox Margin="3" Padding="3" VerticalAlignment="Center" VerticalContentAlignment="Center"  IsChecked="{Binding FixCheck}"   >修改</CheckBox>
                     </MenuItem>
                     <MenuItem Header="进入配置模式" CommandParameter="EnterConfig" Command="{Binding DataGridMenumSelected}"/>
                     <MenuItem Header="退出配置模式" CommandParameter="ExitConfig" Command="{Binding DataGridMenumSelected}"/>
