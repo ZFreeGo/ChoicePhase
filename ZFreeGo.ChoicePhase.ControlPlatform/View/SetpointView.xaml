@@ -30,8 +30,7 @@
                 <Label Margin="3">End:</Label>
                 <TextBox MinWidth="60" Margin="3" Text="{Binding EndAddress}"></TextBox>
                 <Button Margin="3" Padding="3" Command="{Binding SetpointOperate}" CommandParameter="Read">读取定值</Button>
-                <Button Margin="30,3,3,3" Padding="3"  Command="{Binding SetpointOperate}" CommandParameter="Update">更新定值</Button>
-                                
+                              
             </StackPanel>
         </Grid>
         <DataGrid Grid.Row="1" Margin="5" AutoGenerateColumns="False"  Name="gridProtectSetPoint" IsReadOnly="{Binding  ReadOnly}" 
