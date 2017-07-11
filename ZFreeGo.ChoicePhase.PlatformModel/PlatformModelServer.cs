@@ -451,7 +451,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             return can;
 
         }
-        bool flag = false;
+
         Action<bool> FlashDelegate;
         /// <summary>
         /// 通讯数据到达

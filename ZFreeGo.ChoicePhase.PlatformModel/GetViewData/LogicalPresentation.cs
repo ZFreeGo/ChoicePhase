@@ -101,7 +101,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
         /// <summary>
-        /// 用于训话测试
+        /// 用于循环测试
         /// </summary>
         public LoopTest TestParameter
         {
@@ -117,14 +117,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// <param name="message"></param>
         public void UpdatePramter(StatusChangeMessage message)
         {
-            if(message.MAC == NodeAttribute.MacSynController)
+            if (message.MAC == NodeAttribute.MacSynController)
             {
                 if (message.Data.Length < 4)
                 {
                     return;
                 }
                 //是否为SetOne应答
-                if (message.Data[0] ==  ((byte)CommandIdentify.MasterParameterSetOne|0x80) )
+                if (message.Data[0] == ((byte)CommandIdentify.MasterParameterSetOne | 0x80))
                 {
                     var time = ((ushort)message.Data[3] << 8) | (message.Data[2]);
                     if (message.Data[1] == 0x0E)//A相
@@ -139,7 +139,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     {
                         UpdateStatus(string.Format("更新C相合闸时间为{0}us", time));
                     }
-                    
+
                     if (message.Data.Length < 6)
                     {
                         return;
@@ -147,7 +147,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     var fl = new byte[4];
                     Array.Copy(message.Data, 2, fl, 0, 4);
                     ShortFloating sf = new ShortFloating(fl);
-                    if (message.Data[1] == 0x11)                    
+                    if (message.Data[1] == 0x11)
                     {
                         UpdateStatus(string.Format("更新A相补偿时间为{0}us", sf.Value));
                     }
@@ -161,7 +161,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     }
                 }
 
-               
+
             }
         }
 
@@ -180,7 +180,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
             if (NodeAttribute.MacSynController == mac)
             {
-                index = 0;               
+                index = 0;
                 StatusBar.SetSyn(true, "同步控制器在线");
             }
             else if (NodeAttribute.MacPhaseA == mac)
@@ -203,20 +203,20 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             else if (NodeAttribute.MacPhaseC == mac)
             {
                 index = 3;
-                StatusBar.SetPhaseC(true, "C相在线");               
+                StatusBar.SetPhaseC(true, "C相在线");
             }
             else
             {
                 return;
-            }           
+            }
             var node = GetNdoe(mac);
             node.ReStartOverTimer();
             node.IsOnline = true;
             node.LastOnline = true;
-            
-            OnlineBit = SetBit(OnlineBit, index);           
+
+            OnlineBit = SetBit(OnlineBit, index);
         }
-      
+
 
         /// <summary>
         /// 同步控制器 离线/在线
@@ -257,6 +257,90 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
         /// <summary>
+        /// 更新异常状态信息
+        /// </summary>
+        /// <param name="index">相索引</param>
+        void UpadeErrorStatusChange(int index)
+        {
+
+            string phase = "";
+            switch (index)
+            {
+                case NodeAttribute.IndexPhaseA:
+                    {
+
+                        phase = "A";
+                        break;
+                    }
+                case NodeAttribute.IndexPhaseB:
+                    {
+                        phase = "B";
+                        break;
+                    }
+                case NodeAttribute.IndexPhaseC:
+                    {
+                        phase = "C";
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+
+
+            //三机构情况
+            if (NodeAttribute.SingleThreeMode)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            {
+                                phase = "A";
+                                break;
+                            }
+                        case 1:
+                            {
+                                phase = "B";
+                                break;
+                            }
+                        case 2:
+                            {
+                                phase = "C";
+                                break;
+                            }
+                    }
+                    if (NodeStatusList[index].EnergyStatusLoopCollect[i] != EnergyStatusLoop.Normal)
+                    {
+                        UpdateStatus(phase + "相:" + NodeStatusList[1].EnergyStatusLoopCollect[i].ToString());
+                    }
+                    if ((NodeStatusList[index].StatusLoopCollect[i] == StatusLoop.Error) ||
+                        (NodeStatusList[index].StatusLoopCollect[i] == StatusLoop.Null))
+                    {
+                        UpdateStatus(phase + "相:" + NodeStatusList[index].FrequencyLoopCollect[i].ToString());
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    if (NodeStatusList[index].EnergyStatusLoopCollect[i] != EnergyStatusLoop.Normal)
+                    {
+                        UpdateStatus(string.Format("{0}相回路{1}:", phase, i) + NodeStatusList[1].EnergyStatusLoopCollect[i].ToString());
+                    }
+                    if ((NodeStatusList[index].StatusLoopCollect[i] == StatusLoop.Error) ||
+                        (NodeStatusList[index].StatusLoopCollect[i] == StatusLoop.Null))
+                    {
+                        UpdateStatus(string.Format("{0}相回路{1}:", phase, i) + NodeStatusList[index].FrequencyLoopCollect[i].ToString());
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// A相状态更新事件 离线/在线
         /// </summary>
         /// <param name="sender"></param>
@@ -280,27 +364,31 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                         UpdateStatus("C相在线1");
                     }
                 }
-                OnlineBit = SetBit(OnlineBit, 1);
 
-                 
+                UpadeErrorStatusChange(NodeAttribute.IndexPhaseA);
+
+                OnlineBit = SetBit(OnlineBit, NodeAttribute.IndexPhaseA);
+
+
             }
             else
             {
                 StatusBar.SetPhaseA(false, "");
                 UpdateStatus("A相超时离线");
-                OnlineBit = ClearBit(OnlineBit, 1);
+                OnlineBit = ClearBit(OnlineBit, NodeAttribute.IndexPhaseA);
 
                 //此模式下，ABC联动
                 if (NodeAttribute.SingleThreeMode)
                 {
                     StatusBar.SetPhaseB(false, "");
-                    UpdateStatus("B相超时离线");                    
+                    UpdateStatus("B相超时离线");
 
                     StatusBar.SetPhaseC(false, "");
                     UpdateStatus("C相超时离线");
-                   
+
                 }
             }
+
             if (NodeAttribute.SingleThreeMode)
             {
                 SetControlButtonStateSigleThree();
@@ -325,15 +413,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 if (!e.Node.LastOnline)
                 {
                     StatusBar.SetPhaseB(true, "B相在线");
-                    UpdateStatus("B相恢复在线");
+                    UpdateStatus("B相在线1");
                 }
-                OnlineBit = SetBit(OnlineBit, 2);
+                OnlineBit = SetBit(OnlineBit, NodeAttribute.IndexPhaseB);
+                UpadeErrorStatusChange(NodeAttribute.IndexPhaseB);
             }
             else
             {
                 StatusBar.SetPhaseB(false, "");
                 UpdateStatus("B相超时离线");
-                OnlineBit = ClearBit(OnlineBit, 2);
+                OnlineBit = ClearBit(OnlineBit, NodeAttribute.IndexPhaseB);
             }
 
             SetControlButtonState();
@@ -352,15 +441,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 if (!e.Node.LastOnline)
                 {
                     StatusBar.SetPhaseC(true, "C相在线");
-                    UpdateStatus("C相恢复在线");
+                    UpdateStatus("C相在线1");
                 }
-                OnlineBit = SetBit(OnlineBit, 3);
+                OnlineBit = SetBit(OnlineBit, NodeAttribute.IndexPhaseC);
+                UpadeErrorStatusChange(NodeAttribute.IndexPhaseC);
             }
             else
             {
                 StatusBar.SetPhaseC(false, "");
                 UpdateStatus("C相超时离线");
-                OnlineBit = ClearBit(OnlineBit, 3);
+                OnlineBit = ClearBit(OnlineBit, NodeAttribute.IndexPhaseC);
             }
             SetControlButtonState();
         }
@@ -557,7 +647,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
         }
-       
+
         /// <summary>
         /// 更新设置控件状态
         /// </summary>
@@ -588,7 +678,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 //电能正常，且属于合位，使能分闸按钮
                 if (NodeStatusList[NodeAttribute.IndexPhaseA].EnergyStatusLoopCollect[i] == EnergyStatusLoop.Normal)
                 {
-                    UserControlEnable.ChooiceEnableButton((UInt16)(((i+1) << 8) | ((byte)NodeStatusList[NodeAttribute.IndexPhaseA].StatusLoopCollect[i])));
+                    UserControlEnable.ChooiceEnableButton((UInt16)(((i + 1) << 8) | ((byte)NodeStatusList[NodeAttribute.IndexPhaseA].StatusLoopCollect[i])));
                     UserControlEnable.SetSynControlButtonState(SynPhaseChoice.ConfigByte);
                 }
                 else
@@ -700,14 +790,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
 
             }
-        
+
             //设置用户控件使能状态
             //不是ABC 一起动模式
 
             if (!UserControlEnable.OperateABC)
             {
                 SetUserControlEnable(mac, cmd);
-                
+
             }
             else
             {
@@ -846,7 +936,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 {
                                     node = NodeStatusList[1];
                                 }
-                                
+
                                 else
                                 {
                                     continue;
@@ -883,8 +973,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                             }
 
                     }
-                    
-                    
+
+
 
                     switch (cmd)
                     {
@@ -917,10 +1007,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                 UpdateStatusSingleThree(loop, "分闸预制");
                                 break;
                             }
-                       
+
 
                     }
-                    
+
                 }
                 if (cmd == CommandIdentify.SyncReadyClose)  //同步合闸预制 
                 {
@@ -956,15 +1046,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                                     break;
                                 }
                         }
-                        if(finshed)
+                        if (finshed)
                         {
                             break;
                         }
                     }
 
-                    
+
                 }
-                
+
 
             }
 
@@ -1011,7 +1101,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     SetUserControlEnable(node.Mac, cmd);
                 }
 
-                
+
 
             }
             else
@@ -1076,7 +1166,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             Action<bool, string> action;
             string comment = "";
 
-        
+
 
             if (NodeAttribute.MacSynController == mac)
             {
@@ -1152,7 +1242,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             //ABC联动
             if (NodeAttribute.SingleThreeMode)
             {
-                if(defStationInformation.MacID == NodeAttribute.MacPhaseA)
+                if (defStationInformation.MacID == NodeAttribute.MacPhaseA)
                 {
                     UpdateStationSingleStatus(NodeAttribute.MacPhaseB, defStationInformation.Step);
                     UpdateStationSingleStatus(NodeAttribute.MacPhaseC, defStationInformation.Step);
@@ -1164,59 +1254,59 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         private Action<string> UpdateStatusDelegate;
 
-     /// <summary>
-     /// 更新状态信息
-     /// </summary>
-     /// <param name="des"></param>
-       public void UpdateStatus(string des)
+        /// <summary>
+        /// 更新状态信息
+        /// </summary>
+        /// <param name="des"></param>
+        public void UpdateStatus(string des)
         {
-           if (UpdateStatusDelegate != null)
-           {
-               UpdateStatusDelegate(des);
-           }
+            if (UpdateStatusDelegate != null)
+            {
+                UpdateStatusDelegate(des);
+            }
         }
-       public void UpdateStatus(byte mac, string des)
-       {
+        public void UpdateStatus(byte mac, string des)
+        {
 
-           if (NodeAttribute.MacPhaseA == mac)
-           {
-               UpdateStatus("A相:" + des);
-           }
-           else if (NodeAttribute.MacPhaseB == mac)
-           {
-               UpdateStatus("B相:" + des);
-           }
-           else if (NodeAttribute.MacPhaseC == mac)
-           {
-               UpdateStatus("C相:" + des);
-           }
-           else
-           {
-               UpdateStatus(des);
-           }
+            if (NodeAttribute.MacPhaseA == mac)
+            {
+                UpdateStatus("A相:" + des);
+            }
+            else if (NodeAttribute.MacPhaseB == mac)
+            {
+                UpdateStatus("B相:" + des);
+            }
+            else if (NodeAttribute.MacPhaseC == mac)
+            {
+                UpdateStatus("C相:" + des);
+            }
+            else
+            {
+                UpdateStatus(des);
+            }
 
-       }
-       public void UpdateStatusSingleThree(byte loop, string des)
-       {
+        }
+        public void UpdateStatusSingleThree(byte loop, string des)
+        {
 
-           if (loop == NodeAttribute.LoopI)
-           {
-               UpdateStatus("A相:" + des);
-           }
-           else if (loop == NodeAttribute.LoopII)
-           {
-               UpdateStatus("B相:" + des);
-           }
-           else if (loop == NodeAttribute.LoopIII)
-           {
-               UpdateStatus("C相:" + des);
-           }
-           else
-           {
-               UpdateStatus(des);
-           }
+            if (loop == NodeAttribute.LoopI)
+            {
+                UpdateStatus("A相:" + des);
+            }
+            else if (loop == NodeAttribute.LoopII)
+            {
+                UpdateStatus("B相:" + des);
+            }
+            else if (loop == NodeAttribute.LoopIII)
+            {
+                UpdateStatus("C相:" + des);
+            }
+            else
+            {
+                UpdateStatus(des);
+            }
 
-       }
+        }
         /// <summary>
         /// 将其中deq位设置1，[0,7]
         /// </summary>
@@ -1268,7 +1358,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
                 StatusBar = new StatusBarMessage("Admin");
 
-              
+
                 _onlineBit = 0;
 
                 UserControlEnable = new EnableControl();
@@ -1281,11 +1371,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 NodeParameter = new ConfigParameter();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
         }
-        
+
     }
 }

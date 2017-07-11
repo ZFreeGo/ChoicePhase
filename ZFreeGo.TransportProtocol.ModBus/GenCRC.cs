@@ -21,18 +21,18 @@ namespace ZFreeGo.ChoicePhase.Modbus
 
             return CumulativeSumCalculate(puchMsg, 0, usDataLen);
 
-            byte uchCRCHi = 0xFF; /* 初始化高字节*/
-            byte uchCRCLo = 0xFF; /* 初始化低字节*/
-            byte uIndex = 0; /*CRC表*/
-            byte i = 0;
-            while (usDataLen != 0) /*通过数据缓冲器*/
-            {
-                usDataLen = (ushort)(usDataLen - 1);
-                uIndex = (byte)(uchCRCHi ^ puchMsg[i++]); /*计算CRC*/
-                uchCRCHi = (byte)(uchCRCLo ^ auchCRCHi[uIndex]);
-                uchCRCLo = auchCRCLo[uIndex];
-            }
-            return (ushort)((ushort)uchCRCHi << 8 | uchCRCLo);
+            //byte uchCRCHi = 0xFF; /* 初始化高字节*/
+            //byte uchCRCLo = 0xFF; /* 初始化低字节*/
+            //byte uIndex = 0; /*CRC表*/
+            //byte i = 0;
+            //while (usDataLen != 0) /*通过数据缓冲器*/
+            //{
+            //    usDataLen = (ushort)(usDataLen - 1);
+            //    uIndex = (byte)(uchCRCHi ^ puchMsg[i++]); /*计算CRC*/
+            //    uchCRCHi = (byte)(uchCRCLo ^ auchCRCHi[uIndex]);
+            //    uchCRCLo = auchCRCLo[uIndex];
+            //}
+            //return (ushort)((ushort)uchCRCHi << 8 | uchCRCLo);
         }
 
         /// <summary>

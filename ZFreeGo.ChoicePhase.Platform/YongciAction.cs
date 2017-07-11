@@ -12,7 +12,7 @@ namespace ZFreeGo.ChoicePhase.ControlCenter
     public partial class MainWindow
     {
         private byte yongcidownComputeAddress = 0xA2;  //永磁控制器 下位机地址
-        private RTUFrame yongciFrame;
+       
 
         private void SendOrderToYongci(YongciFunEnum fun, string str)
         {

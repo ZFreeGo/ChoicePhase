@@ -13,7 +13,7 @@ namespace ZFreeGo.ChoicePhase.ControlCenter
     {
         private  byte downComputeAddress = 0xA1;  //下位机地址 DSP
        
-        private byte mainAddress = 0xf0;
+   
        
         private const byte maxPoint = 100;
         private const byte leftBit = 3;
