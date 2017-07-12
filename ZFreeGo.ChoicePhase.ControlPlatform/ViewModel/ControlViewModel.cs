@@ -1694,8 +1694,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
               //TODO:释放那些实现IDisposable接口的托管对象
             }
             //TODO:释放非托管资源，设置对象为null
-            LoopTime.Close();
-            LoopTime = null;
+            if (LoopTime != null)
+            {
+                LoopTime.Close();
+                LoopTime = null;
+            }
             _disposed = true;
           }
 

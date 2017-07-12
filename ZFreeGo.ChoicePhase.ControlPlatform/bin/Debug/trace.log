@@ -324,3 +324,10 @@ LogTrace Warning: 0 :     [2017年7月12日7:11:23]: 串口接收进程::正在�
 LogTrace Warning: 0 :     [2017年7月12日7:11:23]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年7月12日7:18:50]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年7月12日7:18:50]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月12日9:06:32]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月12日9:06:32]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月12日9:07:20]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月12日9:07:20]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月12日9:08:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月12日9:08:44]: DeviceNet::正在中止线程。
+LogTrace Error: 0 :       [2017年7月12日9:09:09]: 串口接收进程::索引(从零开始)必须大于或等于零，且小于参数列表的大小。

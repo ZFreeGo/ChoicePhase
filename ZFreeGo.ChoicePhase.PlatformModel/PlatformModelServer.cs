@@ -343,9 +343,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             if(CommServer.CommonServer.CommState)
             {
                 CommServer.CommonServer.SendMessage(data);
-                CommServer.LinkMessage += "\n" +DateTime.Now.ToLongTimeString() + "  RTU发送帧:\n";
-                CommServer.LinkMessage += ByteToString(data, 0, data.Length);
-                CommServer.RawSendMessage += ByteToString(data, 0, data.Length);
+
+                var rawDataStr = ByteToString(data, 0, data.Length);
+                CommServer.UpadteSendLinkMessage(rawDataStr);
+                CommServer.RawSendMessage += rawDataStr;
             }
             return CommServer.CommonServer.CommState;            
         }
@@ -382,10 +383,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
         void RtuServer_RtuFrameArrived(object sender, RtuFrameArgs e)
         {
-            CommServer.LinkMessage += "\n" + DateTime.Now.ToLongTimeString() + "  接收RTU帧:\n";
-            CommServer.LinkMessage += ByteToString(e.Frame.Frame, 0, e.Frame.Frame.Length);
-            
-            //StationServer.StationDeal(e.Frame.FrameData);
+            var rawStr = ByteToString(e.Frame.Frame, 0, e.Frame.Frame.Length) ;
+            CommServer.UpadteReciveLinkMessage(rawStr);          
+           
             var can = GetCanMessage(e.Frame);
             if(can != null)
             {

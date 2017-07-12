@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using ZFreeGo.ChoicePhase.ControlPlatform.ViewModel;
 
@@ -84,6 +85,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
                 }
             };
            // Dispatcher.Invoke(toend, obj);
+        }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if( sender is TextBox)
+            {
+                ((TextBox)sender).ScrollToEnd();
+            }
         }
 
 

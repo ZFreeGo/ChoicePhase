@@ -67,8 +67,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
             }
         }
-
-
+        /// <summary>
+        /// 更新发送连接信息
+        /// </summary>
+        /// <param name="message"></param>
+        public void UpadteSendLinkMessage(string message)
+        {
+            LinkMessage += string.Format("{0} {1:#####}: ", DateTime.Now.ToLongTimeString(), "Send");
+            LinkMessage += message + "\n";
+        }
+        /// <summary>
+        /// 更新接收连接信息
+        /// </summary>
+        /// <param name="message"></param>
+        public void UpadteReciveLinkMessage(string message)
+        {
+            LinkMessage += string.Format("{0} {1:#####}: ", DateTime.Now.ToLongTimeString(), "Recive");
+            LinkMessage += message + "\n";
+        }
 
 
 

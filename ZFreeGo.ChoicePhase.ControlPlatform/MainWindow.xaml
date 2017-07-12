@@ -97,7 +97,7 @@
             <TabControl Grid.Column="0"  >                
                 <TabItem Header="链路数据" Height="23" VerticalAlignment="Top" >
                     <TextBox Margin="0" Background="AliceBlue"    Name="txtLinkMessage"  IsReadOnly="True"
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding LinkMessage}">
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding LinkMessage}" TextChanged="textBox_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
                                 <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="LinkMessage" />
@@ -109,7 +109,7 @@
                 </TabItem>
                 <TabItem Header="Send">
                     <TextBox Margin="0" Background="AliceBlue"    IsReadOnly="True" Name="txtRawSendMessage"
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawSendMessage}">
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawSendMessage}" TextChanged="textBox_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
                                 <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="RawSendMessage" />
@@ -120,7 +120,7 @@
                 </TabItem>
                 <TabItem Header="Recive">
                     <TextBox Margin="0" Background="AliceBlue"   IsReadOnly="True"  Name="txtRawReciveMessage"
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawReciveMessage}">
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding RawReciveMessage}" TextChanged="textBox_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
                                 <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="RawReciveMessage" />
@@ -131,7 +131,7 @@
                 </TabItem>
                 <TabItem Header="异常">
                     <TextBox Margin="0" Background="AliceBlue"    IsReadOnly="True" Name="txtExceptionMessage"
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding ExceptionMessage}" >
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding ExceptionMessage}" TextChanged="textBox_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
                                 <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="ExceptionMessage" />
@@ -144,7 +144,7 @@
                 </TabItem>
                 <TabItem Header="测试" DataContext="{Binding  TestParameter}">
                     <TextBox Margin="0" Background="AliceBlue"    IsReadOnly="True" 
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding Tips}" >
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding Tips}" TextChanged="textBox_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
                                 <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="ExceptionMessage" />
@@ -159,7 +159,7 @@
             <TabControl Grid.Column="1">
                 <TabItem Header="状态信息" >
                     <TextBox Margin="0" Background="AliceBlue"    Name="txtStatusMessage" IsReadOnly="True" 
-                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding StatusMessage}">
+                                  VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" MaxWidth="10000" Text="{Binding StatusMessage}" TextChanged="textBox_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu StaysOpen="True"  IsEnabled="True">
                                 <MenuItem Header="清空内容" Command="{Binding ClearText}" CommandParameter="StatusMessage" />
