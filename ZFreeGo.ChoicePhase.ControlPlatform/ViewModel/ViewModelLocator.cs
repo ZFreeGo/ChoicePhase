@@ -34,6 +34,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             SimpleIoc.Default.Register<SetpointViewModel>();
             SimpleIoc.Default.Register<MonitorViewModel >();
             SimpleIoc.Default.Register<ControlViewModel>();
+            SimpleIoc.Default.Register<OptionConfigUIViewModel>();
         }
 
         /// <summary>
@@ -101,6 +102,20 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     control = ServiceLocator.Current.GetInstance<ControlViewModel>();
                 }
                 return control;
+            }
+        }
+
+        public static OptionConfigUIViewModel optionConfig;
+
+        public static OptionConfigUIViewModel OptionConfig
+        {
+            get
+            {
+                if (optionConfig == null)
+                {
+                    optionConfig = ServiceLocator.Current.GetInstance<OptionConfigUIViewModel>();
+                }
+                return optionConfig;
             }
         }
         /// <summary>

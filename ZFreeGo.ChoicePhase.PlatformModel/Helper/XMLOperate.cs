@@ -99,6 +99,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 throw ex;
             }
         }
+
         /// <summary>
         /// 存储配置参数集合
         /// </summary>
@@ -120,6 +121,57 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 productRow["WorkMode"]  = (int)NodeAttribute.WorkMode;
 
                 ds.WriteXml(CommonPath.CommonPortXmlPath); 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// 读取用户信息
+        /// </summary>
+        /// <returns></returns>
+        public static User ReadUserRecod()
+        {
+            try
+            {
+
+                var ds = ReadXml(CommonPath.UserXmlPath, CommonPath.UserXsdPath);
+                 DataRow productRow = ds.Tables["User"].Rows[0];
+                 var user = new User(
+                    (string)productRow["Name"],
+                    (string)productRow["PasswordI"],
+                    (string)productRow["PasswordII"]);
+                 return user;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>        
+        /// 保存用户信息
+        /// </summary>
+        /// <param name="ds"></param>
+        /// <param name="typeEnum"></param>
+        /// <returns></returns>
+        public static void WriteUserRecod(User user)
+        {
+            try
+            {
+                var ds = ReadXml(CommonPath.UserXmlPath, CommonPath.UserXsdPath);
+
+                ds.Tables["User"].Rows.Clear();
+
+                var productRow = ds.Tables["User"].NewRow();
+
+                productRow["Name"] = user.Name;
+                productRow["PasswordI"] = user.PasswordI;
+                productRow["PasswordII"] = user.PasswordII;
+                ds.Tables["User"].Rows.Add(productRow);
+                ds.WriteXml(CommonPath.UserXmlPath);
             }
             catch (Exception ex)
             {

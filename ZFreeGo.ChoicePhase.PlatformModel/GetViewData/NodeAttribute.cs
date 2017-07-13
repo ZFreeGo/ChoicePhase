@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 {
@@ -275,8 +276,37 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
         }
 
+        private static User _user = new User("Admin", "12345", "12345");
+        /// <summary>
+        /// 一级登陆密码
+        /// </summary>
+        public static User CurrentUser
+        {
+            get
+            {
+                return _user;
+            }
+            set
+            {
+                _user = value;
+            }
+        }
 
-        private static string _passWordII = "12345";            
+
+      
+        /// <summary>
+        /// 一级登陆密码
+        /// </summary>
+        public static string PasswordI
+        {
+            get
+            {
+                return _user.PasswordI;
+            }
+           
+        }
+
+                
         /// <summary>
         /// 二级执行密码
         /// </summary>
@@ -284,8 +314,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         {
             get
             {
-                return _passWordII;
+                return _user.PasswordII;
             }
+            
         }
 
 

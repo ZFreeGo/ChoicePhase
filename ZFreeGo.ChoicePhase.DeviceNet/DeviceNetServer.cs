@@ -266,35 +266,22 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                     station.OverTimeCount++;
                 }
                 station.Complete = false;
+
                 switch (station.Step)
                 {
-                    case NetStep.Start:
+                    case NetStep.Start:                 
                         {
-                            EstablishConnection(station, (byte)LinkConnectType.VisibleMessage); //建立显示连接                           
+                            byte cmd = (byte)LinkConnectType.VisibleMessage 
+                                |  (byte)LinkConnectType.StatusChange | (byte)LinkConnectType.CycleInquiry;
+                            EstablishConnection(station, cmd); //建立显示连接                           
 
                             break;
-                        }
-                    case NetStep.Linking:
-                        {
-                            EstablishConnection(station, (byte)LinkConnectType.StatusChange);
-
-
-                            break;
-                        }
-                    case NetStep.StatusChange:
-                        {
-                            EstablishConnection(station, (byte)LinkConnectType.CycleInquiry);
-                            
-                            break;
-                        }
+                        }  
                     case NetStep.Cycle:
                         {
                             break;
                         }
-                }
-
-               
-
+                }              
             }
             catch(Exception ex)
             {
@@ -322,15 +309,12 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             catch (ThreadAbortException ex)
             {
                 Thread.ResetAbort();
-                CLog.LogWarning("DeviceNet::" + ex.Message);
-                
-
+                CLog.LogWarning("DeviceNet::" + ex.Message);                
             }
             catch (Exception ex)
             {
                 CLog.LogError("DeviceNet::" + ex.Message);
                 ExceptionDelegate(ex);
-
             }
            
         }
@@ -555,32 +539,23 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 }
                 station.ReciveMessage =  message;
                 var serverCode = message.Data[1] & 0x7F;
+                var ackConfig = message.Data[2];
                 if (serverCode == CodeDictionary.ServerCode["SVC_AllOCATE_MASTER_SlAVE_CONNECTION_SET"])
                 {
-                    //配置连接字
-                    station.State |= station.SendMessage.Data[4];
-                    if ((station.State & (byte)LinkConnectType.CycleInquiry) == (byte)LinkConnectType.CycleInquiry) //建立轮询连接
-                    {
-                        station.Step = NetStep.Cycle;
-                        station.Complete = true;
-                        
-                        
 
-                    }
-                    else if ((station.State & (byte)LinkConnectType.StatusChange) == (byte)LinkConnectType.StatusChange) //建立状态改变连接
+                    byte cmd = (byte)LinkConnectType.CycleInquiry | 
+                        (byte)LinkConnectType.StatusChange|(byte)LinkConnectType.VisibleMessage;
+                    //建立连接
+                    if (ackConfig == cmd)
                     {
-                        station.Step = NetStep.StatusChange;
-                        station.Complete = true;
-                    }
-                    else if ((station.State & (byte)LinkConnectType.VisibleMessage) == (byte)LinkConnectType.VisibleMessage) //建立显示连接
-                    {
-                        station.Step = NetStep.Linking;
-                        station.Complete = true;
-                    }
+                        station.State |= cmd;
+                        station.Step = NetStep.Cycle;
+                    }                    
                     else
                     {
                         throw new Exception("未识别的建立连接服务");
                     }
+
                     if (StationArrived != null)
                     {
                         StationArrived(this, new StationEventArgs(station));

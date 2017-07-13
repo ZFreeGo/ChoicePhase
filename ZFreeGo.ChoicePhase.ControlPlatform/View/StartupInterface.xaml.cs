@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
+using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 using ZFreeGo.Monitor.AutoStudio.Secure;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform.StartupUI
@@ -21,13 +23,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.StartupUI
     /// </summary>
     public partial class StartupInterface : Window
     {
-
-       /// <summary>
-       /// 账户管理器
-       /// </summary>
-        private AccountManager accountManager;
-
-
+        private User userAccount;
 
         MainWindow main;
         /// <summary>
@@ -47,15 +43,9 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.StartupUI
             try
             {
               
-                accountManager = new AccountManager();
-                var user =  accountManager.GetLastAccount();
-                if( null != user)
-                {
-                    txtLoginUser.Text = user.UserName;
-                }
-               
-               
-               
+              
+                userAccount = XMLOperate.ReadUserRecod();
+                txtLoginUser.Text = userAccount.Name;          
                
 
             }
@@ -84,15 +74,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.StartupUI
             }
            
 
-            if (accountManager.LoginCheck(txtLoginUser.Text, passBox.SecurePassword))
+            if (passBox.Password == userAccount.PasswordI)
             {
-                var str = string.Format("登陆尝试{0}后登陆成功", failueLoginCount);
-                
-                
-                
-
+                var str = string.Format("登陆尝试{0}后登陆成功", failueLoginCount);              
+                                
                 main.Show();
-
                 this.Close();
             }
             else
@@ -129,7 +115,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.StartupUI
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
+          
           
             
         }

@@ -331,3 +331,45 @@ LogTrace Warning: 0 :     [2017年7月12日9:07:20]: DeviceNet::正在中止线�
 LogTrace Warning: 0 :     [2017年7月12日9:08:44]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年7月12日9:08:44]: DeviceNet::正在中止线程。
 LogTrace Error: 0 :       [2017年7月12日9:09:09]: 串口接收进程::索引(从零开始)必须大于或等于零，且小于参数列表的大小。
+LogTrace Warning: 0 :     [2017年7月13日10:04:58]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日10:04:59]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日10:27:10]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日10:27:10]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日10:35:19]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日10:35:20]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日11:09:20]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日11:09:20]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日11:40:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日11:40:44]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:28:20]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:28:20]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:29:51]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:29:51]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:30:01]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:30:01]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:32:55]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:32:56]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:34:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日16:34:45]: DeviceNet::正在中止线程。
+LogTrace Error: 0 :       [2017年7月13日17:17:28]:    在 ZFreeGo.ChoicePhase.PlatformModel.Helper.XMLOperate.ReadUserRecod() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\Helper\XMLOperate.cs:行号 151
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 121
+LogTrace Error: 0 :       [2017年7月13日17:19:48]:    在 ZFreeGo.ChoicePhase.PlatformModel.Helper.XMLOperate.ReadUserRecod() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\Helper\XMLOperate.cs:行号 151
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 121
+LogTrace Error: 0 :       [2017年7月13日17:20:22]:    在 ZFreeGo.ChoicePhase.PlatformModel.Helper.XMLOperate.ReadUserRecod() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\Helper\XMLOperate.cs:行号 151
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 121
+LogTrace Error: 0 :       [2017年7月13日17:23:41]:    在 ZFreeGo.ChoicePhase.PlatformModel.Helper.XMLOperate.ReadUserRecod() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\Helper\XMLOperate.cs:行号 151
+   在 ZFreeGo.ChoicePhase.PlatformModel.PlatformModelServer..ctor() 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.PlatformModel\PlatformModelServer.cs:行号 121
+LogTrace Warning: 0 :     [2017年7月13日17:23:49]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日17:23:49]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日17:26:28]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日17:26:28]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日17:27:43]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日17:27:43]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:41:43]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:41:43]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:54:59]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:54:59]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:59:38]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:59:38]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:59:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月13日18:59:44]: DeviceNet::正在中止线程。

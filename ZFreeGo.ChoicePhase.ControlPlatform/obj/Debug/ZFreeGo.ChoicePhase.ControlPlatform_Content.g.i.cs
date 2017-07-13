@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/set.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/meter.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("pictures/meter.png")]
 
 

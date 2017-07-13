@@ -1356,7 +1356,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
 
-                StatusBar = new StatusBarMessage("Admin");
+                StatusBar = new StatusBarMessage(NodeAttribute.CurrentUser.Name);
 
 
                 _onlineBit = 0;

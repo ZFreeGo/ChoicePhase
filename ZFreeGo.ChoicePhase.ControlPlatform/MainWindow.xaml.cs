@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ZFreeGo.ChoicePhase.ControlPlatform.ViewModel;
+using ZFreeGo.ChoicePhase.PlatformModel;
 
 namespace ZFreeGo.ChoicePhase.ControlPlatform
 {
@@ -26,10 +27,14 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
             //注册MVVMLight消息
           //  Messenger.Default.Register<string>(this, "ShowUserView", ShowUserView);
             Messenger.Default.Register<Exception>(this, "ExceptionMessage", ExceptionMessage);
-            Messenger.Default.Register<string>(this, "MessengerSrcollToEnd", SrcollToEnd);
-                
+            Messenger.Default.Register<string>(this, "MessengerSrcollToEnd", SrcollToEnd);                
         }
 
+        public new void Close()
+        {
+            PlatformModelServer.GetServer().Close();
+            base.Close();
+        }
         /// <summary>
         /// 异常信息
         /// </summary>

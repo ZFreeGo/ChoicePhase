@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using ZFreeGo.ChoicePhase.ControlPlatform.View;
 using ZFreeGo.ChoicePhase.PlatformModel;
 using ZFreeGo.ChoicePhase.PlatformModel.DataItemSet;
 
@@ -48,9 +49,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 modelServer = PlatformModelServer.GetServer();
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
                 modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                             
-
-            }
-            
+            }            
         }
 
         void MonitorData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -90,8 +89,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 modelServer.LogicalUI.TestParameter = value;
                 RaisePropertyChanged("TestParameter");
-
-
             }
         }
 
@@ -124,45 +121,44 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         private void ExecuteTreeSelectedItemCommand(string obj)
         {
             try
-            {            
-                   
-                  
+            {
+                switch (obj)
+                {
+                    case "SerialPortConfig":
+                        {
 
-                    switch (obj)
-                    {
-                        case "SerialPortConfig":
-                            {
+                            ShowUri = "view/CommunicationView.xaml";
+                            break;
+                        }
 
-                                ShowUri = "view/CommunicationView.xaml";
-                                break;
-                            }
-
-                        case "SetpointParameter":
-                            {
-                                ShowUri = "view/SetpointView.xaml";
-                                break;
-                            }
-                        case "MonitorParameter":
-                            {
-                                ShowUri = "view/MonitorView.xaml";
-                                break;
-                            }
-                        case "RemoteControl":
-                            {
-                                ShowUri = "view/ControlView.xaml";
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
-                    }
-
-
-                   
-                
+                    case "SetpointParameter":
+                        {
+                            ShowUri = "view/SetpointView.xaml";
+                            break;
+                        }
+                    case "MonitorParameter":
+                        {
+                            ShowUri = "view/MonitorView.xaml";
+                            break;
+                        }
+                    case "RemoteControl":
+                        {
+                            ShowUri = "view/ControlView.xaml";
+                            break;
+                        }
+                    case "OptionConfig":
+                        {
+                            OptionConfigUI option = new OptionConfigUI();
+                            option.ShowDialog();
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Messenger.Default.Send<Exception>(ex);
             }

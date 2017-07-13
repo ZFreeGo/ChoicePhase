@@ -77,6 +77,7 @@
     <Compile Include="ViewModel\ControlViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\MonitorViewModel.cs" />
+    <Compile Include="ViewModel\OptionConfigUIViewModel.cs" />
     <Compile Include="ViewModel\SetpointViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\CommunicationView.xaml.cs">
@@ -85,9 +86,11 @@
     <Compile Include="View\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DataGridCommitEditBehavior.cs" />
     <Compile Include="View\MonitorView.xaml.cs">
       <DependentUpon>MonitorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionConfigUI.xaml.cs">
+      <DependentUpon>OptionConfigUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SetpointView.xaml.cs">
       <DependentUpon>SetpointView.xaml</DependentUpon>
@@ -122,6 +125,10 @@
     <Page Include="View\MonitorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\OptionConfigUI.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SetpointView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -213,12 +220,14 @@
     <Resource Include="Pictures\le.png" />
     <Resource Include="Pictures\manual.ico" />
     <Resource Include="Pictures\manual.png" />
-    <Resource Include="Pictures\meter.ico" />
-    <Resource Include="Pictures\meter.png" />
     <Resource Include="Pictures\red.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Pictures\set.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\meter.ico" />
+    <Resource Include="Pictures\meter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

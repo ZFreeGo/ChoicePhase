@@ -118,6 +118,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 _laserCANAddr = 0xF1;
                 //读取配置文件
                 XMLOperate.ReadLastConfigRecod();
+                NodeAttribute.CurrentUser = XMLOperate.ReadUserRecod();
+               
+               
+
 
                 _monitorViewData = new MonitorViewData();
                 CommServer = new CommunicationServer();

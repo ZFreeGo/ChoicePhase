@@ -225,12 +225,14 @@ E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Deb
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\CommunicationView.baml
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\ControlView.baml
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\MonitorView.baml
+E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\OptionConfigUI.baml
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\SetpointView.baml
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\StartupInterface.baml
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\MainWindow.g.cs
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\CommunicationView.g.cs
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\ControlView.g.cs
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\MonitorView.g.cs
+E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\OptionConfigUI.g.cs
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\SetpointView.g.cs
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\View\StartupInterface.g.cs
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\obj\Debug\App.g.cs

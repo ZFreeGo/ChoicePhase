@@ -33,11 +33,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
         public static string CommonPortXmlPath = @"Config\XML\Config.xml";
 
         /// <summary>
+        /// 串口XSD架构路径 User
+        /// </summary>
+        public static string UserXsdPath = @"Config\XSD\User.xsd";
+
+        /// <summary>
+        /// 串口XML表格路径 user
+        /// </summary>
+        public static string UserXmlPath = @"Config\XML\User.xml";
+
+        /// <summary>
         /// 串口XSD架构路径
         /// </summary>
         public static string CommonPortXsdPath = @"Config\XSD\Config.xsd";
-
-
         /// <summary>
         /// 永磁错误代码XML表格路径
         /// </summary>

@@ -3,7 +3,3 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\bin\Debug\Test.pdb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\obj\Debug\Test.exe
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\obj\Debug\Test.pdb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\obj\Debug\Test.csprojResolveAssemblyReference.cache
-E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\bin\Debug\Test.exe
-E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\bin\Debug\Test.pdb
-E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\obj\Debug\Test.exe
-E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\Test\obj\Debug\Test.pdb

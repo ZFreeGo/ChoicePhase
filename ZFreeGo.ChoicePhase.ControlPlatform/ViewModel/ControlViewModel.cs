@@ -57,12 +57,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
              _actionLoopChoice = new LoopChoice();
 
-
              Messenger.Default.Register<string>(this, "ControlViewPassword", UpdatePassword);
 
              ExecuteLoadDataCommand();
              DispatcherShow = Dispatcher.CurrentDispatcher;
-
             
              LoopTestCommand = new RelayCommand<string>(ExecuteLoopTestCommand);
              UpdateSystemParameterCommand = new RelayCommand<string>(ExecuteUpdateSystemParameterCommand);

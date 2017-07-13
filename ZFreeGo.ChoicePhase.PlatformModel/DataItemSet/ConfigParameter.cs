@@ -283,7 +283,115 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             return (byte)(value & (~(1 << seq)));
         }
 
-        
+        public string _userName = NodeAttribute.CurrentUser.Name;
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        public string UserName
+        {
+            get
+            {
+                return _userName;
+            }
+            set
+            {
+                _userName = value;
+                RaisePropertyChanged("UserName");
+            }
+        }
+
+        /// <summary>
+        /// 密钥暂存
+        /// </summary>
+        private string _operatOldPassword = "";
+        private string _operatNewPassword = "";
+        private string _operatAckPassword = "";
+        private string _loginOldPassword = "";
+        private string _loginNewPassword = "";
+        private string _loginAckPassword = "";
+        /// <summary>
+        /// 更新密钥
+        /// </summary>
+        /// <param name="obj">item1-属性名称，item2-密码</param>
+        public void UpadeOptionViewPassword(Tuple<string, string> obj)
+        {
+            switch (obj.Item1)
+            {
+                case "loginOldPassword":
+                    {
+                        _loginOldPassword = obj.Item2;
+                        break;
+                    }
+                case "loginNewPassword":
+                    {
+                        _loginNewPassword = obj.Item2;
+                        break;
+                    }
+                case "loginAckPassword":
+                    {
+                        _loginAckPassword = obj.Item2;
+                        break;
+                    }
+                case "operatOldPassword":
+                    {
+                        _operatOldPassword = obj.Item2;
+                        break;
+                    }
+                case "operatNewPassword":
+                    {
+                        _operatNewPassword = obj.Item2;
+                        break;
+                    }
+                case "operatAckPassword":
+                    {
+                        _operatAckPassword = obj.Item2;
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// 登陆密码设置展开
+        /// </summary>
+        private bool isExpander = true;
+        public bool ExpanderLogin
+        {
+            get
+            {
+                return isExpander;
+            }
+            set
+            {
+                isExpander = value;
+                if (isExpander)
+                {
+                    isExpanderOperate = false;
+                }
+                RaisePropertyChanged("ExpanderLogin");
+                RaisePropertyChanged("ExpanderOperate");
+            }
+        }
+        private bool isExpanderOperate = false;
+        /// <summary>
+        /// 操作密码设置展开
+        /// </summary>
+        public bool ExpanderOperate
+        {
+            get
+            {
+                return isExpanderOperate;
+            }
+            set
+            {
+                isExpanderOperate = value;
+                if (isExpanderOperate)
+                {
+                    isExpander = false;
+                }
+                RaisePropertyChanged("ExpanderLogin");
+                RaisePropertyChanged("ExpanderOperate");
+            }
+        }
 
         private void ExecuteOperateCommand(string obj)
         {
@@ -306,6 +414,47 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                         RaisePropertyChanged("OpenPowerOnTime");
                         RaisePropertyChanged("WorkMode");
                         Tips = "重新载入设置";
+                        break;
+                    }
+                case "AckChangeLoginPassword"://确认登陆密码
+                    {
+                        if (NodeAttribute.PasswordI != _loginOldPassword)
+                        {
+                            Tips = "原始密码错误";
+                            TipColor = "Red";
+                            return;
+                        }
+                        if (_loginNewPassword != _loginAckPassword)
+                        {
+                            Tips = "设置密码不一致错误";
+                            TipColor = "Red";
+                            return;
+                        }
+                        NodeAttribute.CurrentUser.PasswordI = _loginNewPassword;
+                        Tips = "修改成功";
+                        TipColor = "Green";
+                        XMLOperate.WriteUserRecod(NodeAttribute.CurrentUser);
+
+                        break;
+                    }
+                case "AckChangeOperatPassword"://确认操作密码
+                    {
+                        if (NodeAttribute.PasswordII != _operatOldPassword)
+                        {
+                            Tips = "原始密码错误";
+                            TipColor = "Red";
+                            return;
+                        }
+                        if (_operatNewPassword != _operatAckPassword)
+                        {
+                            Tips = "设置密码不一致错误";
+                            TipColor = "Red";
+                            return;
+                        }
+                        NodeAttribute.CurrentUser.PasswordII = _operatNewPassword;
+                        Tips = "修改成功";
+                        TipColor = "Green";
+                        XMLOperate.WriteUserRecod(NodeAttribute.CurrentUser);
                         break;
                     }
             }

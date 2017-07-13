@@ -11,7 +11,7 @@
     <EnabitSelect>3</EnabitSelect>
     <SynCloseActionOverTime>10000</SynCloseActionOverTime>
     <OpenActionOverTime>10000</OpenActionOverTime>
-    <CloseActionOverTime>10000</CloseActionOverTime>
+    <CloseActionOverTime>1000</CloseActionOverTime>
     <ClosePowerOnTime>50</ClosePowerOnTime>
     <OpenPowerOnTime>30</OpenPowerOnTime>
     <WorkMode>0</WorkMode>

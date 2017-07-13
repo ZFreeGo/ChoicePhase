@@ -41,17 +41,12 @@
             <RowDefinition Height="150"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2">
-            <Menu DockPanel.Dock="Top">                
-                <MenuItem Header="帮助">
-                    <MenuItem Header="关于CBS-I 选相合闸控制系统"></MenuItem>                    
-                </MenuItem>
-            </Menu>
+        <DockPanel Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2">            
             <ToolBar DockPanel.Dock="Top" Height="40">
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SerialPortConfig">
                     <DockPanel>
                         <Image Source="Pictures/config.ico"></Image>
-                        <TextBlock  VerticalAlignment="Center">通讯配置</TextBlock>
+                        <TextBlock  VerticalAlignment="Center">通讯设置</TextBlock>
                     </DockPanel>
                     
                 </Button>
@@ -77,6 +72,13 @@
                         <TextBlock VerticalAlignment="Center">定值参数</TextBlock>
                     </DockPanel>
                 </Button>
+                <Button HorizontalAlignment="Right" Margin="100,0,0,0" Command="{Binding TreeSelectedItemCommand}" 
+                        CommandParameter="OptionConfig">
+                    <DockPanel>
+                        <Image Source="Pictures/064.ico"></Image>
+                        <TextBlock VerticalAlignment="Center">系统配置</TextBlock>
+                    </DockPanel>
+                </Button>
             </ToolBar>
            
         </DockPanel>
@@ -87,7 +89,7 @@
 
         </Frame>
         <GridSplitter Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="LightBlue" Height="5"  HorizontalAlignment="Stretch"
-                      VerticalAlignment="Center" ></GridSplitter>
+                      VerticalAlignment = "Center"></GridSplitter>
         <Grid Grid.Row="4"  Grid.Column="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions >
                 <ColumnDefinition></ColumnDefinition>
