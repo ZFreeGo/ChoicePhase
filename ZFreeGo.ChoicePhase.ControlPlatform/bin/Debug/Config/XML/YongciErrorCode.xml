@@ -1,4 +1,4 @@
-<?xml version="1.0" standalone="yes"?>
+﻿<?xml version="1.0" standalone="yes"?>
 <NewDataSet>
   <ErrorCode>
     <ID>1</ID> 
@@ -55,4 +55,29 @@
 	<Sign>REFUSE_ERROR</Sign>   	
     <Comment>拒动错误</Comment>  	
   </ErrorCode>  
+ <ErrorCode>
+    <ID>12</ID> 
+	<Sign>ERROR_DIFF_CONFIG</Sign>   	
+    <Comment>合闸预制配置不同</Comment>  	
+  </ErrorCode>  
+ <ErrorCode>
+    <ID>13</ID> 
+	<Sign>ERROR_CHARGED_CONFIG</Sign>   	
+    <Comment>开关带电禁止分闸</Comment>  	
+  </ErrorCode>  
+   <ErrorCode>
+    <ID>14</ID> 
+	<Sign>ERROR_SIGNEL_INVALID</Sign>   	
+    <Comment>无效的同步测试信号</Comment>  	
+  </ErrorCode>  
+  <ErrorCode>
+    <ID>15</ID> 
+	<Sign>RUN_MODE_ERROR</Sign>   	
+    <Comment>调试/工作模式</Comment>  	
+  </ErrorCode> 
+   <ErrorCode>
+    <ID>16</ID> 
+	<Sign>LOCK_ERROR</Sign>   	
+    <Comment>冲突的动作命令</Comment>  	
+  </ErrorCode> 
 </NewDataSet>

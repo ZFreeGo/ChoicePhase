@@ -405,7 +405,28 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 return false;            
         }
 
-
+        /// <summary>
+        /// 获取同步相角描述
+        /// </summary>
+        /// <returns></returns>
+        public string GetActionAngleDescrible()
+        {
+            StringBuilder strBuild = new StringBuilder(32);
+            
+            if ((PhaseItemI != null) && (PhaseItemI!= PhaseNull))
+            {
+                strBuild.AppendFormat(" {0}:{1}° ", PhaseItemI, _angleI);
+            }
+            if ((PhaseItemII != null) && (PhaseItemII != PhaseNull))
+            {
+                strBuild.AppendFormat("{0}:{1}° ", PhaseItemII, _angleI);
+            }
+            if ((PhaseItemIII != null) && (PhaseItemIII != PhaseNull))
+            {
+                strBuild.AppendFormat("{0}:{1}° ", PhaseItemIII, _angleI);
+            }
+            return strBuild.ToString();
+        }
 
 
         /// <summary>

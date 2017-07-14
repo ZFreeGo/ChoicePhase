@@ -201,13 +201,13 @@
                 
             </StatusBarItem>
             
-            <StatusBarItem  Grid.Column="1" >
+            <StatusBarItem  Grid.Column="1" FontFamily="黑体">
 
                 <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
                     <StackPanel Orientation="Horizontal" >
                        
                         <Ellipse Width="8" Height="8" Fill="{Binding  ComBrush}"></Ellipse>
-                        <TextBlock  Foreground="{Binding  ComBrush}" Text="{Binding ComState}" />
+                        <TextBlock  Foreground="{Binding  ComBrush}" Text="{Binding ComState}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >
                         <Separator.LayoutTransform>
@@ -216,7 +216,7 @@
                     </Separator>
                     <StackPanel Orientation="Horizontal" >
                         <Ellipse Width="8" Height="8" Fill="{Binding  DeviceBrush}"></Ellipse>
-                        <TextBlock  Foreground="{Binding  DeviceBrush}" Text="{Binding DeviceState}" />
+                        <TextBlock  Foreground="{Binding  DeviceBrush}" Text="{Binding DeviceState}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >
                         <Separator.LayoutTransform>
@@ -226,8 +226,8 @@
                     <StackPanel Orientation="Horizontal" >
                         
                         <Ellipse Width="8" Height="8" Fill="{Binding  PhaseABrush}"></Ellipse>
-                        
-                        <TextBlock  Foreground="{Binding  PhaseABrush}" Text="{Binding PhaseA}" />
+
+                        <TextBlock  Foreground="{Binding  PhaseABrush}" Text="{Binding PhaseA}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >
                         <Separator.LayoutTransform>
@@ -236,8 +236,8 @@
                     </Separator>
                     <StackPanel Orientation="Horizontal"  Visibility="{Binding VisibleB}">
                         <Ellipse Width="8" Height="8" Fill="{Binding  PhaseBBrush}" ></Ellipse>
-                       
-                        <TextBlock  Foreground="{Binding  PhaseBBrush}" Text="{Binding PhaseB}" />
+
+                        <TextBlock  Foreground="{Binding  PhaseBBrush}" Text="{Binding PhaseB}" VerticalAlignment="Center"/>
                         <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >
                             <Separator.LayoutTransform>
                                 <RotateTransform Angle="90" />
@@ -249,7 +249,7 @@
                     <StackPanel Orientation="Horizontal" Visibility="{Binding VisibleC}">
                         
                         <Ellipse Width="8" Height="8" Fill="{Binding  PhaseCBrush}"></Ellipse>
-                        <TextBlock  Foreground="{Binding  PhaseCBrush}" Text="{Binding PhaseC}" />
+                        <TextBlock  Foreground="{Binding  PhaseCBrush}" Text="{Binding PhaseC}" VerticalAlignment="Center"/>
 
                         <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >
                             <Separator.LayoutTransform>
@@ -259,9 +259,9 @@
                     </StackPanel>
 
                    
-                    <StackPanel Orientation="Horizontal" >                        
-                        <Image Source="{Binding  SynICO}"  ></Image>
-                        <TextBlock  Foreground="{Binding  SynBrush}" Text="{Binding Syn}" />
+                    <StackPanel Orientation="Horizontal" >
+                        <Ellipse Width="8" Height="8" Fill="{Binding  SynBrush}"></Ellipse>
+                        <TextBlock  Foreground="{Binding  SynBrush}" Text="{Binding Syn}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Separator  HorizontalAlignment="Left"  Margin="7,0,7,0"  VerticalAlignment="Top" Width="20" >
                         <Separator.LayoutTransform>

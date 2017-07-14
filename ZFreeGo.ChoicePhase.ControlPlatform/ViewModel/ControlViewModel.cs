@@ -878,6 +878,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                 ShowMessageBox("有正在处理的其它操作", "预制操作");
                                 return;
                             }
+                            if (modelServer.LogicalUI.UserControlEnable.OperateSyn)
+                            {
+                                ShowMessageBox("禁止重复预制", "预制操作");
+                                return;
+                            }
+
+                            var des = modelServer.LogicalUI.SynPhaseChoice.GetActionAngleDescrible();
+                            var result = ShowMessageBox("确定进行同步合闸预制操作?" + des, "预制操作");
+                            if (!result)
+                            {
+                                return;
+                            }
 
                             modelServer.LogicalUI.GetNdoe(NodeAttribute.MacSynController).ResetState();//复位状态                           
 
@@ -1117,6 +1129,18 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                                (!modelServer.LogicalUI.UserControlEnable.OperateABC))
                             {
                                 ShowMessageBox("有正在处理的其它操作", "同步预制操作");
+                                return;
+                            }
+                            if (modelServer.LogicalUI.UserControlEnable.OperateSyn)
+                            {
+                                ShowMessageBox("禁止重复预制", "预制操作");
+                                return;
+                            }
+
+                            var des = modelServer.LogicalUI.SynPhaseChoice.GetActionAngleDescrible();
+                            var result = ShowMessageBox("确定进行同步合闸预制操作?" + des, "预制操作");
+                            if (!result)
+                            {
                                 return;
                             }
 
@@ -1670,8 +1694,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
         #endregion
 
-
-                //是否回收完毕
+        #region 回收垃圾
+        //是否回收完毕
           bool _disposed;
           public void Dispose()
           {
@@ -1699,7 +1723,8 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
             _disposed = true;
           }
+        #endregion
 
-        
+
     }
 }

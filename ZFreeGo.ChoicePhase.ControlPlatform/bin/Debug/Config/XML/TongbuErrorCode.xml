@@ -99,5 +99,10 @@
     <ID>20</ID> 
 	<Sign>ERROR_COMPENSATION</Sign>   	
     <Comment>补偿异常</Comment>  	
-  </ErrorCode>   
+  </ErrorCode> 
+<ErrorCode>
+    <ID>21</ID> 
+	<Sign>ERROR_REPEAT_READY</Sign>   	
+    <Comment>重复预制错误</Comment>  	
+  </ErrorCode>  
 </NewDataSet>

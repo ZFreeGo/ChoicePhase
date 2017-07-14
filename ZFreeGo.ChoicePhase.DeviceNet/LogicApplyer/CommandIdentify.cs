@@ -88,7 +88,10 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         //SyncOrchestratorOpenAction = 0x32,
 
 
-
+        /// <summary>
+        /// 同步信号检测命令
+        /// </summary>
+        //SynSingalSelfTesting = 0x40,
         
     }
 }
