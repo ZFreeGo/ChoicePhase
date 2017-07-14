@@ -543,7 +543,7 @@
                                             <StackPanel Margin="3">
                                                 <StackPanel Orientation="Horizontal" DataContext="{Binding SynPhaseChoice}">
                                                     <Label Margin="3">相选择与角度:</Label>
-                                                    <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding PhaseSelectI}" SelectedItem="{Binding PhaseItemI}"></ComboBox>
+                                                    <ComboBox  MinWidth="60" Margin="3" ItemsSource="{Binding PhaseSelectI}" SelectedItem="{Binding PhaseItemI}" Visibility="Collapsed"></ComboBox>
                                                     <TextBox MinWidth="60" Margin="3" Text="{Binding AngleI}" Visibility="{Binding AngleVisibleI}"></TextBox>
                                                    
                                                     <Button Margin="3,3,3,3" Padding="2"  >应用</Button>

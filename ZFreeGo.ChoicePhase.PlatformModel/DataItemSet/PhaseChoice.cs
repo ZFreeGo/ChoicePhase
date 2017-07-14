@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer;
+using ZFreeGo.ChoicePhase.PlatformModel.GetViewData;
 
 namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 {
@@ -756,6 +757,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
                 PhaseItemI = PhaseNull;
                 UpdateAngleVisble();
+
+                if(NodeAttribute.SingleMode)
+                {
+                    PhaseItemI = PhaseA;
+                }
             }
             catch(Exception ex)
             {
