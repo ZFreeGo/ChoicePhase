@@ -79,5 +79,10 @@
     <ID>16</ID> 
 	<Sign>LOCK_ERROR</Sign>   	
     <Comment>冲突的动作命令</Comment>  	
-  </ErrorCode> 
+  </ErrorCode>
+	<ErrorCode>
+    <ID>17</ID> 
+	<Sign>ERROR_SEQUENCE_UNRADY</Sign>   	
+    <Comment>非同步合闸预制条件下进入脉冲检测</Comment>  	
+  </ErrorCode>   
 </NewDataSet>

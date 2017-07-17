@@ -104,5 +104,30 @@
     <ID>21</ID> 
 	<Sign>ERROR_REPEAT_READY</Sign>   	
     <Comment>重复预制错误</Comment>  	
+  </ErrorCode> 
+ 	<ErrorCode>
+    <ID>22</ID> 
+	<Sign>ERROR_SEQUENCE_UNRADY</Sign>   	
+    <Comment>非同步合闸预制条件下进入脉冲检测</Comment>  	
   </ErrorCode>  
-</NewDataSet>
+   	<ErrorCode>
+    <ID>23</ID> 
+	<Sign>ERROR_SEQUENCE_CMD</Sign>   	
+    <Comment>收到错误序列命令</Comment>  	
+  </ErrorCode>  
+	<ErrorCode>
+    <ID>24</ID> 
+	<Sign>ERROR_SAVE_DATA</Sign>   	
+    <Comment>存储数据错误</Comment>  	
+  </ErrorCode>  
+  <ErrorCode>
+    <ID>25</ID> 
+	<Sign>ERROR_SAVE_DATA</Sign>   	
+    <Comment>存储数据错误</Comment>  	
+  </ErrorCode> 
+  <ErrorCode>
+    <ID>26</ID> 
+	<Sign>ERROR_LOOP_COUNT</Sign>   	
+    <Comment>错误的回路数量</Comment>  	
+  </ErrorCode>    
+  </NewDataSet>
