@@ -148,8 +148,8 @@
                         </DockPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <Button  Margin="3" Padding="2"  Width="100" Command="{Binding  SendFrameCommand}" CommandParameter="CheckCommunicationDevice">测试通讯设备</Button>
-                          
-                        </StackPanel>
+                            
+                            </StackPanel>
                     </Grid>
                 </TabItem>
             </TabControl>

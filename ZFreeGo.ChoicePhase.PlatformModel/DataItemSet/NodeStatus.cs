@@ -282,6 +282,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         }
 
 
+        //电压频率
+        public float Frequency;
 
         /// <summary>
         /// 更新同步状态
@@ -290,7 +292,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public void UpdateSynStatus(byte[] statusByte)
         {
             //判断长度
-            if (statusByte.Length <4)
+            if (statusByte.Length <5)
             {
                 return;
             }
@@ -298,9 +300,26 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 VoltageLoopCollect[k] = (EnergyStatusLoop)((statusByte[2] >> (2 * k)) & (0x03));
             }
-            for (int k = 0; k < 4; k++)
+            Frequency = (float)((statusByte[3] + ((UInt16)statusByte[4] << 8)) * 0.001);
+           
+            if (Frequency < 49)
             {
-                FrequencyLoopCollect[k] = (EnergyStatusLoop)((statusByte[3] >> (2 * k)) & (0x03));
+                FrequencyLoopCollect[0] = EnergyStatusLoop.Less;
+            }
+            else if (Frequency < 51)
+            {
+                FrequencyLoopCollect[0] = EnergyStatusLoop.Normal;
+            }
+            else
+            {
+                FrequencyLoopCollect[0] = EnergyStatusLoop.More;
+            }
+
+
+
+            for (int k = 2; k < 4; k++)
+            {
+                FrequencyLoopCollect[k] = EnergyStatusLoop.Null;
             }
             LastOnline = IsOnline;
             IsOnline = true;      

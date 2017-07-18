@@ -119,6 +119,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         {
             if (message.MAC == NodeAttribute.MacSynController)
             {
+                //针对时序脉冲，由永磁控制器代替发送
+                if (message.Data.Length >= 2)
+                {
+                    if (message.Data[0] == (byte)CommandIdentify.SynTimeSequence)
+                    {
+                        if(message.Data[1] == 0xA5)
+                        {
+                            UpdateStatus("时序脉冲到达，发送同步执行指令。");
+                        }
+                    }
+                }
+
                 if (message.Data.Length < 4)
                 {
                     return;
@@ -237,6 +249,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 if (NodeStatusList[0].FrequencyLoopCollect[0] != EnergyStatusLoop.Normal)
                 {
                     UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
+                    NodeAttribute.Period = (int)(1000000 / NodeStatusList[0].Frequency);
                 }
 
                 if (!e.Node.LastOnline)
@@ -861,6 +874,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 {
                     state = state && NodeStatusList[3].SynReadyCloseState;
                 }
+                state = state && NodeStatusList[0].SynReadyCloseState;
+
                 if (state)
                 {
                     UserControlEnable.SynCloseAction = true;

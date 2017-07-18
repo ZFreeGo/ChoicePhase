@@ -161,6 +161,19 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
             }
         }
 
+        /// <summary>
+        /// 时间序列同步来 来自其它设备发出更新
+        /// </summary>
+        /// <param name="serverData"></param>
+        /// <param name="mac"></param>
+        public void ServerTimeSequence(byte[] serverData, byte mac)
+        {
+            if (NormalStatusArrived != null)
+            {
+                NormalStatusArrived(this, new StatusChangeMessage(mac, serverData));
+            }
+        }
+
         private string ByteToString(byte[] data, int start, int len)
         {
             StringBuilder strBuild = new StringBuilder(len * 3 + 10);

@@ -399,6 +399,10 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                     RestartEstablishLink((byte)netID.GetMAC());
                 }
             }
+            else if (CodeDictionary.GroupFunctionCode["GROUP2_POLL_STATUS_CYCLE"] == function)
+            {
+                PollingService.ServerTimeSequence(message.Data,(byte) netID.GetMAC());
+            }
             else
             {
                 throw new Exception("Group2未实现功能码");

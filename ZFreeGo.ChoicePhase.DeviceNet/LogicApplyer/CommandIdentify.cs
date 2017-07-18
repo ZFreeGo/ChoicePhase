@@ -87,7 +87,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
        // SyncOrchestratorReadyOpen = 0x32,
         //SyncOrchestratorOpenAction = 0x32,
 
-
+        SynTimeSequence = 0x34, //时序同步脉冲信号
         /// <summary>
         /// 同步信号检测命令
         /// </summary>

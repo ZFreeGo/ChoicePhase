@@ -1,14 +1,14 @@
 <?xml version="1.0" standalone="yes"?>
 <NewDataSet>
   <SerialPort>
-    <CommonPort>4</CommonPort>
+    <CommonPort>11</CommonPort>
     <Baud>9600</Baud>
     <DataBit>8</DataBit>
     <ParityBit>0</ParityBit>
     <StopBit>1</StopBit>
   </SerialPort>
   <ConfigParameter>
-    <EnabitSelect>3</EnabitSelect>
+    <EnabitSelect>0</EnabitSelect>
     <SynCloseActionOverTime>10000</SynCloseActionOverTime>
     <OpenActionOverTime>10000</OpenActionOverTime>
     <CloseActionOverTime>10000</CloseActionOverTime>

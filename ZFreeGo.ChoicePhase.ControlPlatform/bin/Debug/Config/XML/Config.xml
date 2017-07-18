@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?>
 <NewDataSet>
   <SerialPort>
-    <CommonPort>10</CommonPort>
+    <CommonPort>12</CommonPort>
     <Baud>9600</Baud>
     <DataBit>8</DataBit>
     <ParityBit>0</ParityBit>
@@ -14,6 +14,6 @@
     <CloseActionOverTime>10000</CloseActionOverTime>
     <ClosePowerOnTime>50</ClosePowerOnTime>
     <OpenPowerOnTime>30</OpenPowerOnTime>
-    <WorkMode>22</WorkMode>
+    <WorkMode>0</WorkMode>
   </ConfigParameter>
 </NewDataSet>

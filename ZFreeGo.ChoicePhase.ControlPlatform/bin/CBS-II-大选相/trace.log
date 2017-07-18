@@ -429,3 +429,5 @@ LogTrace Warning: 0 :     [2017年7月14日23:07:21]: 串口接收进程::正在
 LogTrace Warning: 0 :     [2017年7月14日23:07:21]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年7月14日23:57:47]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年7月14日23:57:47]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月17日21:52:15]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年7月17日21:52:15]: DeviceNet::正在中止线程。
