@@ -85,4 +85,19 @@
 	<Sign>ERROR_SEQUENCE_UNRADY</Sign>   	
     <Comment>非同步合闸预制条件下进入脉冲检测</Comment>  	
   </ErrorCode>   
+  	<ErrorCode>
+    <ID>18</ID> 
+	<Sign>ERROR_LOCAL_MAC</Sign>   	
+    <Comment>本地地址错误</Comment>  	
+  </ErrorCode>   
+  	<ErrorCode>
+    <ID>19</ID> 
+	<Sign>ERROR_MASTER_MAC</Sign>   	
+    <Comment>主站地址错误</Comment>  	
+  </ErrorCode> 
+	<ErrorCode>
+    <ID>20</ID> 
+	<Sign>ERROR_CONFIG_MODE</Sign>   	
+    <Comment>错误的配置模式</Comment>  	
+  </ErrorCode>   
 </NewDataSet>

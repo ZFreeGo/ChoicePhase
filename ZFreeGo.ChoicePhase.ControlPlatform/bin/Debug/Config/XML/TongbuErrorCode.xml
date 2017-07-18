@@ -130,4 +130,9 @@
 	<Sign>ERROR_SEQUENCE_MODE</Sign>   	
     <Comment>错误的序列模式</Comment>  	
   </ErrorCode>    
+   <ErrorCode>
+    <ID>27</ID> 
+	<Sign>ERROR_WORK_MODE</Sign>   	
+    <Comment>错误的工作模式</Comment>  	
+  </ErrorCode>  
   </NewDataSet>
