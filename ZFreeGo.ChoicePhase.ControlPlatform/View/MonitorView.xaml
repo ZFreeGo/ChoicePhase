@@ -44,6 +44,9 @@
             </i:Interaction.Triggers>
             <DataGrid.ContextMenu>
                 <ContextMenu Name="dgmenu" StaysOpen="True"  >
+                    <MenuItem Header="使能设置" CommandParameter="SetNewValue" Command="{Binding DataGridMenumSelected}" VerticalAlignment="Center">
+                        <CheckBox Margin="3" Padding="3" VerticalAlignment="Center" VerticalContentAlignment="Center"  IsChecked="{Binding FixCheck}"   >修改</CheckBox>
+                    </MenuItem>
                     <MenuItem Header="重新载入表格" CommandParameter="Reload" Command="{Binding DataGridMenumSelected}"/>
                     <Separator></Separator>
                     <MenuItem Header="保存表格到数据库"  CommandParameter="Save" Command="{Binding DataGridMenumSelected}"/>
@@ -66,10 +69,6 @@
 
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Row="2">
-            <StackPanel Margin="3" Orientation="Horizontal" >
-                <CheckBox Margin="50,3,3,3" Padding="3" VerticalAlignment="Center" VerticalContentAlignment="Center"  IsChecked="{Binding FixCheck}"  >修改</CheckBox>
-            </StackPanel>
-        </Grid>
+        
     </Grid>
 </Page>
