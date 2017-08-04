@@ -18,10 +18,10 @@ namespace Test
         }
     }
 
-    class Program
+    class Program1
     {
         private static TraceSource mySource = new TraceSource("TraceSourceApp");
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
             mySource.Switch = new SourceSwitch("sourceSwitch", "Error");
             mySource.Listeners.Remove("Default");

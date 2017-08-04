@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunicationServer.cs" />
-    <Compile Include="Communication\SerialPortAttribute.cs" />
+    <Compile Include="DataItemSet\Communication\SerialPortAttribute.cs" />
     <Compile Include="DataItemSet\ActionPhase.cs" />
     <Compile Include="DataItemSet\ConfigParameter.cs" />
     <Compile Include="DataItemSet\EnableControl.cs" />
@@ -76,8 +76,8 @@
     <Compile Include="GetViewData\SQLliteDatabase.cs" />
     <Compile Include="Helper\CommonPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Communication\SerialPortServer.cs" />
-    <Compile Include="Communication\SerialDataEvent.cs" />
+    <Compile Include="DataItemSet\Communication\SerialPortServer.cs" />
+    <Compile Include="DataItemSet\Communication\SerialDataEvent.cs" />
     <Compile Include="Secure\AccountManager.cs" />
     <Compile Include="Secure\AuthorityLevel.cs" />
     <Compile Include="Secure\UserAccount.cs" />
@@ -103,7 +103,9 @@
       <Name>ZFreeGo.TransportProtocol.ModBus</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
