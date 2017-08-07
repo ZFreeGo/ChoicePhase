@@ -91,7 +91,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         private string rawReciveMessage = "";
 
         /// <summary>
-        /// 原始接收
+        /// 原始接收数据
         /// </summary>
         public string RawReciveMessage
         {
@@ -114,7 +114,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         private string rawSendMessage = "";
 
         /// <summary>
-        /// 原始发送信息
+        /// 原始发送数据
         /// </summary>
         public string RawSendMessage
         {
@@ -142,8 +142,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
              _commonServer = new SerialPortServer();
 
                 //SerialPortParameter = new SerialPortParameterItem();
-
-                DownAddress = 0xA1;
+              DownAddress = 0xA1;
            
         }
     }

@@ -143,7 +143,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                  var user = new User(
                     (string)productRow["Name"],
                     (string)productRow["PasswordI"],
-                    (string)productRow["PasswordII"]);
+                    (string)productRow["PasswordII"]);                 
                  return user;
             }
             catch (Exception ex)

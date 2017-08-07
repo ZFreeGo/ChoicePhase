@@ -11,6 +11,9 @@ using System.Threading;
 namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
 {
 
+    /// <summary>
+    /// 串口服务
+    /// </summary>
     public class SerialPortServer
     {
         private SerialPort serialPort; //串口实例
@@ -86,6 +89,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
             }
             catch (Exception ex)
             {
+                if (ExceptionDealDelegate != null)
+                {
+                    ExceptionDealDelegate(ex);
+                }               
                 Trace.WriteLine("串口接收进程::" + ex.Message);
             }
         }
@@ -135,6 +142,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Communication
         {
             InitSerialPort();
         }
+
+        /// <summary>
+        /// 异常信息处理委托
+        /// </summary>
+        public Action<Exception> ExceptionDealDelegate
+        {
+            get;
+            set;
+        }
+
 
        
         /// <summary>

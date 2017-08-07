@@ -17,42 +17,31 @@ using ZFreeGo.Monitor.DASModel.GetViewData;
 namespace ZFreeGo.ChoicePhase.PlatformModel
 {
 
-
-
-
-    public class PlatformModelServer
+    /// <summary>
+    /// PlatformModel服务
+    /// </summary>
+    public partial class PlatformModelServer
     {
-        private byte _localAddr;
+   
 
-        private byte _laserCANAddr;
-
-        /// <summary>
-        /// 监控数据
-        /// </summary>
-        private MonitorViewData _monitorViewData;
 
         /// <summary>
         /// 获取监控数据
         /// </summary>
         public MonitorViewData MonitorData
         {
-            get
-            {
-                return _monitorViewData;
-            }
+            private set;
+            get;
         }
-
-        private LogicalPresentation _logicalUI;
+       
 
         /// <summary>
         /// 逻辑呈现UI
         /// </summary>
         public LogicalPresentation LogicalUI
         {
-            get
-            {
-                return _logicalUI;
-            }
+            private set;
+            get;
         }
 
 
@@ -73,16 +62,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             get;
         }
 
-        ///// <summary>
-        ///// 站服务列表
-        ///// </summary>
-        //public MasterStationServer StationServer
-        //{
-        //    private set;
-        //    get;
-        //}
-
-
         /// <summary>
         /// DeviceNet服务
         /// </summary>
@@ -92,20 +71,56 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             get;
         }
 
-        public List<DefStationInformation> StationInformation;
+        /// <summary>
+        /// 站点信息列表
+        /// </summary>
+        public List<DefStationInformation> StationInformation
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 本地地址
+        /// </summary>
+        private readonly byte _localAddr;
+
+        /// <summary>
+        /// 目的地址
+        /// </summary>
+        private readonly byte _destinateAddr;
+
 
 
         /// <summary>
-        /// 多帧帧缓冲
+        /// 光纤CAN地址
         /// </summary>
-        private List<byte> _multiFrameBuffer;
-        private byte _lastIndex;
+        private readonly byte _laserCANAddr;
 
+
+        /// <summary>
+        /// 常规功能码--用于DeviceNet数据下行，上位机到终端
+        /// </summary>
+        private readonly byte _downCode;
+        /// <summary>
+        /// 常规功能码--用于DeviceNet数据上行，终端到上位机
+        /// </summary>
+        private readonly byte _upCode;
 
         /// <summary>
         /// 超时定时器用于设备离线状态
         /// </summary>
-        private OverTimeTimer overTimerDevice;
+        private OverTimeTimer _deviceOverTimer;
+
+        /// <summary>
+        /// 设备离线超时时间
+        /// </summary>
+        private int _DeviceOverTime;
+
+        /// <summary>
+        /// 任务调度器
+        /// </summary>
+        private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         /// <summary>
         /// 初始化控制平台Model服务
@@ -116,25 +131,27 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             {
                 _localAddr = 0x1A;
                 _laserCANAddr = 0xF1;
-                //读取配置文件
-                XMLOperate.ReadLastConfigRecod();
-                NodeAttribute.CurrentUser = XMLOperate.ReadUserRecod();
-               
-               
-
-
-                _monitorViewData = new MonitorViewData();
-                CommServer = new CommunicationServer();
-                CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
-                RtuServer = new RtuServer(_localAddr, 500, sendRtuData, ExceptionDeal);
-                RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
-
+                _DeviceOverTime = 7000;
+                _destinateAddr = 0xA1;
+                _downCode = 0x55;
+                _upCode = 0xAA;
                 _multiFrameBuffer = new List<byte>();
                 _lastIndex = 0;
+                
+
+                UpadteConfigParameter();
+
+
+                MonitorData = new MonitorViewData();
+
+                CommServer = new CommunicationServer();
+                CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
+
+                RtuServer = new RtuServer(_localAddr, 500, SendRtuData, ExceptionDeal);
+                RtuServer.RtuFrameArrived += RtuServer_RtuFrameArrived;
+                
 
                 StationInformation = new List<DefStationInformation>();
-
-
                 StationInformation.Add(new DefStationInformation(NodeAttribute.MacSynController, ((NodeAttribute.EnabitSelect & 0x01) == 0x01), "同步控制器"));
                 StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseA, ((NodeAttribute.EnabitSelect & 0x02) == 0x02), "A相"));
                 StationInformation.Add(new DefStationInformation(NodeAttribute.MacPhaseB, ((NodeAttribute.EnabitSelect & 0x04) == 0x04), "B相"));
@@ -150,115 +167,49 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                 ControlNetServer.PollingService.NormalStatusArrived += PollingService_NormalStatusArrived;
                 ControlNetServer.StationArrived +=ControlNetServer_StationArrived;
 
-                _logicalUI = new LogicalPresentation(MonitorData.UpdateStatus);
-
-
-
-                FlashDelegate = ar =>
-                {
-                    if (ar)
-                    {
-
-                        _logicalUI.StatusBar.ComBrush = "Green";
-                    }
-                    else
-                    {
-
-                        _logicalUI.StatusBar.ComBrush = "Red";
-                    }
-                };
-
-                Action act = () =>
-                {
-                    _logicalUI.StatusBar.SetDevice(false);
-                _logicalUI.StatusBar.SetDevice(false);
-                ControlNetServer.StopLinkServer(); //停止所有连接
-                };
-
-                overTimerDevice = new OverTimeTimer(7000, act);
+                LogicalUI = new LogicalPresentation(MonitorData.UpdateStatus);
+                _deviceOverTimer = new OverTimeTimer(_DeviceOverTime, DeviceOverTimeDeal);
                 
             }
             catch(Exception ex)
-            {
-                //CommServer.LinkMessage += ex.StackTrace;
+            {               
                 ZFreeGo.Common.LogTrace.CLog.LogError(ex.StackTrace);
             }
 
         }
+
 
         /// <summary>
         /// 其它功能码统一处理
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void PollingService_NormalStatusArrived(object sender, StatusChangeMessage e)
+        private void PollingService_NormalStatusArrived(object sender, StatusChangeMessage e)
         {
-
             LogicalUI.UpdatePramter(e);
         }
 
         /// <summary>
-        /// 子站主动错误应答事件
+        /// 子站主动错误应答事件,信息栏显示主动应答错误
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void PollingService_ErrorAckChanged(object sender, StatusChangeMessage e)
         {
-            var str = "\n" + DateTime.Now.ToLongTimeString() + "  异常处理:\n";
-             str += GetErrorComment(e.MAC, e.Data);
-            MonitorData.ExceptionMessage += str;
+            MonitorData.UpadeExceptionMessage(GetErrorComment(e.MAC, e.Data));
         }
 
         /// <summary>
-        /// 获取错误描述
-        /// </summary>
-        /// <param name="mac"></param>
-        /// <param name="serverData"></param>
-        public string GetErrorComment(byte mac, byte[] serverData)
-        {
-            
-            var des = GetIDDescription((CommandIdentify)serverData[1]);
-            var node = LogicalUI.GetNdoe(mac);
-            if(node != null)
-            {
-                string error1 = "";
-                
-                if (node.Mac == NodeAttribute.MacSynController)
-                {
-                    error1 = ErrorCode.GetTongbuErrorComment(serverData[2]);
-                }
-                else if ((node.Mac == NodeAttribute.MacPhaseA)||
-                    (node.Mac == NodeAttribute.MacPhaseB)||(node.Mac == NodeAttribute.MacPhaseC))
-                {
-                    error1 = ErrorCode.GetYongciErrorComment(serverData[2]);
-                }
-                string str = string.Format("主动应答错误:{0}(0x{1:X2}),{2},{3}", node.Name, mac, des, error1);
-                return str;
-            }
-            else
-            {
-                string error1 = "错误代码:" + serverData[2].ToString("X2");
-                string error2 = "附加错误代码:" + serverData[3].ToString("X2");
-                var str = "MAC:" + mac.ToString("X2") + des + " " + error1 + " " + error2;
-                return str;
-            }
-        }
-        private readonly TaskScheduler syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
-      
-        /// <summary>
-        /// 连接信息
+        /// 更新站点连接信息，建立连接等
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ControlNetServer_StationArrived(object sender, StationEventArgs e)
         {
-            Task.Factory.StartNew(() => _logicalUI.UpdateStationStatus(e.Station),
-                    new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
-           
+            Task.Factory.StartNew(() => LogicalUI.UpdateStationStatus(e.Station),
+                    new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();           
         }
         
-
         /// <summary>
         /// 从站状态改变信息,循环报告信息
         /// </summary>
@@ -266,7 +217,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void PollingService_SubStationStatusChanged(object sender, StatusChangeMessage e)
         {
-            _logicalUI.UpdateNodeStatusChange(e.MAC, e.Data);            
+            LogicalUI.UpdateNodeStatusChange(e.MAC, e.Data);            
         }
 
         /// <summary>
@@ -276,73 +227,31 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         void PollingService_ReadyActionArrived(object sender, StatusChangeMessage e)
         {
-            _logicalUI.UpdateNodeStatus(e.MAC, e.Data);
+            LogicalUI.UpdateNodeStatus(e.MAC, e.Data);
         }
 
 
+     
 
-        void PollingService_MultiFrameArrived(object sender, MultiFrameEventArgs e)
-        {
-            //判断是否为首帧
-            if (e.Index == 0)
-            {
-                _multiFrameBuffer.Clear();//清空历史数据
-                _lastIndex = 0;
-                 _multiFrameBuffer.AddRange(e.ByteData);
-                return;
-            }
-
-            int currentIndex = e.Index & 0x7F; //当前索引
-            //是否为递增索引,正常接收
-            if ((_lastIndex + 1) == currentIndex)
-            {
-                _multiFrameBuffer.AddRange(e.ByteData);
-                _lastIndex++;
-            }
-            else
-            {
-
-            }
-            //判断是否为最后一帧
-            if ((e.Index & 0x80) == 0x80)
-            {
-
-                //TODO:显示
-                MonitorData.StatusMessage += "\n\n" + DateTime.Now.ToLongTimeString() + "  多帧接收:\n";
-                MonitorData.StatusMessage += "接收完成"+ "\n";
-                //适当处理
-                StringBuilder stb = new StringBuilder(_multiFrameBuffer.Count*4);
-                if (_multiFrameBuffer.Count % 2 == 0)
-                {
-                    for (int i = 0; i < _multiFrameBuffer.Count; i += 2)
-                    {
-                        stb.AppendFormat("{0},", _multiFrameBuffer[i] + 256*_multiFrameBuffer[i + 1]);
-                    }
-                    MonitorData.StatusMessage += "\n\n" + "  有效数据:\n";
-                    MonitorData.StatusMessage += stb.ToString() + "\n";
-                }
-            }
-
-            
-        }
-
-
-
-
-
-
-        void PollingService_ArrtributesArrived(object sender, ArrtributesEventArgs e)
-        {
-            
-            _monitorViewData.UpdateAttributeData(e.MAC, e.ID, e.AttributeByte);
-        }
 
         /// <summary>
-        /// 发送数据转包
+        /// 从站上传属性值
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PollingService_ArrtributesArrived(object sender, ArrtributesEventArgs e)
+        {
+            MonitorData.UpdateAttributeData(e.MAC, e.ID, e.AttributeByte);
+        }
+
+
+
+        /// <summary>
+        /// 发送RTU数据包，并更新到信息栏显示
         /// </summary>
         /// <param name="data">数据</param>
         /// <returns>true--正常发送，false--端口关闭</returns>
-        private bool sendRtuData(byte[] data)
+        private bool SendRtuData(byte[] data)
         {
             if(CommServer.CommonServer.CommState)
             {
@@ -356,26 +265,18 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         }
 
         /// <summary>
-        /// 打包发送数据并发送
+        /// 打包DevicetNet数据为RTU数据并发送。
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         private bool PacketDevicetNetData(byte[] data)
         {
-            var frame = new RTUFrame(0xA1, 0x55, data, (byte)data.Length);
-            sendRtuData(frame.Frame);
+            var frame = new RTUFrame(_destinateAddr, _downCode, data, (byte)data.Length);
+            SendRtuData(frame.Frame);
             return true;
         }
 
-        /// <summary>
-        /// 关闭服务
-        /// </summary>
-        public void Close()
-        {
-            CommServer.CommonServer.Close();
-            RtuServer.Close();
-            ControlNetServer.Close();
-        }
+        
 
 
 
@@ -403,16 +304,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                                 //状态返回
                             case 0x91:
                                 {
-                                    _logicalUI.StatusBar.SetDevice(true);
-
+                                    LogicalUI.StatusBar.SetDevice(true);
                                     var des = GetCANError(can);
                                     //为空正常状态则不进行更新
                                     if (des != "")
                                     {
                                         MonitorData.UpdateStatus("设备状态:" + des);
-                                    }
-
-                                    overTimerDevice.ReStartTimer();
+                                    }                                    
+                                    _deviceOverTimer.ReStartTimer();
                                     //如果不是激活状态，则在收到连接后重新建立连接
                                     if (!ControlNetServer.IsActive)
                                     {
@@ -426,37 +325,17 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                                     break;
                                 }
                         }
-
-                    }
-                    
-
+                    }                  
                 }
                 else
                 {
                     ControlNetServer.ReciveCenter(can);
-                }
-
-                
-            }            
-            
-        }
-        private CanMessage GetCanMessage(RTUFrame frame)
-        {
-            if (frame.Function != 0xAA)//是否为0xAA 是否为上送
-            {
-                return null;
-            }
-            if (frame.DataLen <= 2)
-            {
-                return null;
-            }
-            var id = frame.FrameData[0] + ((ushort)(frame.FrameData[1]) << 8);
-            var can = new CanMessage((ushort)id, frame.FrameData, 2, frame.DataLen - 2);
-            return can;
-
+                }                
+            }                      
         }
 
-        Action<bool> FlashDelegate;
+   
+
         /// <summary>
         /// 通讯数据到达
         /// </summary>
@@ -467,16 +346,24 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             RtuServer.AddBuffer(e.SerialData);
             CommServer.RawReciveMessage += ByteToString(e.SerialData, 0, e.SerialData.Length);                        
         }
-
+        /// <summary>
+        /// 异常消息处理，此处用于显示
+        /// </summary>
+        /// <param name="ex"></param>
         void ExceptionDeal(Exception ex)
-        {
-            MonitorData.ExceptionMessage += "\n" + DateTime.Now.ToLongTimeString() + "异常处理:\n";
-            MonitorData.ExceptionMessage += ex.Message;
-            //MonitorData.ExceptionMessage += ex.StackTrace;
-            
+        {         
+            MonitorData.UpadeExceptionMessage(ex.Message);            
         }
 
-
+        /// <summary>
+        /// 关闭服务
+        /// </summary>
+        public void Close()
+        {
+            CommServer.CommonServer.Close();
+            RtuServer.Close();
+            ControlNetServer.Close();
+        }
 
 
 
@@ -512,195 +399,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             }
 
         }
-
-        private string ByteToString(byte[] data, int start, int len)
-        {
-            StringBuilder strBuild = new StringBuilder(len*3 + 10);
-            for(int i = start; i < start + len; i++)
-            {
-                strBuild.AppendFormat("{0:X2} ", data[i]);
-            }
-           
-            return strBuild.ToString();
-        }
-
-        /// <summary>
-        /// 获取CAN错误状态
-        /// </summary>
-        /// <param name="can"></param>
-        /// <returns></returns>
-        private string GetCANError(CanMessage can)
-        {
-            if (can.DataLen >= 6)
-            {
-                StringBuilder strBuildA = new StringBuilder(128);
-                StringBuilder strBuild = new StringBuilder(128);
-                if (can.Data[4] != 0)
-                {
-                    strBuild.AppendLine("接收错误计数:" + can.Data[4].ToString());
-                }
-                if (can.Data[5] != 0)
-                {
-                    strBuild.AppendLine("发送错误计数:" + can.Data[5].ToString());
-                }
-                int state = 0;
-                if (can.Data[3] != 0)
-                {
-                    for (int i = 0; i < 8; i++)
-                    {
-
-                        state = (can.Data[3] >> i) & 0x01;
-                        //为0--跳过
-                        if (state == 0)
-                        {
-                            continue;
-                        }
-                        switch (i)
-                        {
-                            case 0:
-                                {
-                                    strBuild.AppendLine("EWARN:发送器或接收器处于警告错误状态位");
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    strBuild.AppendLine("RXWAR： 接收器处于警告错误状态位");
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    strBuild.AppendLine("TXWAR： 发送器处于警告错误状态位");
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    strBuild.AppendLine("RXEP： 接收器处于总线被动错误状态位");
-                                    break;
-                                }
-
-                            case 4:
-                                {
-                                    strBuild.AppendLine("TXEP： 发送器处于总线被动错误状态位");
-                                    break;
-                                }
-                            case 5:
-                                {
-                                    strBuild.AppendLine("TXBO： 发送器处于总线关闭错误状态位");
-                                    break;
-                                }
-
-                            case 6:
-                                {
-                                    strBuild.AppendLine("RX1OVR： 接收缓冲区 1 溢出位");
-                                    break;
-                                }
-                            case 7:
-                                {
-                                    strBuild.AppendLine("RX0OVR： 接收缓冲区 0 溢出位");
-                                    break;
-                                }
-                        }
-                    }
-                    //当有信息时进行显示
-                    if (strBuild.Length != 0)
-                    {
-                        
-                        strBuildA.AppendLine(ByteToString(can.Data, 0, can.DataLen));
-                        strBuildA.Append(strBuild);
-
-                    }
-                }
-                return strBuildA.ToString();
-
-            }
-            return "不完整的Device信息：" + ByteToString(can.Data, 0, can.DataLen);
-
-
-        }
-        /// <summary>
-        /// 获取ID描述
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <returns>描述词</returns>
-        public string GetIDDescription(CommandIdentify id)
-        {
-            string des = "";
-            switch (id)
-            {
-                case CommandIdentify.CloseAction:
-                    {
-                        des = "合闸执行";
-                        break;
-                    }
-                case CommandIdentify.MasterParameterRead:
-                    {
-                        des = "主站参数读取";
-                        break;
-                    }
-                case CommandIdentify.MasterParameterSetOne:
-                    {
-                        des = "主站参数设置";
-                        break;
-                    }
-                case CommandIdentify.MutltiFrame:
-                    {
-                        des = "多帧";
-                        break;
-                    }
-                case CommandIdentify.OpenAction:
-                    {
-                        des = "分闸执行";
-                        break;
-                    }
-                case CommandIdentify.ReadyClose:
-                    {
-                        des = "合闸预制";
-                        break;
-                    }
-                case CommandIdentify.ReadyOpen:
-                    {
-                        des = "分闸预制";
-                        break;
-                    }
-                case CommandIdentify.SubstationStatuesChange:
-                    {
-                        des = "子站状态上传";
-                        break;
-                    }
-                case CommandIdentify.SyncOrchestratorCloseAction:
-                    {
-                        des = "同步控制器合闸执行";
-                        break;
-                    }
-                case CommandIdentify.SyncOrchestratorReadyClose:
-                    {
-                        des = "同步控制器合闸预制";
-                        break;
-                    }
-                case CommandIdentify.SyncReadyClose:
-                    {
-                        des = "同步合闸预制";
-                        break;
-                    }
-                case CommandIdentify.ConfigMode:
-                    {
-                        des = "配置模式";
-                        break;
-                    }
-                default:
-                    {
-                        des = "未识别的ID";
-                        break;
-                    }
-            }
-            return des + "(0x" + ((byte)id).ToString("X2") + ")";
-        }
-        
-
-        
-
-
-
     }
 
 

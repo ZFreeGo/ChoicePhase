@@ -201,7 +201,16 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 }
             }
         }
-
+        /// <summary>
+        /// 更新显示异常信息
+        /// </summary>
+        /// <param name="comment"></param>
+        public void UpadeExceptionMessage(string comment)
+        {
+            var str = DateTime.Now.ToLongTimeString() + "  异常处理:\n";
+            str += comment + "\n";
+            ExceptionMessage += str;
+        }
 
      
        
