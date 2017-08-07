@@ -16,8 +16,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
     /// </summary>
     public  partial class PlatformModelServer
     {
-   
-
 
 
         /// <summary>

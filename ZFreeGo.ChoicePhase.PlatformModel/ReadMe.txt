@@ -1,6 +1,7 @@
 ﻿2017/8/7
 1.合并PlatformModelServer中同样的属性与字段
 2.优化PlatformModelServer内部结构，新建PlatformModelServer_Auxiliary 将之前辅助内容移入此文件。
+3.删去MonitorViewData中多余的属性列表与函数。
 
 2017/8/4
 1.改串口接收线程为DataRecived。

@@ -8,7 +8,9 @@ using ZFreeGo.ChoicePhase.PlatformModel.Helper;
 namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 {
 
-
+    /// <summary>
+    /// 监控数据视图：用于提供表格数据，状态栏数据
+    /// </summary>
     public class MonitorViewData : ObservableObject
     {
         /// <summary>
@@ -37,13 +39,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         private  List<byte> _macList;
 
-        public List<byte> MacList
-        {
-            get
-            {
-                return _macList;
-            }
-        }
+      
 
         private const byte readonlyStartIndex  =0x41;
 
@@ -54,7 +50,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         {
             private set;
             get;
-
         }
 
         
@@ -98,14 +93,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 _tableAttributeName.Add("AttributeReadYongciC");
                 _tableAttributeName.Add("AttributeSetDSP");
                 _tableAttributeName.Add("AttributeReadDSP");
-                _tableAttributeName.Add("AttributeSetARM");
-                _tableAttributeName.Add("AttributeReadARM");
-                _tableAttributeName.Add("AttributeSetMonitorA");
-                _tableAttributeName.Add("AttributeReadMonitorA");
-                _tableAttributeName.Add("AttributeSetMonitorB");
-                _tableAttributeName.Add("AttributeReadMonitorB");
-                _tableAttributeName.Add("AttributeSetMonitorC");
-                _tableAttributeName.Add("AttributeReadMonitorC");
+                
 
 
                 //站点名称
@@ -114,21 +102,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 StationNameList.Add("B相控制器");
                 StationNameList.Add("C相控制器");
                 StationNameList.Add("同步控制器");
-                StationNameList.Add("网络控制器");
-                StationNameList.Add("A相监测");
-                StationNameList.Add("B相监测");
-                StationNameList.Add("C相监测");
+              
 
                 _macList = new List<byte>();
                 _macList.Add(NodeAttribute.MacPhaseA);
                 _macList.Add(NodeAttribute.MacPhaseB);
                 _macList.Add(NodeAttribute.MacPhaseC);
-                _macList.Add(NodeAttribute.MacSynController);
-                _macList.Add(0x02);
-                _macList.Add(0x16);
-                _macList.Add(0x18);
-                _macList.Add(0x1A);
-
+                _macList.Add(NodeAttribute.MacSynController);             
 
                 XMLOperate.ReadYongciErrorCodeRecod();
                 XMLOperate.ReadTongbuErrorCodeRecod();
@@ -143,6 +123,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
 
+        #region 状态信息
         private string statusMessage = "";
 
 
@@ -176,9 +157,10 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             StatusMessage += DateTime.Now.ToLongTimeString() + ":\n";
             StatusMessage += des;
         }
-   
 
+        #endregion
 
+        #region 异常信息
         private string exceptionMessage = "";
 
 
@@ -212,12 +194,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             ExceptionMessage += str;
         }
 
-     
-       
 
+        #endregion
 
+        #region 获取MAC 获取属性索引
         /// <summary>
-        /// 更具索引获取MAC地址
+        /// 根据索引，获取MAC地址
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -273,6 +255,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
+       /// <summary>
+       /// 根据mac和ID，获取属性索引
+       /// </summary>
+       /// <param name="mac">MAC地址</param>
+       /// <param name="id">ID号</param>
+       /// <returns>属性索引</returns>
         public AttributeIndex GetAttributeIndex(int mac, int id)
         {
 
@@ -370,141 +358,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
             return AttributeIndex.Null;
         }
-
-
-
-        #region 属性列表操作--单个永磁控制器 设定量
-
-        /// <summary>
-        /// 创建YongciAttribute
-        /// </summary>
-        public void CrateYongciAttributeTable()
-        {
-            string sql =
-                "CREATE TABLE YongciAttribute( ConfigID int, Name text,RawValue int,  dataType int, value double, comment text)";
-            dataBase.CreateTale(sql);
-            
-        }
-
-
-
-        /// <summary>
-        /// 清空历史数据，将数据插入表格
-        /// </summary>       
-        public void InsertYongciAttribute()
-        {
-            var collect = _yongciAttribute;
-            var listStr = new List<String>();
-            foreach (var m in collect)
-            {
-                string sql = string.Format("INSERT INTO  YongciAttribute VALUES({0},\'{1}\',{2},{3},{4},\'{5}\')",
-                   m.ConfigID, m.Name, m.RawValue, m.DataType, m.Value, m.Comment);
-                listStr.Add(sql);
-            }
-            if (listStr.Count > 0)
-            {
-                string sqlClear = "delete from  YongciAttribute";
-                dataBase.InsertTable(listStr, sqlClear);
-            }
-        }
-
-        /// <summary>
-        /// 读取永磁属性数据表格
-        /// </summary>
-        /// <param name="flag">true--重新更新, false--若当前已存在则直接使用</param>
-        /// <returns>永磁属性合集</returns>       
-        public ObservableCollection<AttributeItem> ReadYongciAttribute(bool flag)
-        {
-            if (_yongciAttribute == null || flag)
-            {
-                _yongciAttribute = new ObservableCollection<AttributeItem>();
-                string sql = "SELECT * from YongciAttribute";
-                dataBase.ReadTable(sql, GetYongciAttribute);
-                return _yongciAttribute;
-            }
-            else
-            {
-                return _yongciAttribute;
-            }
-        }
-
-        
-
-
-        private bool GetYongciAttribute(System.Data.SQLite.SQLiteDataReader reader)
-        {
-
-            _yongciAttribute.Add(new AttributeItem(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2),
-                reader.GetInt32(3), reader.GetDouble(4), reader.GetString(5)));
-         
-            return true;
-        }
-
-
-        #endregion
-
-        #region 属性列表操作--单个永磁控制器 监控量
-
-        /// <summary>
-        /// 创建YongciAttribute
-        /// </summary>
-        public void CrateYongciMonitorAttributeTable()
-        {
-            string sql =
-                "CREATE TABLE YongciMonitorAttribute( ConfigID int, Name text,RawValue int,  dataType int, value double, comment text)";
-            dataBase.CreateTale(sql);
-
-        }
-
-
-
-        /// <summary>
-        /// 清空历史数据，将数据插入表格
-        /// </summary>       
-        public void InsertYongciMonitorAttribute()
-        {
-            var collect = _yongciMonitorAttribute;
-            var listStr = new List<String>();
-            foreach (var m in collect)
-            {
-                string sql = string.Format("INSERT INTO  YongciMonitorAttribute VALUES({0},\'{1}\',{2},{3},{4},\'{5}\')",
-                   m.ConfigID, m.Name, m.RawValue, m.DataType, m.Value, m.Comment);
-                listStr.Add(sql);
-            }
-            if (listStr.Count > 0)
-            {
-                string sqlClear = "delete from  YongciMonitorAttribute";
-                dataBase.InsertTable(listStr, sqlClear);
-            }
-        }
-
-        /// <summary>
-        /// 读取永磁属性数据表格
-        /// </summary>
-        /// <param name="flag">true--重新更新, false--若当前已存在则直接使用</param>
-        /// <returns>永磁属性合集</returns>       
-        public ObservableCollection<AttributeItem> ReadYongciMonitorAttribute(bool flag)
-        {
-            if (_yongciMonitorAttribute == null || flag)
-            {
-                _yongciMonitorAttribute = new ObservableCollection<AttributeItem>();
-                string sql = "SELECT * from YongciMonitorAttribute";
-                dataBase.ReadTable(sql, GetYongciMonitorAttribute);
-                return _yongciMonitorAttribute;
-            }
-            else
-            {
-                return _yongciMonitorAttribute;
-            }
-        }
-        private bool GetYongciMonitorAttribute(System.Data.SQLite.SQLiteDataReader reader)
-        {
-
-            _yongciMonitorAttribute.Add(new AttributeItem(reader.GetInt32(0), reader.GetString(1), reader.GetInt32(2),
-                reader.GetInt32(3), reader.GetDouble(4), reader.GetString(5)));
-
-            return true;
-        }
         #endregion
 
 
@@ -595,37 +448,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
 
 
-        ///// <summary>
-        ///// 更新属性字节
-        ///// </summary>
-        ///// <param name="id">ID号</param>
-        ///// <param name="data">数据字节</param>
-        //public void UpdateYongciAttributeData(int id, byte[] data)
-        //{
-
-        //    if(id < 0x41)//设置属性
-        //    {
-        //        ReadYongciAttribute(false);
-        //        for(int i = 0; i< _yongciAttribute.Count; i++)
-        //        {
-        //            if(_yongciAttribute[i].ConfigID == id)
-        //            {
-        //                _yongciAttribute[i].UpdateAttribute(data);
-        //            }
-        //        }
-        //    }
-        //    else  //读取属性
-        //    {
-        //        ReadYongciMonitorAttribute(false);
-        //        for (int i = 0; i < _yongciMonitorAttribute.Count; i++)
-        //        {
-        //            if (_yongciMonitorAttribute[i].ConfigID == id)
-        //            {
-        //                _yongciMonitorAttribute[i].UpdateAttribute(data);
-        //            }
-        //        }
-        //    }
-        //}
+        
         /// <summary>
         /// 更新属性字节
         /// </summary>
