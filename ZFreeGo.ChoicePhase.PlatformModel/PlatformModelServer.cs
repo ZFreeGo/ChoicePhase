@@ -144,7 +144,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
 
                 MonitorData = new MonitorViewData();
 
-                CommServer = new CommunicationServer();
+                CommServer = new CommunicationServer(_destinateAddr);
                 CommServer.CommonServer.SerialDataArrived += CommonServer_SerialDataArrived;
 
                 RtuServer = new RtuServer(_localAddr, 500, SendRtuData, ExceptionDeal);

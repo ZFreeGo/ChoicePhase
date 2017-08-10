@@ -8,17 +8,34 @@ using ZFreeGo.Common.LogTrace;
 
 namespace ZFreeGo.ChoicePhase.Modbus
 {
+    /// <summary>     
+    /// 开辟独立线程负责数据的提取与转换；采用双重缓冲，保证数据的完整性。
+    ///   在开辟线程中，对帧进行校验提取，对提取帧以事件的形式发出。
+    /// </summary>
     public class RtuServer
     {
+        /// <summary>
+        /// 地址
+        /// </summary>
         private byte _addrss;
+
         /// <summary>
         /// 超时时间 ms
         /// </summary>
         private int _overTime;
 
+        /// <summary>
+        /// 第一级缓冲
+        /// </summary>
         private List<byte> _dataFirstBuffer;
+        /// <summary>
+        /// 第二级缓冲
+        /// </summary>
         private List<byte> _dataSecoundBuffer;
 
+        /// <summary>
+        /// 读取线程
+        /// </summary>
         private Thread readThread;
         /// <summary>
         /// 获取一个完整的RTU帧
@@ -26,6 +43,9 @@ namespace ZFreeGo.ChoicePhase.Modbus
         public event EventHandler<RtuFrameArgs> RtuFrameArrived;
 
 
+        /// <summary>
+        /// 发送数据委托
+        /// </summary>
         private Func<byte[], bool> _sendDataDelegate;
 
         /// <summary>
@@ -84,12 +104,13 @@ namespace ZFreeGo.ChoicePhase.Modbus
         /// <param name="frame"></param>
         public bool  SendFrame(RTUFrame frame)
         {
-            return (_sendDataDelegate(frame.Frame));
-           
+            return (_sendDataDelegate(frame.Frame));           
         }
   
 
-
+        /// <summary>
+        /// 接收线程
+        /// </summary>
         private void ReciveThread()
         {
             DateTime timeStart = DateTime.Now;
@@ -128,7 +149,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
                         Thread.Sleep(50);
                         continue;
                     }
-                    switch(step)
+                    switch (step)
                     {
                         case 0:
                             {
@@ -138,20 +159,19 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     continue;
                                 }
 
-
                                 //判断地址是否相同
                                 if (_dataSecoundBuffer[0] != _addrss)
                                 {
                                     _dataSecoundBuffer.RemoveAt(0);//移除丢弃
                                     continue;
                                 }
-                                timeStart =  DateTime.Now;//开始设置时间,超时计算
+                                timeStart = DateTime.Now;//开始设置时间,超时计算
                                 step = 1;
                                 break;
                             }
                         case 1:
                             {
-                                
+
                                 //判读是否达到有效的数据长度
                                 if (_dataSecoundBuffer.Count < _dataSecoundBuffer[2] + 5)
                                 {
@@ -160,7 +180,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                 int allLen = _dataSecoundBuffer[2] + 5;
                                 ushort crc = GenCRC.CumulativeSumCalculate(_dataSecoundBuffer.ToArray(), 0, (ushort)(_dataSecoundBuffer[2] + 3));
                                 var low = (byte)(crc & 0xFF); //低8位
-                                if (low != _dataSecoundBuffer[allLen -2])
+                                if (low != _dataSecoundBuffer[allLen - 2])
                                 {
                                     CLog.LogWarning("接收累加和校验不正确，移除第一个重新判断。");
                                     step = 0;
@@ -177,7 +197,7 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     continue;
                                 }
                                 if (RtuFrameArrived != null)
-                                {                             
+                                {
                                     var temp = new byte[_dataSecoundBuffer[2]];
                                     _dataSecoundBuffer.CopyTo(3, temp, 0, _dataSecoundBuffer[2]);
                                     var frame = new RTUFrame(_dataSecoundBuffer[0], _dataSecoundBuffer[1], temp,
@@ -186,13 +206,13 @@ namespace ZFreeGo.ChoicePhase.Modbus
                                     RtuFrameArrived(this, new RtuFrameArgs(frame));
                                     //移除处理后的数据
                                     _dataSecoundBuffer.RemoveRange(0, allLen);
-                                   
+
                                 }
 
                                 step = 0;
                                 continue; ;
                             }
-                }
+                    }
                     //进行CRC校验
 
                 }while (true);
