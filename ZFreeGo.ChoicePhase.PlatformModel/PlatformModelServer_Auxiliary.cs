@@ -347,6 +347,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                         des = "配置模式";
                         break;
                     }
+                case CommandIdentify.SynTimeSequence:
+                    {
+                        des = "时序同步脉冲信号";
+                        break;
+                    }
                 default:
                     {
                         des = "未识别的ID";

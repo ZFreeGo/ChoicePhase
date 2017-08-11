@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.Modbus", "ZFreeGo.ChoicePhase.Modbus\ZFreeGo.ChoicePhase.Modbus.csproj", "{731EAAC4-6E00-4183-8F58-86FCED5573EF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.Platform", "ZFreeGo.ChoicePhase.Platform\ZFreeGo.ChoicePhase.Platform.csproj", "{179D11F6-767A-40ED-BD97-A876B4018831}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.ChoicePhase.PlatformModel", "ZFreeGo.ChoicePhase.PlatformModel\ZFreeGo.ChoicePhase.PlatformModel.csproj", "{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZFreeGo.TransportProtocol.ModBus", "ZFreeGo.TransportProtocol.ModBus\ZFreeGo.TransportProtocol.ModBus.csproj", "{201F117C-A205-4B77-92B3-08780A6AA754}"
@@ -27,14 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{731EAAC4-6E00-4183-8F58-86FCED5573EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{731EAAC4-6E00-4183-8F58-86FCED5573EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{731EAAC4-6E00-4183-8F58-86FCED5573EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{731EAAC4-6E00-4183-8F58-86FCED5573EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{179D11F6-767A-40ED-BD97-A876B4018831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{179D11F6-767A-40ED-BD97-A876B4018831}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{179D11F6-767A-40ED-BD97-A876B4018831}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{179D11F6-767A-40ED-BD97-A876B4018831}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6D3ACAC-470C-4DC7-A924-57F40CFEDB95}.Release|Any CPU.ActiveCfg = Release|Any CPU

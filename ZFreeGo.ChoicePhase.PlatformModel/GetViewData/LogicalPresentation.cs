@@ -112,7 +112,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
         #region 更新参数
         /// <summary>
-        /// 更新参数信息
+        /// 主要负责更新上位机设定参数，时序脉冲信息
         /// </summary>
         /// <param name="message"></param>
         public void UpdatePramter(StatusChangeMessage message)
@@ -711,16 +711,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// </summary>
         /// <param name="mac"></param>
         /// <param name="data"></param>
-        public void UpdateNodeStatus(byte mac, byte[] data)
+        public void UpdateNodeReadyActionStatus(byte mac, byte[] data)
         {
-
-            //首先判断是否启用SingleThreMode
+            //首先判断是否启用SingleThreeMode
             if (NodeAttribute.SingleThreeMode)
             {
                 UpdateNodeStatusSingleThree(mac, data);
                 return;
             }
-
 
             var node = GetNdoe(mac);
             if (node == null)
@@ -1150,7 +1148,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// </summary>
         /// <param name="mac">MAC ID</param>
         /// <param name="data">数据</param>
-        internal void UpdateNodeStatusChange(byte mac, byte[] data)
+        internal void UpdateTickMesasge(byte mac, byte[] data)
         {
             var node = GetNdoe(mac);
             if (node == null)
@@ -1251,7 +1249,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// 更新站点信息
         /// </summary>
         /// <param name="defStationInformation"></param>
-        internal void UpdateStationStatus(DeviceNet.Element.DefStationInformation defStationInformation)
+        internal void StationLinkChanged(DeviceNet.Element.DefStationInformation defStationInformation)
         {
             UpdateStationSingleStatus(defStationInformation.MacID, defStationInformation.Step);
             //ABC联动

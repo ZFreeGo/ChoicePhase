@@ -206,7 +206,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void ControlNetServer_StationArrived(object sender, StationEventArgs e)
         {
-            Task.Factory.StartNew(() => LogicalUI.UpdateStationStatus(e.Station),
+            Task.Factory.StartNew(() => LogicalUI.StationLinkChanged(e.Station),
                     new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();           
         }
         
@@ -217,7 +217,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         private void PollingService_SubStationStatusChanged(object sender, StatusChangeMessage e)
         {
-            LogicalUI.UpdateNodeStatusChange(e.MAC, e.Data);            
+            LogicalUI.UpdateTickMesasge(e.MAC, e.Data);            
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         /// <param name="e"></param>
         void PollingService_ReadyActionArrived(object sender, StatusChangeMessage e)
         {
-            LogicalUI.UpdateNodeStatus(e.MAC, e.Data);
+            LogicalUI.UpdateNodeReadyActionStatus(e.MAC, e.Data);
         }
 
 
@@ -275,10 +275,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             SendRtuData(frame.Frame);
             return true;
         }
-
-        
-
-
 
         /// <summary>
         /// RTU帧数据接收

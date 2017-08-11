@@ -1,9 +1,8 @@
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.dll
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.pdb
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.dll
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.pdb
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.dll
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.pdb
-J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.csprojResolveAssemblyReference.cache
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\bin\Debug\ZFreeGo.Common.LogTrace.pdb
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.dll
+J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.Common.LogTrace\obj\Debug\ZFreeGo.Common.LogTrace.pdb
