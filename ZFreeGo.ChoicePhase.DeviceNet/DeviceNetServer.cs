@@ -18,19 +18,34 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
     {
         // private CodeDictionary _codeDictionary;
 
-        public byte LocalMac;
+       /// <summary>
+       /// 逻辑地址 MAC
+       /// </summary>
+        public byte LocalMac
+        {
+            get;
+            set;
+        }
 
         /// <summary>
-        /// 站信息列表
+        /// 子站站点信息列表
         /// </summary>
         private List<DefStationInformation> StationInformation;
 
+        /// <summary>
+        /// 标识符，索引字典
+        /// </summary>
         private CodeDictionary _codeDictionary;
 
+        /// <summary>
+        /// 站点连接更新事件
+        /// </summary>
         public event EventHandler<StationEventArgs> StationArrived;
 
-
-        Thread ThreadWork;
+        /// <summary>
+        /// 主线程，用于循环发送建立连接的信息
+        /// </summary>
+        private Thread ThreadWork;
         /// <summary>
         /// 发送委托
         /// </summary>
@@ -130,7 +145,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                 m.Online = false;
                 m.Complete = false;
                 m.Step = NetStep.Start;
-                m.Enable = m.InitEnable;
+                m.Enable = m.InitEnable;//避免多次使能启动
             }
             IsActive = true;
         }
@@ -153,7 +168,11 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             SendDelegate(data);
         }
 
-
+        /// <summary>
+        /// 获取CAN数据
+        /// </summary>
+        /// <param name="can">CAN消息</param>
+        /// <returns>对应的字节数据</returns>
         private byte[] GetCanData(CanMessage can)
         {
             var data = new byte[can.DataLen + 2];
@@ -164,7 +183,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         }
 
         /// <summary>
-        /// 生成CAN UnconnectVisibleRequestMessageOnlyGroup2 报文
+        /// 生成CAN UnconnectVisibleRequestMessageOnlyGroup2 报文, 现主要用于建立连接使用。
         /// </summary>
         /// <param name="destMAC">目的地址</param>
         /// <param name="serverCode">服务代码</param>
@@ -200,13 +219,14 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
             }
             catch (Exception ex)
             {
+                CLog.LogError(ex);
                 ExceptionDelegate(ex);
             }
 
         }
 
         /// <summary>
-        /// 主站发送命令或者数据，通过主站轮询命令
+        /// 主站发送命令或者数据，通过主站轮询命令，自定义协议
         /// </summary>
         /// <param name="destMAC">目的地址</param>
         /// <param name="data">数据</param>
@@ -216,7 +236,6 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         {
             var can = MakeIOMessage(destMAC, data, start, len);            
             SendData(can);
-
         }
 
 
@@ -301,7 +320,6 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
                     foreach (var m in StationInformation)
                     {
                         NormalEstablishConnectionTask(m);
-
                     }
                     Thread.Sleep(100);//保证最小间隔时间。
                 } while (true);
@@ -359,12 +377,15 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
         public void GroupOneDeal(CanMessage message, DeviceNetID netID)
         {
             var function = netID.GetFunctionCode();
+            
             if (CodeDictionary.GroupFunctionCode["GROUP1_POLL_STATUS_CYCLER_ACK"] == function)
             {
+                //问答式
                 SlaveStationPollingAckService(message, netID);
             }
             else if (CodeDictionary.GroupFunctionCode["GROUP1_STATUS_CYCLE_ACK"] == function)
             {
+                //主动上送信息
                 SlaveStationStatusChangeService(message, netID);
             }
             else
@@ -374,7 +395,7 @@ namespace ZFreeGo.ChoicePhase.DeviceNet
 
         }
         /// <summary>
-        /// Group2 接收处理
+        /// Group2 接收处理。处理MAC响应，建立连接服务，时间脉冲序列。
         /// </summary>
         /// <param name="message"></param>
         /// <param name="netID"></param>

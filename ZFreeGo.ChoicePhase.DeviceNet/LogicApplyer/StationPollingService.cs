@@ -41,22 +41,13 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// 异常处理委托
         /// </summary>
         private Action<Exception> ExceptionDelegate;
-
-       // private DeviceNetServer controlNetServer;
+     
 
         public StationPollingService( Action<Exception> exceptionDelegate)
         {
-            ExceptionDelegate = exceptionDelegate;
-           // controlNetServer = netServer;
+            ExceptionDelegate = exceptionDelegate;         
         }
-       
-        public void SendCommand(byte mac, byte[] command)
-        {
-           //  var command = new byte[] { (byte)cmd, _circleByte, (byte)_actionTime };
-            //此处发送控制命令                     
-            //controlNetServer.MasterSendCommand(mac, command, 0, command.Length); 
-        }
-       
+           
         /// <summary>
         /// 控制器Server处理
         /// </summary>

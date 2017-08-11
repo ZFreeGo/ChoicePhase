@@ -28,7 +28,20 @@ namespace ZFreeGo.Common.LogTrace
                            strMessage);
             Debug.WriteLine(strMessage);
         }
-
+        public static void LogError(Exception ex)
+        {
+            var strBuilder = new StringBuilder(ex.Message.Length + ex.StackTrace.Length + 10);
+            strBuilder.AppendLine(ex.Message);
+            strBuilder.AppendLine(ex.StackTrace);
+            var str = strBuilder.ToString();
+            _ts.TraceEvent(TraceEventType.Error,
+                           0,
+                           "      [{0}{1}]: {2}",
+                           DateTime.Now.ToLongDateString(),
+                           DateTime.Now.ToLongTimeString(),
+                           str);
+            Debug.WriteLine(str);
+        }
         public static void LogWarning(string strMessage)
         {
             _ts.TraceEvent(TraceEventType.Warning,
