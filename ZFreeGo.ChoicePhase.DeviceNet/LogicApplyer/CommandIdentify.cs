@@ -66,6 +66,12 @@ namespace ZFreeGo.ChoicePhase.DeviceNet.LogicApplyer
         /// 配置模式
         /// </summary>
         ConfigMode = 0x15,
+
+        /// <summary>
+        /// 取消操作
+        /// </summary>
+        CancelOperate = 0x16,
+
         /// <summary>
         /// 子站状态改变信息上传
         /// </summary>

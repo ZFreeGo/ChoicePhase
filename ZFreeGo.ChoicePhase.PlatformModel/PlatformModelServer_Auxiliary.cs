@@ -352,6 +352,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
                         des = "时序同步脉冲信号";
                         break;
                     }
+                case CommandIdentify.CancelOperate:
+                    {
+                        des = "取消操作";
+                        break;
+                    }
                 default:
                     {
                         des = "未识别的ID";

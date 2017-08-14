@@ -1099,6 +1099,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     default:
                         {
+                            CancelReadyOperateSingleThree(str);
                             break;
                         }
                 }
@@ -1115,7 +1116,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// 执行面向用户的合分闸命令
         /// </summary>
         /// <param name="str">参数</param>
-        void ExecuteUserReadyActionCommand(string str)
+        private void ExecuteUserReadyActionCommand(string str)
         {
             try
             {
@@ -1344,6 +1345,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     default:
                         {
+                            CancelReadyOperate(str);
                             break;
                         }
                 }
@@ -1451,7 +1453,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// </summary>
         /// <param name="mac"></param>
         /// <param name="cmd"></param>
-        private void SinglePhaseReadyAction(CommandIdentify cmd,byte loopByte, byte time)
+        private void SinglePhaseReadyAction(CommandIdentify cmd, byte loopByte, byte time)
         {
 
             Action<bool> actDelegate;
@@ -1691,6 +1693,189 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             modelServer.ControlNetServer.MasterSendCommand(mac, command, 0, command.Length);
         }
 
+
+        #endregion
+
+        #region 取消操作
+
+
+        /// <summary>
+        /// 取消操作，针对同步合闸/合闸/分闸的取消操作
+        /// </summary>
+        /// <param name="cmdParameter"></param>
+        private void CancelReadyOperate(string cmdParameter)
+        {           
+            switch (cmdParameter)
+            {
+                case "CancelSynCloseReady": //多节点处理
+                    {
+                       CommandIdentify[] cmdList = new CommandIdentify[] { CommandIdentify.SyncOrchestratorReadyClose, 
+                           CommandIdentify.SyncReadyClose, CommandIdentify.SyncReadyClose,CommandIdentify.SyncReadyClose };
+                       byte[] macList = new byte[] { NodeAttribute.MacSynController, 
+                           NodeAttribute.MacPhaseA, NodeAttribute.MacPhaseB, NodeAttribute.MacPhaseC};
+                       SendCancelCommand(macList, cmdList);
+                        return;
+                    }
+                case "CancelCloseReady"://多节点处理
+                    {
+                        CommandIdentify[] cmdList = new CommandIdentify[] { 
+                           CommandIdentify.ReadyClose, CommandIdentify.ReadyClose,CommandIdentify.ReadyClose };
+                        byte[] macList = new byte[] { 
+                           NodeAttribute.MacPhaseA, NodeAttribute.MacPhaseB, NodeAttribute.MacPhaseC};
+                        SendCancelCommand(macList, cmdList);
+                        
+                        return;
+                    }
+                case "CancelOpenReady"://多节点处理
+                    {
+                        CommandIdentify[] cmdList = new CommandIdentify[] { 
+                           CommandIdentify.ReadyOpen, CommandIdentify.ReadyOpen,CommandIdentify.ReadyOpen };
+                        byte[] macList = new byte[] { 
+                           NodeAttribute.MacPhaseA, NodeAttribute.MacPhaseB, NodeAttribute.MacPhaseC};
+                        SendCancelCommand(macList, cmdList);
+                        return;
+                    }
+                default:
+                    {
+                        //执行单相控制
+                        bool result = CancelSingleReadyOperate(cmdParameter);
+                        if (!result)
+                        {
+                            throw new ArgumentException("未识别的取消操作");
+                        }
+                        return;
+                    }
+            }
+         
+            
+
+        }
+        /// <summary>
+        /// 取消操作，针对单机构三相，同步合闸/合闸/分闸的取消操作
+        /// </summary>
+        /// <param name="cmdParameter"></param>
+        private void CancelReadyOperateSingleThree(string cmdParameter)
+        {
+            CommandIdentify cmd;
+            byte mac = 0;
+            switch (cmdParameter)
+            {
+                case "CancelSynCloseReady":
+                    {
+                        CommandIdentify[] cmdList = new CommandIdentify[] { CommandIdentify.SyncOrchestratorReadyClose, 
+                           CommandIdentify.SyncReadyClose};
+                        byte[] macList = new byte[] { NodeAttribute.MacSynController, 
+                           NodeAttribute.MacPhaseA};
+                        SendCancelCommand(macList, cmdList);
+                        return;
+                    }             
+                case "CancelCloseReady":
+                case "CancelCloseReadyA":
+                case "CancelCloseReadyB":
+                case "CancelCloseReadyC":                    
+                    {
+                        cmd = CommandIdentify.ReadyClose;
+                        mac = NodeAttribute.MacPhaseA;
+                        break;
+                    }
+                case "CancelOpenReady":
+                case "CancelOpenReadyA":                    
+                case "CancelOpenReadyB":                    
+                case "CancelOpenReadyC":
+                    {
+                        cmd = CommandIdentify.ReadyOpen;
+                        mac = NodeAttribute.MacPhaseA;
+                        break;
+                    }
+                default:
+                    {
+                        return ;
+                    }
+            }
+            var command = new byte[] { (byte)CommandIdentify.CancelOperate, (byte)cmd, 0xAA };
+            SendCMD(mac, command);
+          
+        }
+
+        
+        /// <summary>
+        /// 多节点发送取消命令
+        /// </summary>
+        /// <param name="macList">地址列表</param>
+        /// <param name="cmdList">取消命令列表</param>
+        private void SendCancelCommand(byte[] macList, CommandIdentify[] cmdList)
+        {
+            if (macList.Length != cmdList.Length)
+            {
+                throw new ArgumentException("地址列表与命令列表长度不一致");
+            }
+            for(int i = 0; i <macList.Length; i++)
+            {
+                var command = new byte[] { (byte)CommandIdentify.CancelOperate, (byte)cmdList[i], 0xAA };
+                SendCMD(macList[i], command);
+                Thread.Sleep(50);
+            }
+        }
+
+        /// <summary>
+        /// 针对单个结点的取消操作
+        /// </summary>
+        /// <param name="cmdParameter">取消命令参数</param>
+        /// <returns>true--发送成功，false--发送失败</returns>
+        private bool CancelSingleReadyOperate(string cmdParameter)
+        {
+            CommandIdentify cmd;
+            byte mac = 0;
+            switch (cmdParameter)
+            {
+
+                case "CancelCloseReadyA":
+                    {
+                        cmd = CommandIdentify.ReadyClose;
+                        mac = NodeAttribute.MacPhaseA;
+                        break;
+                    }
+                case "CancelCloseReadyB":
+                    {
+                        cmd = CommandIdentify.ReadyClose;
+                        mac = NodeAttribute.MacPhaseB;
+                        break;
+                    }
+                case "CancelCloseReadyC":
+                    {
+                        cmd = CommandIdentify.ReadyClose;
+                        mac = NodeAttribute.MacPhaseC;
+                        break;
+                    }
+
+                case "CancelOpenReadyA":
+                    {
+                        cmd = CommandIdentify.ReadyOpen;
+                        mac = NodeAttribute.MacPhaseA;
+                        break;
+                    }
+                case "CancelOpenReadyB":
+                    {
+                        cmd = CommandIdentify.ReadyOpen;
+                        mac = NodeAttribute.MacPhaseB;
+                        break;
+                    }
+                case "CancelOpenReadyC":
+                    {
+                        cmd = CommandIdentify.ReadyOpen;
+                        mac = NodeAttribute.MacPhaseC;
+                        break;
+                    }                 
+
+                default:
+                    {                       
+                        return false;
+                    }
+            }
+            var command = new byte[] { (byte)CommandIdentify.CancelOperate, (byte)cmd, 0xAA };
+            SendCMD(mac, command);
+            return true;
+        }
 
         #endregion
 
