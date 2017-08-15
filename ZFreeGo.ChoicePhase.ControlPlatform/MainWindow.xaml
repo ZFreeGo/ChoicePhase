@@ -6,8 +6,8 @@
         xmlns:ignore="http://www.galasoft.ch/ignore"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d ignore"
-        Height="800"
-        Width="1200" WindowStyle="SingleBorderWindow"
+        Height="700"
+        Width="1100" WindowStyle="SingleBorderWindow"
         Title="选相控制平台"
         DataContext="{Binding Main, Source={StaticResource Locator}}"  >
     <i:Interaction.Triggers>
@@ -94,6 +94,7 @@
             <Grid.ColumnDefinitions >
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
             <TabControl Grid.Column="0"  >                
@@ -173,7 +174,67 @@
 
                 </TabItem>
             </TabControl>
-            
+            <TabControl Grid.Column="2" >
+                <TabItem Header="状态信息" DataContext="{Binding StatusBar}">
+                    <Grid>
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Visibility="{Binding VisibleA}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  RemoteLocalBrushA}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[0]}" Text="{Binding RemoteLocalA}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" Visibility="{Binding VisibleB}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  RemoteLocalBrushB}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[1]}" Text="{Binding RemoteLocalB}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0" Visibility="{Binding VisibleC}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  RemoteLocalBrushC}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[2]}" Text="{Binding RemoteLocalC}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" Visibility="{Binding VisibleA}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  DebugWorkBrushA}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[3]}" Text="{Binding DebugWorkA}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Visibility="{Binding VisibleB}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  DebugWorkBrushB}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[4]}" Text="{Binding DebugWorkB}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" Visibility="{Binding VisibleC}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  DebugWorkBrushC}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[5]}" Text="{Binding DebugWorkC}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" Visibility="{Binding VisibleA}">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  LoadBrushA}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[6]}" Text="{Binding LoadA}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  LoadBrushB}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[7]}" Text="{Binding LoadB}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  LoadBrushC}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[8]}" Text="{Binding LoadC}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  VoltageBrush}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[9]}" Text="{Binding Voltage}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3">
+                            <Ellipse Width="8" Height="8" Fill="{Binding  FrequencyBrush}"></Ellipse>
+                            <TextBlock  Foreground="{Binding   StatusStyleBrush[10]}" Text="{Binding  Frequency}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Grid>
         <StatusBar Grid.Row="5"  Height="25" Grid.ColumnSpan="2" DataContext="{Binding StatusBar}">
             <StatusBar.ItemsPanel>

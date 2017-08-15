@@ -98,11 +98,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform
             {
                 ((TextBox)sender).ScrollToEnd();
             }
-        }
-
-
-      
-
-      
+        }      
     }
 }

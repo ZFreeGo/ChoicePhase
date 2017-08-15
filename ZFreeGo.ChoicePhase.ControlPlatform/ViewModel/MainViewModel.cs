@@ -26,6 +26,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// </summary>
         public MainViewModel()
         {
+           
             showUri = "view/CommunicationView.xaml";
             LoadDataCommand = new RelayCommand(ExecuteLoadDataCommand);
             TreeSelectedItemCommand = new RelayCommand<string>(ExecuteTreeSelectedItemCommand);
@@ -48,7 +49,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             {
                 modelServer = PlatformModelServer.GetServer();
                 modelServer.CommServer.PropertyChanged += ServerInformation_PropertyChanged;
-                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                             
+                modelServer.MonitorData.PropertyChanged += MonitorData_PropertyChanged;                      
             }            
         }
 
@@ -92,7 +93,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-            private string showUri;
+        private string showUri;
 
         /// <summary>
         /// 显示Uri
@@ -130,7 +131,6 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                             ShowUri = "view/CommunicationView.xaml";
                             break;
                         }
-
                     case "SetpointParameter":
                         {
                             ShowUri = "view/SetpointView.xaml";

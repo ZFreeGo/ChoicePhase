@@ -244,11 +244,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     if (NodeStatusList[0].VoltageLoopCollect[i] != EnergyStatusLoop.Normal)
                     {
                         UpdateStatus("系统电压:" + NodeStatusList[0].VoltageLoopCollect[i].ToString());
+                        StatusBar.UpadateVoltageStatus(NodeStatusList[0].VoltageLoopCollect[i]);
                     }
                 }
                 if (NodeStatusList[0].FrequencyLoopCollect[0] != EnergyStatusLoop.Normal)
                 {
                     UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
+                    StatusBar.UpadateFrequencyStatus(NodeAttribute.Period);
                     NodeAttribute.Period = (int)(1000000 / NodeStatusList[0].Frequency);
                 }
 
