@@ -59,6 +59,9 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         /// </summary>
         private SQLliteDatabase dataBase;
 
+        /// <summary>
+        /// 初始化MonitorViewData
+        /// </summary>
         public MonitorViewData()
         {
             try
@@ -120,7 +123,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             }
 
         }
-
 
 
         #region 状态信息

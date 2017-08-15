@@ -35,10 +35,25 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             UpdateOperate = new RelayCommand<string>(ExecuteUpdateOperate);
             DataGridMenumSelected = new RelayCommand<string>(ExecuteDataGridMenumSelected);
             modelServer = PlatformModelServer.GetServer();
+            modelServer.ControlNetServer.StationArrived += ControlNetServer_StationArrived;
             _downAddress = modelServer.CommServer.DownAddress;
             _stationNameList = modelServer.MonitorData.StationNameList;
 
             UnloadedCommand = new RelayCommand<string>(ExecuteUnloadedCommand);
+        }
+
+        /// <summary>
+        /// 站点信息更新用于站点变化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ControlNetServer_StationArrived(object sender, DeviceNet.StationEventArgs e)
+        {
+           
+               var command = new byte[] { (byte)CommandIdentify.MasterParameterRead, 0, 0xF0 };
+                //此处发送控制命令                     
+               modelServer.ControlNetServer.MasterSendCommand(e.Station.MacID, command, 0, command.Length);                          
+                
         }
 
 

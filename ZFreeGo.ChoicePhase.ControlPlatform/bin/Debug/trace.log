@@ -513,3 +513,19 @@ LogTrace Warning: 0 :     [2017年8月11日15:47:14]: 串口接收进程::正在
 LogTrace Warning: 0 :     [2017年8月11日15:47:14]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年8月11日16:21:10]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年8月11日16:21:11]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:00:55]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:00:55]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:31:59]: 串口接收进程::正在中止线程。
+LogTrace Error: 0 :       [2017年8月15日11:31:59]: 正在中止线程。
+   在 System.Array.Copy(Array sourceArray, Int32 sourceIndex, Array destinationArray, Int32 destinationIndex, Int32 length, Boolean reliable)
+   在 System.Array.Copy(Array sourceArray, Int32 sourceIndex, Array destinationArray, Int32 destinationIndex, Int32 length)
+   在 ZFreeGo.ChoicePhase.DeviceNet.Element.CanMessage..ctor(UInt16 id, Byte[] data, Int32 start, Int32 len) 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\Element\CanMessage.cs:行号 54
+   在 ZFreeGo.ChoicePhase.DeviceNet.DeviceNetServer.MakeUnconnectVisibleRequestMessageOnlyGroup2(Byte destMAC, String server, Byte config) 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\DeviceNetServer.cs:行号 202
+   在 ZFreeGo.ChoicePhase.DeviceNet.DeviceNetServer.EstablishConnection(DefStationInformation station, Byte connectType) 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\DeviceNetServer.cs:行号 214
+
+LogTrace Warning: 0 :     [2017年8月15日11:31:59]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:36:04]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:36:04]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:37:06]: 接收累加和校验不正确，移除第一个重新判断。
+LogTrace Warning: 0 :     [2017年8月15日11:43:16]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日11:43:16]: DeviceNet::正在中止线程。

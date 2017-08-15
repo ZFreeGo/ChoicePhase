@@ -23,7 +23,6 @@ E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\bin\Debug\ZFr
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\bin\Debug\ZFreeGo.ChoicePhase.DeviceNet.pdb
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\bin\Debug\ZFreeGo.Common.LogTrace.dll
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\bin\Debug\ZFreeGo.Common.LogTrace.pdb
-E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.csprojResolveAssemblyReference.cache
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.dll
 E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.pdb
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\bin\Debug\ZFreeGo.ChoicePhase.DeviceNet.dll
@@ -33,3 +32,4 @@ J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\bin\Debug\ZFr
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.csprojResolveAssemblyReference.cache
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.dll
 J:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.pdb
+E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\obj\Debug\ZFreeGo.ChoicePhase.DeviceNet.csprojResolveAssemblyReference.cache

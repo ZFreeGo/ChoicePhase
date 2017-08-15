@@ -388,7 +388,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                             if (ControlCollect.CloseAction)
                             {
-                                ExecuteUserReadyActionCommand("CloseAction");
+                                modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate("CloseAction");
                                 ExecuteFinished = false;
                                 TestParameter.UpadeTip("执行合闸。");
                             }
@@ -398,7 +398,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         {
                             if (ControlCollect.OpenAction)
                             {
-                                ExecuteUserReadyActionCommand("OpenAction");
+                                modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate("OpenAction");
                                 TestParameter.CurrentCount++;
                                 ExecuteFinished = false;
                                 TestParameter.UpadeTip("执行分闸。");
@@ -415,7 +415,10 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// </summary>
         public RelayCommand<String> LoopTestCommand { get; private set; }
 
-
+        /// <summary>
+        /// 执行循环测试命令
+        /// </summary>
+        /// <param name="obj"></param>
         private void ExecuteLoopTestCommand(string obj)
         {
             try
@@ -485,7 +488,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     if (ControlCollect.CloseReady)
                     {
                        
-                        ExecuteUserReadyActionCommand("CloseReady");
+                        modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate("CloseReady");
                         ExecuteFinished = true;
                         _loopActionFlag = false;
                         ReStartTimer(TestParameter.OcMs);
@@ -507,7 +510,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                 {
                     if (ControlCollect.OpenReady)
                     {                         
-                        ExecuteUserReadyActionCommand("OpenReady");
+                        modelServer.LogicalUI.UserControlEnable.ExecuteReadyCommandDelegate("OpenReady");
                         _loopActionFlag = true;
                         ExecuteFinished = true;
                         ReStartTimer(TestParameter.CoMs);
@@ -712,7 +715,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
 
 
 
-        #region 合分闸控制，同步预制
+        #region 单独的合分闸控制，同步预制
 
         private LoopChoice _actionLoopChoice;
 
@@ -733,8 +736,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         /// <summary>
         /// 执行每相合分闸/同步合闸操作
         /// </summary>
-        /// <param name="str"></param>
-      
+        /// <param name="str">操作参数</param>      
         void ExecuteOperateCommand(string str)
         {
             try
@@ -828,11 +830,16 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
+        #endregion
+
+        #region 整体的合分闸控制，同步控制
+
         /// <summary>
-        /// 显示提示信息
+        /// 显示提示信息，非MVVM
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="message">提示消息</param>
+        /// <param name="caption">提示属性</param>
+        /// <returns>true--按下OK返回，false--其它返回</returns>
         private bool ShowMessageBox(string message, string caption)
         {
             var resutlt = System.Windows.MessageBox.Show(message, caption, System.Windows.MessageBoxButton.OKCancel);
@@ -846,11 +853,11 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
             }
         }
 
-        /// <summary>
-        /// 动作相角集合
-        /// </summary>
-        private List<ActionPhase> actionCollect;
        
+        /// <summary>
+        /// 针对单机构三相的预制执行处理，执行面向用户的合分闸命令
+        /// </summary>
+        /// <param name="str">参数</param>
         void ExecuteUserReadyActionCommandSingleThree(string str)
         {
             try
@@ -862,7 +869,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                     case "SynCloseReady"://同步合闸预制
                         {
                           
-                            actionCollect = new List<ActionPhase>();
+                            var actionCollect = new List<ActionPhase>();
                             actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseA, (int)CloseTimeA, false, NodeAttribute.Period));
                             actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseB, (int)CloseTimeB, false, NodeAttribute.Period));
                             actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseC, (int)CloseTimeC, false, NodeAttribute.Period));
@@ -922,7 +929,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
                         }
                     case "SynCloseAction"://同步合闸执行
                         {
-                            actionCollect = new List<ActionPhase>();
+                            var actionCollect = new List<ActionPhase>();
                             actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseA, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseA], false, NodeAttribute.Period));
                             actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseB, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseB], false, NodeAttribute.Period));
                             actionCollect.Add(new ActionPhase(NodeAttribute.IndexPhaseC, NodeAttribute.CloseTime[NodeAttribute.IndexPhaseC], false, NodeAttribute.Period));
@@ -1120,7 +1127,7 @@ namespace ZFreeGo.ChoicePhase.ControlPlatform.ViewModel
         {
             try
             {
-                
+               
                 switch (str)
                 {
 
