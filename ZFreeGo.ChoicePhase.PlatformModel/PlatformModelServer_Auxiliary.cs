@@ -128,7 +128,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
             var id = frame.FrameData[0] + ((ushort)(frame.FrameData[1]) << 8);
             var can = new CanMessage((ushort)id, frame.FrameData, 2, frame.DataLen - 2);
             return can;
-
         }
 
 

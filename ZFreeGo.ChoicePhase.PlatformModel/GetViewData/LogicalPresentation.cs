@@ -243,17 +243,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 {
                     if (NodeStatusList[0].VoltageLoopCollect[i] != EnergyStatusLoop.Normal)
                     {
-                        UpdateStatus("系统电压:" + NodeStatusList[0].VoltageLoopCollect[i].ToString());
-                        StatusBar.UpadateVoltageStatus(NodeStatusList[0].VoltageLoopCollect[i]);
+                        UpdateStatus("系统电压:" + NodeStatusList[0].VoltageLoopCollect[i].ToString());   
                     }
+                    StatusBar.UpadateVoltageStatus(NodeStatusList[0].VoltageLoopCollect[i]);
+               
                 }
                 if (NodeStatusList[0].FrequencyLoopCollect[0] != EnergyStatusLoop.Normal)
                 {
                     UpdateStatus("系统频率:" + NodeStatusList[0].FrequencyLoopCollect[0].ToString());
-                    StatusBar.UpadateFrequencyStatus(NodeAttribute.Period);
-                    NodeAttribute.Period = (int)(1000000 / NodeStatusList[0].Frequency);
+                   
                 }
-
+                StatusBar.UpadateFrequencyStatus(NodeStatusList[0].Frequency);
+                NodeAttribute.Period = (int)(1000000 / NodeStatusList[0].Frequency);
+                
                 if (!e.Node.LastOnline)
                 {
                     StatusBar.SetSyn(true, "同步控制器在线");
@@ -384,6 +386,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
 
                 OnlineBit = SetBit(OnlineBit, NodeAttribute.IndexPhaseA);
 
+                
 
             }
             else
@@ -1146,7 +1149,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
             return null;
         }
         /// <summary>
-        /// 更新节点状态改变信息，循环心跳报告等
+        /// 更新节点状态改变信息，循环心跳报告等，
         /// </summary>
         /// <param name="mac">MAC ID</param>
         /// <param name="data">数据</param>
@@ -1171,6 +1174,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 node.UpdateSwitchStatus(data);
 
             }
+            //直接更新相应的状态信息  data[4] 为位置结点信息
+            
         }
 
 

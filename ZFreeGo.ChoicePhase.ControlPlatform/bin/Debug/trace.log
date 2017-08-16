@@ -551,3 +551,48 @@ LogTrace Warning: 0 :     [2017年8月15日17:15:17]: 串口接收进程::正在
 LogTrace Warning: 0 :     [2017年8月15日17:15:17]: DeviceNet::正在中止线程。
 LogTrace Warning: 0 :     [2017年8月15日17:16:31]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年8月15日17:16:31]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:18:14]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:18:14]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:18:32]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:18:32]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:18:47]: 串口接收进程::正在中止线程。
+LogTrace Error: 0 :       [2017年8月15日18:18:47]: 正在中止线程。
+   在 System.Array.Copy(Array sourceArray, Int32 sourceIndex, Array destinationArray, Int32 destinationIndex, Int32 length, Boolean reliable)
+   在 System.Array.Copy(Array sourceArray, Int32 sourceIndex, Array destinationArray, Int32 destinationIndex, Int32 length)
+   在 ZFreeGo.ChoicePhase.DeviceNet.Element.CanMessage..ctor(UInt16 id, Byte[] data, Int32 start, Int32 len) 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\Element\CanMessage.cs:行号 54
+   在 ZFreeGo.ChoicePhase.DeviceNet.DeviceNetServer.MakeUnconnectVisibleRequestMessageOnlyGroup2(Byte destMAC, String server, Byte config) 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\DeviceNetServer.cs:行号 202
+   在 ZFreeGo.ChoicePhase.DeviceNet.DeviceNetServer.EstablishConnection(DefStationInformation station, Byte connectType) 位置 e:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.DeviceNet\DeviceNetServer.cs:行号 214
+
+LogTrace Warning: 0 :     [2017年8月15日18:18:47]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:21:27]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:21:27]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:25:02]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:25:02]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:30:59]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:30:59]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:32:33]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日18:32:34]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日19:59:54]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日19:59:54]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日20:10:44]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月15日20:10:44]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日8:47:30]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日8:47:30]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:13:40]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:13:40]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:20:28]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:20:28]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:37:09]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:37:09]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:39:19]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:39:19]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:44:43]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:44:43]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:59:42]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日9:59:42]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日10:01:47]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日10:01:47]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日10:03:06]: 接收超时，移除第一个重新开始判断。
+LogTrace Warning: 0 :     [2017年8月16日10:04:08]: 接收累加和校验不正确，移除第一个重新判断。
+LogTrace Warning: 0 :     [2017年8月16日10:11:12]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日10:11:12]: DeviceNet::正在中止线程。

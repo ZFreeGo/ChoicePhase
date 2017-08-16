@@ -429,34 +429,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
 
 
-        /// <summary>
-        /// 关闭所有状态
-        /// </summary>
-        public void CloseAll()
-        {
-            ComState = "通讯关闭";
-            ComBrush = "Red";
-
-            DeviceState = "设备离线";
-            DeviceBrush = "Red";
-
-            PhaseA = "A相离线";
-            PhaseABrush = "Red";
-            PhaseB = "B相离线";
-            PhaseBBrush = "Red";
-            PhaseC = "C相离线";
-            PhaseCBrush = "Red";
-            Syn = "同步控制器离线";
-            SynICO = _icoOff;
-            SynBrush = "Red";
-
-
-            for (int i = 0; i < _statusStyleBrush.Length; i++)
-            {
-                _statusStyleBrush[i] = "Red";
-                _statusStyleDescribe[i] = "离线";
-            }
-        }
+      
 
         #endregion
 
@@ -512,8 +485,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 _statusStyleDescribe[0] = value;
                 RaisePropertyChanged("RemoteLocalA");
-            }
-            
+            }            
         }
         /// <summary>
         /// 远方/就地 B相 描述
@@ -595,6 +567,150 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             }
 
         }
+
+        /// <summary>
+        /// 更新远方本地 调试工作，带电信息状态
+        /// 10-远方,01-就地; 10-工作,01-调试
+        /// </summary>
+        /// <param name="stateByte">状态字</param>
+        /// <param name="mac">mac</param>
+        public void UpdatePositionStatus(byte stateByte, byte mac)
+        {
+           
+           //远方就地 
+            string des = "";
+            int index = 0;
+            if (NodeAttribute.MacPhaseA == mac)
+            {
+                des = "A相";
+                index = 0;     
+            }
+            else  if (NodeAttribute.MacPhaseB == mac)
+            {
+                des = "B相";
+                index = 1;     
+            }
+            else  if (NodeAttribute.MacPhaseC == mac)
+            {
+                des = "C相";
+                index = 2;          
+            }
+            else
+            {
+                return;                        
+            }       
+
+
+            var state = stateByte & 0x03;
+            if (state == 1)
+            {
+                des += "远方";
+                StatusStyleBrush[index] = "Green";
+            }
+            else if (state == 2)
+            {
+                des += "就地";
+                StatusStyleBrush[index] = "Green";
+            }
+            else
+            {
+                des += "未知";
+                StatusStyleBrush[index] = "Red";
+            }
+            StatusStyleDescribe[index] = des;
+
+
+            //工作调试模式
+             state = (stateByte>>2) & 0x03;
+            if (state == 1)
+            {
+                des += "调试";
+                StatusStyleBrush[index + 3] = "Green";
+            }
+            else if (state == 2)
+            {
+                des += "工作";
+                StatusStyleBrush[index + 3] = "Green";
+            }
+            else
+            {
+                des += "未知";
+                StatusStyleBrush[index  + 3] = "Red";
+            }
+            StatusStyleDescribe[index + 3] = des;
+
+            // 带电/不带电
+            state = (stateByte >> 4) & 0x03;
+            if (state == 1)
+            {
+                des += "不带电";
+                StatusStyleBrush[index  + 6] = "Green";
+            }
+            else if (state == 2)
+            {
+                des += "带电";
+                StatusStyleBrush[index  + 6] = "Green";
+            }
+            else
+            {
+                des += "未知";
+                StatusStyleBrush[index + 6] = "Red";
+            }
+            StatusStyleDescribe[index  + 6] = des;
+
+            RaisePropertyChanged("StatusStyleDescribe");
+            RaisePropertyChanged("StatusStyleBrush");
+        }
+
+        /// <summary>
+        /// 更新载入状态
+        /// </summary>
+        /// <param name="stateByte"></param>
+        /// <param name="mac"></param>
+        public void UpdateLoadedStatus(byte stateByte, byte mac)
+        {
+
+            //远方就地 
+            string des = "";
+            int index = 0;
+            if (NodeAttribute.MacPhaseA == mac)
+            {
+                des = "A相";
+                index = 0;
+            }
+            else if (NodeAttribute.MacPhaseB == mac)
+            {
+                des = "B相";
+                index = 1;
+            }
+            else if (NodeAttribute.MacPhaseC == mac)
+            {
+                des = "C相";
+                index = 2;
+            }
+            else
+            {
+                return;
+            }
+            
+            var state = stateByte & 0x03;
+            if (state == 0)
+            {
+                des += "正常载入";
+                StatusStyleBrush[index  + 9] = "Green";               
+            }
+            else 
+            {
+                des += "载入异常";
+                StatusStyleBrush[index + 9] = "Red";
+            }
+            StatusStyleDescribe[index + 9] = des;
+
+            RaisePropertyChanged("StatusStyleDescribe");
+            RaisePropertyChanged("StatusStyleBrush");
+        }
+
+
         #endregion
 
         #region 调试/工作
@@ -699,11 +815,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
 
         #endregion
 
-        #region 数据载入
+        #region 带电状态
         /// <summary>
-        /// 数据载入 A
+        /// 带电状态 A
         /// </summary>
-        public string LoadA
+        public string ChargedA
         {
             get
             {
@@ -712,6 +828,104 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             set
             {
                 _statusStyleDescribe[6] = value;
+                RaisePropertyChanged("ChargedA");
+            }
+
+        }
+        /// <summary>
+        /// 带电状态 B
+        /// </summary>
+        public string ChargedB
+        {
+            get
+            {
+                return _statusStyleDescribe[7];
+            }
+            set
+            {
+                _statusStyleDescribe[7] = value;
+                RaisePropertyChanged("ChargedB");
+            }
+
+        }
+        /// <summary>
+        /// 带电状态 C
+        /// </summary>
+        public string ChargedC
+        {
+            get
+            {
+                return _statusStyleDescribe[8];
+            }
+            set
+            {
+                _statusStyleDescribe[8] = value;
+                RaisePropertyChanged("ChargedC");
+            }
+
+        }
+
+        /// <summary>
+        /// 带电 A 画刷
+        /// </summary>
+        public string ChargedBrushA
+        {
+            get
+            {
+                return _statusStyleBrush[6];
+            }
+            set
+            {
+                _statusStyleBrush[6] = value;
+                RaisePropertyChanged("ChargedBrushA");
+            }
+
+        }
+        /// <summary>
+        /// 带电 B 画刷
+        /// </summary>
+        public string ChargedBrushB
+        {
+            get
+            {
+                return _statusStyleBrush[7];
+            }
+            set
+            {
+                _statusStyleBrush[7] = value;
+                RaisePropertyChanged("ChargedBrushB");
+            }
+        }
+        /// <summary>
+        ///带电 C 画刷
+        /// </summary>
+        public string ChargedBrushC
+        {
+            get
+            {
+                return _statusStyleBrush[8];
+            }
+            set
+            {
+                _statusStyleBrush[8] = value;
+                RaisePropertyChanged("ChargedBrushC");
+            }
+        }
+
+        #endregion
+        #region 数据载入
+        /// <summary>
+        /// 数据载入 A
+        /// </summary>
+        public string LoadA
+        {
+            get
+            {
+                return _statusStyleDescribe[9];
+            }
+            set
+            {
+                _statusStyleDescribe[9] = value;
                 RaisePropertyChanged("LoadA");
             }
 
@@ -723,11 +937,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleDescribe[7];
+                return _statusStyleDescribe[10];
             }
             set
             {
-                _statusStyleDescribe[7] = value;
+                _statusStyleDescribe[10] = value;
                 RaisePropertyChanged("LoadB");
             }
 
@@ -740,14 +954,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleDescribe[8];
+                return _statusStyleDescribe[11];
             }
             set
             {
-                _statusStyleDescribe[8] = value;
+                _statusStyleDescribe[11] = value;
                 RaisePropertyChanged("LoadC");
             }
-
         }
 
         /// <summary>
@@ -757,11 +970,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleBrush[6];
+                return _statusStyleBrush[9];
             }
             set
             {
-                _statusStyleBrush[6] = value;
+                _statusStyleBrush[9] = value;
                 RaisePropertyChanged("LoadBrushA");
             }
 
@@ -773,11 +986,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleBrush[7];
+                return _statusStyleBrush[10];
             }
             set
             {
-                _statusStyleBrush[7] = value;
+                _statusStyleBrush[10] = value;
                 RaisePropertyChanged("LoadBrushB");
             }
         }
@@ -788,11 +1001,11 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleBrush[8];
+                return _statusStyleBrush[11];
             }
             set
             {
-                _statusStyleBrush[8] = value;
+                _statusStyleBrush[11] = value;
                 RaisePropertyChanged("LoadBrushC");
             }
         }
@@ -811,12 +1024,14 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleDescribe[9];
+                return _statusStyleDescribe[12];
             }
             set
             {
-                _statusStyleDescribe[9] = value;
+                _statusStyleDescribe[12] = value;
                 RaisePropertyChanged("Voltage");
+                RaisePropertyChanged("StatusStyleDescribe");
+                
             }
         }
         /// <summary>
@@ -826,12 +1041,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleBrush[9];
+                return _statusStyleBrush[12];
             }
             set
             {
-                _statusStyleBrush[9] = value;
+                _statusStyleBrush[12] = value;
                 RaisePropertyChanged("VoltageBrush");
+                RaisePropertyChanged("StatusStyleBrush");
             }
         }
         /// <summary>
@@ -876,12 +1092,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleDescribe[9];
+                return _statusStyleDescribe[13];
             }
             set
             {
-                _statusStyleDescribe[9] = value;
+                _statusStyleDescribe[13] = value;
                 RaisePropertyChanged("Frequency");
+                RaisePropertyChanged("StatusStyleDescribe");
             }
         }
 
@@ -893,12 +1110,13 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         {
             get
             {
-                return _statusStyleBrush[9];
+                return _statusStyleBrush[13];
             }
             set
             {
-                _statusStyleBrush[9] = value;
+                _statusStyleBrush[13] = value;
                 RaisePropertyChanged("FrequencyBrush");
+                RaisePropertyChanged("StatusStyleBrush");
             }
         }
         /// <summary>
@@ -908,7 +1126,6 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
         public void UpadateFrequencyStatus(double freq)
         {
             EnergyStatusLoop status;
-
 
             if (freq > 52)
             {
@@ -926,31 +1143,63 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             {
                 case EnergyStatusLoop.More:
                     {
-                        Voltage = "系统频率过高";
-                        VoltageBrush = "Red";
+                        Frequency = "系统频率过高";
+                        FrequencyBrush = "Red";
                         break;
                     }
                 case EnergyStatusLoop.Less:
                     {
-                        Voltage = "系统频率过低";
-                        VoltageBrush = "Orange";
+                        Frequency = "系统频率过低";
+                        FrequencyBrush = "Orange";
                         break;
                     }
                 case EnergyStatusLoop.Null:
                     {
-                        Voltage = "系统频率空";
-                        VoltageBrush = "Red";
+                        Frequency = "系统频率空";
+                        FrequencyBrush = "Red";
                         break;
                     }
                 case EnergyStatusLoop.Normal:
                     {
-                        Voltage = "系统频率正常";
-                        VoltageBrush = "Green";
+                        Frequency = "系统频率正常";
+                        FrequencyBrush = "Green";
                         break;
                     }
             }
         }
         #endregion
+
+        /// <summary>
+        /// 关闭所有状态
+        /// </summary>
+        public void CloseAll()
+        {
+            ComState = "通讯关闭";
+            ComBrush = "Red";
+
+            DeviceState = "设备离线";
+            DeviceBrush = "Red";
+
+            PhaseA = "A相离线";
+            PhaseABrush = "Red";
+            PhaseB = "B相离线";
+            PhaseBBrush = "Red";
+            PhaseC = "C相离线";
+            PhaseCBrush = "Red";
+            Syn = "同步控制器离线";
+            SynICO = _icoOff;
+            SynBrush = "Red";
+
+
+            for (int i = 0; i < _statusStyleBrush.Length; i++)
+            {
+                StatusStyleBrush[i] = "Red";
+                StatusStyleDescribe[i] = "离线";
+
+            }
+            RaisePropertyChanged("StatusStyleDescribe");
+            RaisePropertyChanged("StatusStyleBrush");
+        }
 
         /// <summary>
         /// 初始化状态栏信息
@@ -976,15 +1225,15 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
             _synBrush = "Red";
 
 
-            _statusStyleDescribe = new string[11];
-            _statusStyleBrush = new string[11];
+            _statusStyleDescribe = new string[14];
+            _statusStyleBrush = new string[14];
 
             for (int i = 0; i < _statusStyleBrush.Length; i++)
             {
                 _statusStyleBrush[i] = "Red";
                 _statusStyleDescribe[i] = "离线";
             }
-            _statusStyleBrush[1] = "Green";
+            
             //单相模式不可见
             if (NodeAttribute.SingleMode)
             {

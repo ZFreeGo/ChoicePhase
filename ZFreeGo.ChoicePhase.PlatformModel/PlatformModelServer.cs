@@ -207,7 +207,12 @@ namespace ZFreeGo.ChoicePhase.PlatformModel
         private void ControlNetServer_StationArrived(object sender, StationEventArgs e)
         {
             Task.Factory.StartNew(() => LogicalUI.StationLinkChanged(e.Station),
-                    new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();           
+                    new System.Threading.CancellationTokenSource().Token, TaskCreationOptions.None, syncContextTaskScheduler).Wait();
+
+            //建立连接后，立即召唤所有监控参数与定值参数
+            var command = new byte[] { (byte)CommandIdentify.MasterParameterRead, 0, 0xF0 };
+            //此处发送控制命令                     
+            ControlNetServer.MasterSendCommand(e.Station.MacID, command, 0, command.Length);                               
         }
         
         /// <summary>

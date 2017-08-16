@@ -469,9 +469,19 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                     if (collect[i].ConfigID == id)
                     {
                         collect[i].UpdateAttribute(data);
+
+                        //判断载入数据是否为载入类型，硬编码
+                        if (86 == collect[i].ConfigID)
+                        {
+                            var modelServer = PlatformModelServer.GetServer();
+                            modelServer.LogicalUI.StatusBar.UpdateLoadedStatus((byte)collect[i].RawValue, (byte)mac);
+                        }
                     }
+                    
                 }
             }
+
+            
         }
 
        
