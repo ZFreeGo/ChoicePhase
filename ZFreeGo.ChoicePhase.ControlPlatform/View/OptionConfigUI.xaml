@@ -82,6 +82,12 @@
                                         </StackPanel>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Label Margin="3">偏移角度（°）:</Label>
+                                            <TextBox Margin="3" Text="{Binding OffsetAngle}" MinWidth="50" VerticalAlignment="Center"></TextBox>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <Button  Padding="2" Margin="3"  HorizontalAlignment="Center"  
                                      Command="{Binding OperateCommand}" CommandParameter="Read"  >重新载入</Button>
                                         <Button  Padding="2" Margin="3"  HorizontalAlignment="Center"  

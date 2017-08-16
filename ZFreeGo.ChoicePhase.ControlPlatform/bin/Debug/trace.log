@@ -596,3 +596,15 @@ LogTrace Warning: 0 :     [2017年8月16日10:03:06]: 接收超时，移除第�
 LogTrace Warning: 0 :     [2017年8月16日10:04:08]: 接收累加和校验不正确，移除第一个重新判断。
 LogTrace Warning: 0 :     [2017年8月16日10:11:12]: 串口接收进程::正在中止线程。
 LogTrace Warning: 0 :     [2017年8月16日10:11:12]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:04:13]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:04:13]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:05:05]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:05:05]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:10:04]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:10:04]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:11:20]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:11:21]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:13:05]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日13:13:06]: DeviceNet::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日14:14:54]: 串口接收进程::正在中止线程。
+LogTrace Warning: 0 :     [2017年8月16日14:14:54]: DeviceNet::正在中止线程。

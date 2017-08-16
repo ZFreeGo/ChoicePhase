@@ -224,6 +224,8 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
         }
 
 
+
+
         private static int _closeActionOverTime = 10000;
 
         /// <summary>
@@ -275,6 +277,25 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.GetViewData
                 _synCloseActionOverTime = value;
             }
         }
+
+        private static double _offsetAngle = 0;
+
+        /// <summary>
+        /// 偏移角度，设定值加上此偏移为同步控制器设置角度
+        /// </summary>
+        public static double OffsetAngle
+        {
+            get
+            {
+                return _offsetAngle;
+            }
+            set
+            {
+                _offsetAngle = value;
+            }
+        }
+
+
 
         private static User _user = new User("Admin", "12345", "12345");
         /// <summary>

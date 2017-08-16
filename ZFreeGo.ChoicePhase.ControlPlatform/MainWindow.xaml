@@ -28,7 +28,6 @@
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot" >
-
         <Grid.ColumnDefinitions >
             <ColumnDefinition Width="0"></ColumnDefinition>
             <ColumnDefinition  Width="3*"></ColumnDefinition>
@@ -47,8 +46,7 @@
                     <DockPanel>
                         <Image Source="Pictures/config.ico"></Image>
                         <TextBlock  VerticalAlignment="Center">通讯设置</TextBlock>
-                    </DockPanel>
-                    
+                    </DockPanel>                    
                 </Button>
                 <Separator></Separator>
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="MonitorParameter">
@@ -64,26 +62,15 @@
                         <TextBlock VerticalAlignment="Center">开关操作</TextBlock>
                     </DockPanel>
                 </Button>
-                <Separator></Separator>                          
-                                
+                <Separator></Separator>                                                       
                 <Button Command="{Binding TreeSelectedItemCommand}" CommandParameter="SetpointParameter">
                     <DockPanel>
                         <Image Source="Pictures/set.png"></Image>
                         <TextBlock VerticalAlignment="Center">定值参数</TextBlock>
                     </DockPanel>
-                </Button>
-                <Button HorizontalAlignment="Right" Margin="100,0,0,0" Command="{Binding TreeSelectedItemCommand}" 
-                        CommandParameter="OptionConfig">
-                    <DockPanel>
-                        <Image Source="Pictures/064.ico"></Image>
-                        <TextBlock VerticalAlignment="Center">系统配置</TextBlock>
-                    </DockPanel>
-                </Button>
-            </ToolBar>
-           
+                </Button>               
+            </ToolBar>           
         </DockPanel>
-
-
 
         <Frame Grid.Column="3" Grid.Row="2" Name="frame"  Source="{Binding ShowUri}" >
 
@@ -255,7 +242,7 @@
                 </TabItem>
             </TabControl>
         </Grid>
-        <StatusBar Grid.Row="5"  Height="25" Grid.ColumnSpan="2" DataContext="{Binding StatusBar}">
+        <StatusBar Grid.Row="5"  Height="25" Grid.ColumnSpan="2">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
@@ -268,7 +255,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
 
-            <StatusBarItem Grid.Column="0">
+            <StatusBarItem Grid.Column="0"  DataContext="{Binding StatusBar}">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="当前用户：" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding UserName}" Foreground="Black" Name="currentUserName" />
@@ -280,8 +267,8 @@
                 </StackPanel>
                 
             </StatusBarItem>
-            
-            <StatusBarItem  Grid.Column="1" FontFamily="黑体">
+
+            <StatusBarItem  Grid.Column="1" FontFamily="黑体"  DataContext="{Binding StatusBar}">
 
                 <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
                     <StackPanel Orientation="Horizontal" >
@@ -353,9 +340,17 @@
             </StatusBarItem>
             <StatusBarItem  Grid.Column="2">
                 <StackPanel Orientation="Horizontal" >
-
-                    <Image  Source="pictures/SOJO.jpg"></Image>                  
+                    <Image  Source="pictures/SOJO.jpg"></Image>                   
+                        <Button HorizontalAlignment="Right" Command="{Binding TreeSelectedItemCommand}" 
+                            CommandParameter="OptionConfig">                       
+                            <DockPanel>
+                                <!--<Image Source="Pictures/064.ico"></Image>-->
+                            <TextBlock VerticalAlignment="Center" FontSize="18" FontFamily="黑体">系统配置</TextBlock>
+                            </DockPanel>
+                        </Button>
+                    
                 </StackPanel>
+                
             </StatusBarItem>
         </StatusBar>
     </Grid>

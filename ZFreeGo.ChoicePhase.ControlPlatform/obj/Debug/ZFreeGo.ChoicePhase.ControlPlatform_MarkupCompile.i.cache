@@ -16,5 +16,5 @@ E:\MyCode\Dotnet\ZFreeGo.ChoicePhase\ZFreeGo.ChoicePhase.ControlPlatform\App.xam
 20-998442061
 MainWindow.xaml;Skins\MainSkin.xaml;View\CommunicationView.xaml;View\ControlView.xaml;View\MonitorView.xaml;View\OptionConfigUI.xaml;View\SetpointView.xaml;View\StartupInterface.xaml;
 
-False
+True
 

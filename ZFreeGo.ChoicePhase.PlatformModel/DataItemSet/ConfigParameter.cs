@@ -242,7 +242,22 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.DataItemSet
                 Tips = "值已改变";
             }
         }
-
+        /// <summary>
+        /// 偏移角度
+        /// </summary>
+        public double OffsetAngle
+        {
+            get
+            {
+                return NodeAttribute.OffsetAngle;
+            }
+            set
+            {
+                NodeAttribute.OffsetAngle = value;
+                RaisePropertyChanged("OffsetAngle");
+                Tips = "值已改变";
+            }
+        }
 
         /// <summary>
         /// 工作模式
