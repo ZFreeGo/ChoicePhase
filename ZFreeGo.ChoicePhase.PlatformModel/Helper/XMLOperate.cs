@@ -93,6 +93,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 NodeAttribute.ClosePowerOnTime = (byte)(int)productRow["ClosePowerOnTime"];
                 NodeAttribute.OpenPowerOnTime = (byte)(int)productRow["OpenPowerOnTime"];
                 NodeAttribute.WorkMode = (int)productRow["WorkMode"];
+                NodeAttribute.OffsetAngle = (double)productRow["OffsetAngle"];
             }
             catch (Exception ex)
             {
@@ -119,7 +120,7 @@ namespace ZFreeGo.ChoicePhase.PlatformModel.Helper
                 productRow["ClosePowerOnTime"]  = (int)NodeAttribute.ClosePowerOnTime;
                 productRow["OpenPowerOnTime"] = (int) NodeAttribute.OpenPowerOnTime;
                 productRow["WorkMode"]  = (int)NodeAttribute.WorkMode;
-
+                productRow["OffsetAngle"]= NodeAttribute.OffsetAngle;
                 ds.WriteXml(CommonPath.CommonPortXmlPath); 
             }
             catch (Exception ex)

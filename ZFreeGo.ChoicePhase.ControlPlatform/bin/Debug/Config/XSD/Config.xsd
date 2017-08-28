@@ -24,7 +24,7 @@
 			  <xs:element name="ClosePowerOnTime" type="xs:int" minOccurs="0" />  
               <xs:element name="OpenPowerOnTime" type="xs:int" minOccurs="0" />  
 			  <xs:element name="WorkMode" type="xs:int" minOccurs="0" />      			  
-			
+			  <xs:element name="OffsetAngle" type="xs:double" minOccurs="0" />      		
             </xs:sequence>
           </xs:complexType>		  
         </xs:element>

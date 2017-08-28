@@ -15,5 +15,6 @@
     <ClosePowerOnTime>50</ClosePowerOnTime>
     <OpenPowerOnTime>30</OpenPowerOnTime>
     <WorkMode>0</WorkMode>
+    <OffsetAngle>10</OffsetAngle>
   </ConfigParameter>
 </NewDataSet>
